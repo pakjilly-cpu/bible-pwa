@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="말씀과함께">
+  <meta name="description" content="성경 66권 전체 + 찬송가 645곡 - 말씀과 함께">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>말씀과 함께</title>
+  <style>
+    :root {
+      --bg: #f5f5f0;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --sub: #888888;
+      --accent: #2d5a27;
+      --accent-bg: rgba(45,90,39,0.08);
+      --border: #e8e8e3;
+      --header: #ffffff;
+      --nav: #ffffff;
+      --shadow: rgba(0,0,0,0.04);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      overflow-x: hidden;
+      color: var(--text);
+    }
+    #root { min-height: 100vh; min-height: 100dvh; }
+    @supports (padding: env(safe-area-inset-bottom)) {
+      body { padding-bottom: env(safe-area-inset-bottom); }
+    }
+    #splash {
+      position: fixed; inset: 0; background: linear-gradient(135deg, #2d5a27 0%, #1a3d18 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 9999; transition: opacity 0.5s;
+    }
+    #splash.hide { opacity: 0; pointer-events: none; }
+    #splash .icon { font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+    #splash h1 { font-size: 26px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
+    #splash p { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 6px; }
+    #splash .loading {
+      margin-top: 32px; width: 36px; height: 36px;
+      border: 2.5px solid rgba(255,255,255,0.2); border-top-color: #fff;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    input:focus { outline: none; border-color: var(--accent) !important; }
+    button { font-family: inherit; }
+    ::-webkit-scrollbar { width: 0; }
+  </style>
+</head>
+<body>
+  <div id="splash">
+    <div class="icon">📖</div>
+    <h1>말씀과 함께</h1>
+    <p>성경 66권 · 찬송가 645곡</p>
+    <div class="loading"></div>
+  </div>
+
+  <div id="root"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel" src="/app.jsx" data-type="module"></script>
+
+  <script type="text/babel">
+    const checkAndRender = () => {
+      if (window.BibleApp) {
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(window.BibleApp));
+        setTimeout(() => document.getElementById('splash')?.classList.add('hide'), 500);
+        setTimeout(() => document.getElementById('splash')?.remove(), 1000);
+      } else {
+        setTimeout(checkAndRender, 100);
+      }
+    };
+    window.addEventListener('load', () => setTimeout(checkAndRender, 200));
+    checkAndRender();
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>

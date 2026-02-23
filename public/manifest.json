@@ -1,0 +1,24 @@
+{
+  "name": "말씀과 함께 - 성경 & 찬송가",
+  "short_name": "말씀과함께",
+  "description": "성경 66권 전체 + 찬송가 645곡",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f5f0",
+  "theme_color": "#2d5a27",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
