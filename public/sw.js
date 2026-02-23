@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bible-pwa-v2';
+const CACHE_NAME = 'bible-pwa-v3';
 const CORE_ASSETS = [
   '/',
   '/index.html',
@@ -32,7 +32,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Data files (bible books, hymn chunks) - cache first
+  // Data files (bible books, hymn chunks, English bible, sheet music) - cache first
   if (url.pathname.startsWith('/data/')) {
     event.respondWith(
       caches.match(event.request).then((cached) => {
@@ -43,7 +43,7 @@ self.addEventListener('fetch', (event) => {
             caches.open(CACHE_NAME).then(c => c.put(event.request, clone));
           }
           return response;
-        });
+        }).catch(() => new Response('', { status: 404 }));
       })
     );
     return;
