@@ -1404,16 +1404,16 @@ window.BibleApp = function BibleApp() {
     <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: t.bg, color: t.text, position: "relative", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s" }}>
       <Header title={hdr.title} showBack={hdr.showBack} backTarget={hdr.backTarget} right={hdr.right} />
       <div ref={scrollRef} style={{ flex: 1, overflowY: "auto" }}>
-        {screen === "home" && <HomeScreen />}
-        {screen === "books" && <BooksScreen />}
-        {screen === "chapters" && <ChaptersScreen />}
-        {screen === "reading" && <ReadingScreen />}
-        {screen === "hymnList" && <HymnListScreen />}
-        {screen === "hymnDetail" && <HymnDetailScreen />}
-        {screen === "worship" && <WorshipScreen />}
-        {screen === "tongdok" && <TongdokScreen />}
-        {screen === "search" && <SearchScreen />}
-        {screen === "bookmarks" && <BookmarksScreen />}
+        {screen === "home" && HomeScreen()}
+        {screen === "books" && BooksScreen()}
+        {screen === "chapters" && ChaptersScreen()}
+        {screen === "reading" && ReadingScreen()}
+        {screen === "hymnList" && HymnListScreen()}
+        {screen === "hymnDetail" && HymnDetailScreen()}
+        {screen === "worship" && WorshipScreen()}
+        {screen === "tongdok" && TongdokScreen()}
+        {screen === "search" && SearchScreen()}
+        {screen === "bookmarks" && BookmarksScreen()}
       </div>
       <NavBar />
     </div>
