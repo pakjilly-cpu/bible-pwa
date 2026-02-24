@@ -129,12 +129,14 @@ window.BibleApp = function BibleApp() {
   const [selectedHymn, setSelectedHymn] = useState(null);
   const [hymnLyrics, setHymnLyrics] = useState(null);
   const [hymnViewMode, setHymnViewMode] = useState('lyrics');
+  const hymnSearchInputRef = useRef(null);
+  const hymnSearchTimeout = useRef(null);
 
   // Search
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searching, setSearching] = useState(false);
-  const isComposingRef = useRef(false);
+  const searchInputRef = useRef(null);
 
   // UI state
   const [fontSize, setFontSize] = useState(() => loadStorage('fontSize', 17));
@@ -775,10 +777,13 @@ window.BibleApp = function BibleApp() {
       <div style={{ padding: "12px 16px", position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
         <div style={{ position: "relative", marginBottom: 8 }}>
           <input
-            type="text" placeholder="찬송가 검색 (번호 또는 제목)" value={hymnSearch}
-            onChange={e => setHymnSearch(e.target.value)}
-            onCompositionStart={() => { isComposingRef.current = true; }}
-            onCompositionEnd={() => { isComposingRef.current = false; }}
+            ref={hymnSearchInputRef}
+            type="text" placeholder="찬송가 검색 (번호 또는 제목)" defaultValue={hymnSearch}
+            onChange={e => {
+              const val = e.target.value;
+              clearTimeout(hymnSearchTimeout.current);
+              hymnSearchTimeout.current = setTimeout(() => setHymnSearch(val), 300);
+            }}
             style={{ width: "100%", padding: "11px 14px 11px 38px", borderRadius: 10, border: `1.5px solid ${t.border}`, background: t.card, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", color: t.text }}
           />
           <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 15, opacity: 0.35 }}>🔍</span>
@@ -937,19 +942,15 @@ window.BibleApp = function BibleApp() {
       <div style={{ padding: "12px 16px", position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
         <div style={{ position: "relative" }}>
           <input
-            type="text" placeholder="성경 구절, 찬송가 검색..." value={searchQuery}
+            ref={searchInputRef}
+            type="text" placeholder="성경 구절, 찬송가 검색..." defaultValue={searchQuery}
             onChange={e => {
-              setSearchQuery(e.target.value);
-              if (!isComposingRef.current) {
-                clearTimeout(searchTimeout.current);
-                searchTimeout.current = setTimeout(() => doSearch(e.target.value), 500);
-              }
-            }}
-            onCompositionStart={() => { isComposingRef.current = true; }}
-            onCompositionEnd={e => {
-              isComposingRef.current = false;
+              const val = e.target.value;
               clearTimeout(searchTimeout.current);
-              searchTimeout.current = setTimeout(() => doSearch(e.target.value), 300);
+              searchTimeout.current = setTimeout(() => {
+                setSearchQuery(val);
+                doSearch(val);
+              }, 400);
             }}
             style={{ width: "100%", padding: "12px 14px 12px 38px", borderRadius: 10, border: `1.5px solid ${t.border}`, background: t.card, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", color: t.text }}
           />
@@ -963,7 +964,7 @@ window.BibleApp = function BibleApp() {
             <p style={{ color: t.sub, fontSize: 13, marginBottom: 16 }}>성경과 찬송가를 함께 검색합니다</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
               {["사랑", "하나님", "은혜", "믿음", "영생", "평안", "소망", "축복"].map(word => (
-                <button key={word} onClick={() => { setSearchQuery(word); doSearch(word); }} style={{ padding: "7px 14px", borderRadius: 18, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", fontSize: 12, color: t.text, fontFamily: "inherit" }}>{word}</button>
+                <button key={word} onClick={() => { if (searchInputRef.current) searchInputRef.current.value = word; setSearchQuery(word); doSearch(word); }} style={{ padding: "7px 14px", borderRadius: 18, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", fontSize: 12, color: t.text, fontFamily: "inherit" }}>{word}</button>
               ))}
             </div>
           </div>
