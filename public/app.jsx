@@ -211,6 +211,7 @@ window.BibleApp = function BibleApp() {
         })));
       }
       setLoadingVerses(false);
+      setTimeout(() => scrollRef.current?.scrollTo(0, 0), 0);
       // Save to read history
       setReadHistory(prev => {
         const entry = { bookId: selectedBook.id, bookName: selectedBook.name, chapter: selectedChapter, date: new Date().toLocaleDateString('ko-KR') };
