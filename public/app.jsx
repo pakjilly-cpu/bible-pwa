@@ -1233,12 +1233,15 @@ window.BibleApp = function BibleApp() {
 
     // Check today's completion & encouragement
     const todayAllDone = todayAssignment.length > 0 && todayAssignment.every(item => completedSet.has(`${item.bookId}-${item.chapter}`));
+    const tomorrowDone = tomorrowAssignment.length > 0 && tomorrowAssignment.every(item => completedSet.has(`${item.bookId}-${item.chapter}`));
+    const tomorrowPartial = tomorrowAssignment.length > 0 && tomorrowAssignment.some(item => completedSet.has(`${item.bookId}-${item.chapter}`));
     const expectedByToday = totalChapters > 0 ? Math.floor((dayIndex + 1) * (totalChapters / days)) : 0;
     const getMessage = () => {
       if (dayIndex >= days && completedCount >= totalChapters) return { emoji: "🎉", text: "축하합니다! 성경 통독을 완료하셨습니다!", color: t.accent };
       if (dayIndex >= days) return { emoji: "📖", text: "통독 기간이 지났지만 아직 완주할 수 있습니다. 힘내세요!", color: "#e67e22" };
-      if (todayAllDone) return { emoji: "🎉", text: "오늘 분량을 모두 읽으셨습니다! 수고하셨어요!", color: t.accent };
-      if (completedCount >= expectedByToday + 10) return { emoji: "🔥", text: "대단해요! 목표보다 훨씬 앞서가고 있어요!", color: t.accent };
+      if (todayAllDone && tomorrowDone) return { emoji: "🔥", text: "모레 분량까지 읽으셨네요! 정말 대단해요!", color: t.accent };
+      if (todayAllDone && tomorrowPartial) return { emoji: "⭐", text: "내일 분량도 읽고 계시네요! 멋져요!", color: t.accent };
+      if (todayAllDone) return { emoji: "🎉", text: "오늘 분량 완료! 여유가 되면 내일 분량도 도전해보세요!", color: t.accent };
       if (completedCount >= expectedByToday) return { emoji: "💪", text: "잘하고 있어요! 이 페이스 그대로 꾸준히!", color: t.accent };
       if (completedCount >= expectedByToday - 5) return { emoji: "📖", text: "조금만 더 하면 목표를 따라잡을 수 있어요!", color: "#e67e22" };
       return { emoji: "🏃", text: "조금 밀렸지만 괜찮아요! 오늘부터 다시 시작해요!", color: "#e67e22" };
