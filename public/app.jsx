@@ -772,40 +772,42 @@ window.BibleApp = function BibleApp() {
     return list;
   }, [filteredHymns, hymnRange, hymnSearch]);
 
+  const HymnSearchHeader = () => (
+    <div style={{ padding: "12px 16px", background: t.bg, borderBottom: `1px solid ${t.border}` }}>
+      <div style={{ position: "relative", marginBottom: 8 }}>
+        <input
+          ref={hymnSearchInputRef}
+          type="text" placeholder="찬송가 검색 (번호 또는 제목)" defaultValue={hymnSearch}
+          onChange={e => {
+            const val = e.target.value;
+            clearTimeout(hymnSearchTimeout.current);
+            hymnSearchTimeout.current = setTimeout(() => setHymnSearch(val), 300);
+          }}
+          style={{ width: "100%", padding: "11px 14px 11px 38px", borderRadius: 10, border: `1.5px solid ${t.border}`, background: t.card, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", color: t.text }}
+        />
+        <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 15, opacity: 0.35 }}>🔍</span>
+      </div>
+      {!hymnSearch.trim() && (
+        <div style={{ display: "flex", gap: 5, overflowX: "auto", paddingBottom: 2 }}>
+          {[
+            { id: "all", label: "전체" },
+            { id: "1-100", label: "1~100" },
+            { id: "101-200", label: "101~200" },
+            { id: "201-300", label: "201~300" },
+            { id: "301-400", label: "301~400" },
+            { id: "401-500", label: "401~500" },
+            { id: "501-645", label: "501~645" },
+          ].map(r => (
+            <Pill key={r.id} active={hymnRange === r.id} label={r.label} onClick={() => setHymnRange(r.id)} small />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   const HymnListScreen = () => (
     <div style={{ paddingBottom: 90 }}>
-      <div style={{ padding: "12px 16px", position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
-        <div style={{ position: "relative", marginBottom: 8 }}>
-          <input
-            ref={hymnSearchInputRef}
-            type="text" placeholder="찬송가 검색 (번호 또는 제목)" defaultValue={hymnSearch}
-            onChange={e => {
-              const val = e.target.value;
-              clearTimeout(hymnSearchTimeout.current);
-              hymnSearchTimeout.current = setTimeout(() => {
-                setHymnSearch(val);
-                requestAnimationFrame(() => { hymnSearchInputRef.current?.focus(); });
-              }, 300);
-            }}
-            style={{ width: "100%", padding: "11px 14px 11px 38px", borderRadius: 10, border: `1.5px solid ${t.border}`, background: t.card, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", color: t.text }}
-          />
-          <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 15, opacity: 0.35 }}>🔍</span>
-        </div>
-        <div style={{ display: "flex", gap: 5, overflowX: "auto", paddingBottom: 2, opacity: hymnSearch.trim() ? 0 : 1, pointerEvents: hymnSearch.trim() ? "none" : "auto", maxHeight: hymnSearch.trim() ? 0 : 40, overflow: "hidden", transition: "opacity 0.2s, max-height 0.2s" }}>
-            {[
-              { id: "all", label: "전체" },
-              { id: "1-100", label: "1~100" },
-              { id: "101-200", label: "101~200" },
-              { id: "201-300", label: "201~300" },
-              { id: "301-400", label: "301~400" },
-              { id: "401-500", label: "401~500" },
-              { id: "501-645", label: "501~645" },
-            ].map(r => (
-              <Pill key={r.id} active={hymnRange === r.id} label={r.label} onClick={() => setHymnRange(r.id)} small />
-            ))}
-          </div>
-      </div>
-      <div style={{ padding: "8px 16px", minHeight: "70vh" }}>
+      <div style={{ padding: "8px 16px" }}>
         <p style={{ fontSize: 11, color: t.sub, marginBottom: 8 }}>새찬송가 ({rangeFilteredHymns.length}곡)</p>
         {rangeFilteredHymns.slice(0, hymnShowCount).map((h) => (
           <button key={h.n} onClick={() => { setSelectedHymn(h); setScreen("hymnDetail"); }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "11px 14px", marginBottom: 5, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
@@ -938,28 +940,30 @@ window.BibleApp = function BibleApp() {
 
   // ── SEARCH SCREEN ──
   const searchTimeout = useRef(null);
+  const SearchHeader = () => (
+    <div style={{ padding: "12px 16px", background: t.bg, borderBottom: `1px solid ${t.border}` }}>
+      <div style={{ position: "relative" }}>
+        <input
+          ref={searchInputRef}
+          type="text" placeholder="성경 구절, 찬송가 검색..." defaultValue={searchQuery}
+          onChange={e => {
+            const val = e.target.value;
+            clearTimeout(searchTimeout.current);
+            searchTimeout.current = setTimeout(() => {
+              setSearchQuery(val);
+              doSearch(val);
+            }, 400);
+          }}
+          style={{ width: "100%", padding: "12px 14px 12px 38px", borderRadius: 10, border: `1.5px solid ${t.border}`, background: t.card, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", color: t.text }}
+        />
+        <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 15, opacity: 0.35 }}>🔍</span>
+      </div>
+    </div>
+  );
+
   const SearchScreen = () => (
     <div style={{ paddingBottom: 90 }}>
-      <div style={{ padding: "12px 16px", position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
-        <div style={{ position: "relative" }}>
-          <input
-            ref={searchInputRef}
-            type="text" placeholder="성경 구절, 찬송가 검색..." defaultValue={searchQuery}
-            onChange={e => {
-              const val = e.target.value;
-              clearTimeout(searchTimeout.current);
-              searchTimeout.current = setTimeout(() => {
-                setSearchQuery(val);
-                doSearch(val);
-                requestAnimationFrame(() => { searchInputRef.current?.focus(); });
-              }, 400);
-            }}
-            style={{ width: "100%", padding: "12px 14px 12px 38px", borderRadius: 10, border: `1.5px solid ${t.border}`, background: t.card, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", color: t.text }}
-          />
-          <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 15, opacity: 0.35 }}>🔍</span>
-        </div>
-      </div>
-      <div style={{ padding: "12px 16px", minHeight: "70vh" }}>
+      <div style={{ padding: "12px 16px" }}>
         <div style={{ textAlign: "center", padding: "40px 0", opacity: searchQuery ? 0 : 1, maxHeight: searchQuery ? 0 : 200, overflow: "hidden", pointerEvents: searchQuery ? "none" : "auto", transition: "opacity 0.2s, max-height 0.2s" }}>
             <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.15 }}>🔍</div>
             <p style={{ color: t.sub, fontSize: 13, marginBottom: 16 }}>성경과 찬송가를 함께 검색합니다</p>
@@ -1404,6 +1408,8 @@ window.BibleApp = function BibleApp() {
   return (
     <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: t.bg, color: t.text, position: "relative", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s" }}>
       <Header title={hdr.title} showBack={hdr.showBack} backTarget={hdr.backTarget} right={hdr.right} />
+      {screen === "hymnList" && HymnSearchHeader()}
+      {screen === "search" && SearchHeader()}
       <div ref={scrollRef} style={{ flex: 1, overflowY: "auto" }}>
         {screen === "home" && HomeScreen()}
         {screen === "books" && BooksScreen()}
