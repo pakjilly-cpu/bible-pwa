@@ -22,7 +22,7 @@ async function loadBookData(bookId) {
 
 async function loadEnglishBookData(bookId) {
   if (dataCache.englishBooks[bookId]) return dataCache.englishBooks[bookId];
-  const res = await fetch(`/data/bible-en/${bookId}.json`);
+  const res = await fetch(`/data/bible-en/${bookId}.json?v=2`);
   const data = await res.json();
   dataCache.englishBooks[bookId] = data;
   return data;
@@ -594,7 +594,7 @@ window.BibleApp = function BibleApp() {
   const ReadingScreen = () => {
     if (!selectedBook || !selectedChapter) return null;
     const bookName = selectedBook.name;
-    const langLabel = bibleLang === 'ko' ? '개역한글' : bibleLang === 'en' ? 'KJV' : '한영대조';
+    const langLabel = bibleLang === 'ko' ? '개역한글' : bibleLang === 'en' ? 'NIV' : '한영대조';
 
     // Get TTS texts based on language
     const getTtsTexts = () => {
