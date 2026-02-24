@@ -964,7 +964,7 @@ window.BibleApp = function BibleApp() {
   const SearchScreen = () => (
     <div style={{ paddingBottom: 90 }}>
       <div style={{ padding: "12px 16px" }}>
-        <div style={{ textAlign: "center", padding: "40px 0", opacity: searchQuery ? 0 : 1, maxHeight: searchQuery ? 0 : 200, overflow: "hidden", pointerEvents: searchQuery ? "none" : "auto", transition: "opacity 0.2s, max-height 0.2s" }}>
+        <div style={{ textAlign: "center", padding: "40px 0", opacity: searchQuery ? 0 : 1, maxHeight: searchQuery ? 0 : 300, overflow: "hidden", pointerEvents: searchQuery ? "none" : "auto", transition: "opacity 0.2s, max-height 0.2s" }}>
             <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.15 }}>🔍</div>
             <p style={{ color: t.sub, fontSize: 13, marginBottom: 16 }}>성경과 찬송가를 함께 검색합니다</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
