@@ -258,6 +258,7 @@ window.BibleApp = function BibleApp() {
     else if (target === "bible") { setMainTab("bible"); setScreen("books"); }
     else if (target === "hymn") { setMainTab("hymn"); setScreen("hymnList"); setSelectedHymn(null); setHymnLyrics(null); }
     else if (target === "search") { setMainTab("search"); setScreen("search"); }
+    else if (target === "worship") { setMainTab("worship"); setScreen("worship"); }
     else if (target === "bookmarks") { setMainTab("bookmarks"); setScreen("bookmarks"); }
     else setScreen(target);
   };
@@ -1103,6 +1104,85 @@ window.BibleApp = function BibleApp() {
     );
   };
 
+  // ── WORSHIP SCREEN (구역예배) ──
+  const WorshipScreen = () => {
+    const [worshipWeeks, setWorshipWeeks] = useState([]);
+    const [selectedWeek, setSelectedWeek] = useState(null);
+    const [imgError, setImgError] = useState({});
+
+    useEffect(() => {
+      // Generate recent Saturday dates (구역예배 is weekly on Saturdays)
+      const weeks = [];
+      const now = new Date();
+      // Find most recent Saturday
+      const day = now.getDay(); // 0=Sun, 6=Sat
+      const lastSat = new Date(now);
+      lastSat.setDate(now.getDate() - (day === 6 ? 0 : day + 1));
+      // Generate 20 recent Saturdays
+      for (let i = 0; i < 20; i++) {
+        const d = new Date(lastSat);
+        d.setDate(lastSat.getDate() - i * 7);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const dateStr = `${yyyy}${mm}${dd}`;
+        const label = `${yyyy}년 ${mm}월 ${dd}일`;
+        const imgUrl = `https://gntc.net/SNAS_MCIC/${encodeURIComponent('은혜와진리소식지')}/${yyyy}(${encodeURIComponent('구역공과')})/${dateStr}.jpg`;
+        weeks.push({ dateStr, label, imgUrl, yyyy, mm, dd });
+      }
+      setWorshipWeeks(weeks);
+      if (weeks.length > 0) setSelectedWeek(weeks[0].dateStr);
+    }, []);
+
+    const selected = worshipWeeks.find(w => w.dateStr === selectedWeek);
+
+    if (selectedWeek && selected && !imgError[selectedWeek]) {
+      // Detail view - show image
+      return (
+        <div style={{ paddingBottom: 90 }}>
+          <div style={{ padding: "12px 16px", position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
+            <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 2 }}>
+              {worshipWeeks.slice(0, 8).map(w => (
+                <button key={w.dateStr} onClick={() => { setSelectedWeek(w.dateStr); setImgError(prev => ({ ...prev, [w.dateStr]: false })); }}
+                  style={{ padding: "6px 12px", borderRadius: 20, border: `1.5px solid ${selectedWeek === w.dateStr ? t.accent : t.border}`, background: selectedWeek === w.dateStr ? t.accentBg : "transparent", color: selectedWeek === w.dateStr ? t.accent : t.sub, fontWeight: selectedWeek === w.dateStr ? 600 : 400, fontSize: 11, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
+                  {w.mm}/{w.dd}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div style={{ padding: "8px" }}>
+            <p style={{ fontSize: 15, fontWeight: 600, color: t.text, textAlign: "center", margin: "8px 0" }}>{selected.label} 구역공과</p>
+            <img
+              src={selected.imgUrl}
+              alt={`${selected.label} 구역공과`}
+              onError={() => setImgError(prev => ({ ...prev, [selectedWeek]: true }))}
+              style={{ width: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}` }}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    // List view or error fallback
+    return (
+      <div style={{ paddingBottom: 90 }}>
+        <div style={{ padding: "16px" }}>
+          <p style={{ fontSize: 13, color: t.sub, marginBottom: 12 }}>은혜와진리교회 구역예배</p>
+          {worshipWeeks.map(w => (
+            <button key={w.dateStr} onClick={() => { setSelectedWeek(w.dateStr); setImgError(prev => ({ ...prev, [w.dateStr]: false })); }}
+              style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "14px 16px", marginBottom: 6, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>⛪</div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 500, color: t.text }}>{w.label}</div>
+                <div style={{ fontSize: 11, color: t.sub, marginTop: 2 }}>구역공과</div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   // ── NAV BAR ──
   const NavBar = () => (
     <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, background: t.nav, borderTop: `1px solid ${t.border}`, display: "flex", justifyContent: "space-around", padding: "4px 0 env(safe-area-inset-bottom, 8px)", zIndex: 100 }}>
@@ -1110,10 +1190,11 @@ window.BibleApp = function BibleApp() {
         { id: "home", icon: "🏠", label: "홈" },
         { id: "bible", icon: "📖", label: "성경" },
         { id: "hymn", icon: "🎵", label: "찬송가" },
+        { id: "worship", icon: "⛪", label: "예배" },
         { id: "search", icon: "🔍", label: "검색" },
         { id: "bookmarks", icon: "♥", label: "북마크" },
       ].map(item => (
-        <button key={item.id} onClick={() => navigate(item.id)} style={{ background: "none", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 1, cursor: "pointer", padding: "6px 14px", color: mainTab === item.id ? t.accent : t.sub, transition: "all 0.2s" }}>
+        <button key={item.id} onClick={() => navigate(item.id)} style={{ background: "none", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 1, cursor: "pointer", padding: "6px 8px", color: mainTab === item.id ? t.accent : t.sub, transition: "all 0.2s" }}>
           <span style={{ fontSize: 20, color: item.id === "bookmarks" ? "#e74c3c" : undefined, opacity: item.id === "bookmarks" && mainTab !== item.id ? 0.5 : 1 }}>{item.icon}</span>
           <span style={{ fontSize: 10, fontWeight: mainTab === item.id ? 700 : 400 }}>{item.label}</span>
         </button>
@@ -1132,6 +1213,7 @@ window.BibleApp = function BibleApp() {
     },
     hymnList: { title: "찬송가", showBack: false },
     hymnDetail: { title: selectedHymn?.t || "", showBack: true, backTarget: "hymn" },
+    worship: { title: "구역예배", showBack: false },
     search: { title: "검색", showBack: false },
     bookmarks: { title: "북마크", showBack: false },
   };
@@ -1147,6 +1229,7 @@ window.BibleApp = function BibleApp() {
         {screen === "reading" && <ReadingScreen />}
         {screen === "hymnList" && <HymnListScreen />}
         {screen === "hymnDetail" && <HymnDetailScreen />}
+        {screen === "worship" && <WorshipScreen />}
         {screen === "search" && <SearchScreen />}
         {screen === "bookmarks" && <BookmarksScreen />}
       </div>
