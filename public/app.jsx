@@ -717,9 +717,9 @@ window.BibleApp = function BibleApp() {
 
         {/* Chapter Navigation */}
         <div style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px 20px", borderTop: `1px solid ${t.border}` }}>
-          <button disabled={selectedChapter <= 1} onClick={() => { ttsStop(); setSelectedChapter(c => c - 1); }} style={{ padding: "10px 24px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: selectedChapter > 1 ? "pointer" : "default", color: t.text, fontFamily: "inherit", fontSize: 14, fontWeight: 600, opacity: selectedChapter <= 1 ? 0.3 : 1 }}>‹ 이전</button>
+          <button disabled={selectedChapter <= 1} onClick={() => { ttsStop(); setSelectedChapter(c => c - 1); scrollRef.current?.scrollTo(0, 0); }} style={{ padding: "10px 24px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: selectedChapter > 1 ? "pointer" : "default", color: t.text, fontFamily: "inherit", fontSize: 14, fontWeight: 600, opacity: selectedChapter <= 1 ? 0.3 : 1 }}>‹ 이전</button>
           <button onClick={() => setScreen("chapters")} style={{ padding: "10px 20px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", color: t.sub, fontFamily: "inherit", fontSize: 13 }}>{selectedChapter}/{selectedBook.chapters}</button>
-          <button disabled={selectedChapter >= selectedBook.chapters} onClick={() => { ttsStop(); setSelectedChapter(c => c + 1); }} style={{ padding: "10px 24px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: selectedChapter < selectedBook.chapters ? "pointer" : "default", color: t.text, fontFamily: "inherit", fontSize: 14, fontWeight: 600, opacity: selectedChapter >= selectedBook.chapters ? 0.3 : 1 }}>다음 ›</button>
+          <button disabled={selectedChapter >= selectedBook.chapters} onClick={() => { ttsStop(); setSelectedChapter(c => c + 1); scrollRef.current?.scrollTo(0, 0); }} style={{ padding: "10px 24px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: selectedChapter < selectedBook.chapters ? "pointer" : "default", color: t.text, fontFamily: "inherit", fontSize: 14, fontWeight: 600, opacity: selectedChapter >= selectedBook.chapters ? 0.3 : 1 }}>다음 ›</button>
         </div>
       </div>
     );
