@@ -1157,15 +1157,15 @@ window.BibleApp = function BibleApp() {
 
     const resetPlan = () => { if (confirm('통독 플랜을 초기화하시겠습니까?')) setBiblePlan(null); };
 
-    // Get today's reading assignment
-    const getTodayAssignment = () => {
+    // Get reading assignment for a given day offset (0=today, 1=tomorrow, ...)
+    const getAssignment = (offset) => {
       if (!biblePlan || totalChapters === 0) return [];
       const days = planDays[biblePlan.plan];
       const start = new Date(biblePlan.startDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       start.setHours(0, 0, 0, 0);
-      const dayIndex = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+      const dayIndex = Math.floor((today - start) / (1000 * 60 * 60 * 24)) + offset;
       if (dayIndex < 0 || dayIndex >= days) return [];
       const perDay = totalChapters / days;
       const startIdx = Math.floor(dayIndex * perDay);
@@ -1173,7 +1173,9 @@ window.BibleApp = function BibleApp() {
       return allChapters.slice(startIdx, endIdx);
     };
 
-    const todayAssignment = getTodayAssignment();
+    const todayAssignment = getAssignment(0);
+    const tomorrowAssignment = getAssignment(1);
+    const dayAfterAssignment = getAssignment(2);
     const completedSet = new Set(biblePlan?.completed || []);
     const completedCount = completedSet.size;
     const progress = totalChapters > 0 ? (completedCount / totalChapters * 100) : 0;
@@ -1293,6 +1295,30 @@ window.BibleApp = function BibleApp() {
               );
             })}
           </div>
+
+          {/* Tomorrow & day after */}
+          {[{ label: "내일 분량", items: tomorrowAssignment }, { label: "모레 분량", items: dayAfterAssignment }].map(section => (
+            section.items.length > 0 && (
+              <div key={section.label} style={{ marginBottom: 16 }}>
+                <p style={{ fontSize: 13, fontWeight: 600, color: t.sub, marginBottom: 8 }}>{section.label}</p>
+                {section.items.map(item => {
+                  const key = `${item.bookId}-${item.chapter}`;
+                  const done = completedSet.has(key);
+                  return (
+                    <div key={key} style={{ display: "flex", alignItems: "center", gap: 10, background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "10px 14px", marginBottom: 4, opacity: 0.7 }}>
+                      <div style={{ width: 20, height: 20, borderRadius: 5, border: `2px solid ${done ? t.accent : t.border}`, background: done ? t.accent : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 12, color: "#fff" }}>
+                        {done ? "✓" : ""}
+                      </div>
+                      <button onClick={() => goToChapter(item.bookId, item.chapter)}
+                        style={{ flex: 1, background: "none", border: "none", textAlign: "left", cursor: "pointer", fontSize: 13, color: done ? t.sub : t.text, textDecoration: done ? "line-through" : "none", fontFamily: "inherit" }}>
+                        {item.bookName} {item.chapter}장
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )
+          ))}
 
           {/* Reset */}
           <button onClick={resetPlan}
