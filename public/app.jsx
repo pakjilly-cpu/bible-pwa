@@ -515,7 +515,7 @@ window.BibleApp = function BibleApp() {
     const books = booksIndex.filter(b => testament === "old" ? b.testament === "old" : b.testament === "new");
     return (
       <div style={{ paddingBottom: 90 }}>
-        <div style={{ padding: "12px 16px", display: "flex", gap: 8, position: "sticky", top: 49, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
+        <div style={{ padding: "12px 16px", display: "flex", gap: 8, position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
           <Pill active={testament === "old"} label="구약 (39)" onClick={() => setTestament("old")} />
           <Pill active={testament === "new"} label="신약 (27)" onClick={() => setTestament("new")} />
         </div>
@@ -693,7 +693,7 @@ window.BibleApp = function BibleApp() {
                     )}
                     {/* Action buttons */}
                     <div style={{ display: "flex", gap: 8, marginTop: 4, alignItems: "center" }}>
-                      <button onClick={(e) => { e.stopPropagation(); toggleBookmark("verse", { key: bKey, bookId: selectedBook.id, bookName: selectedBook.name, chapter: selectedChapter, verse: vNum, text: verseObj.ko || verseObj.en || '' }); }} style={{ background: "none", border: "none", fontSize: 14, cursor: "pointer", color: isBookmarked(bKey) ? "#e74c3c" : t.sub, padding: 0, opacity: 0.7 }}>
+                      <button onClick={(e) => { e.stopPropagation(); toggleBookmark("verse", { key: bKey, bookId: selectedBook.id, bookName: selectedBook.name, chapter: selectedChapter, verse: vNum, text: verseObj.ko || verseObj.en || '' }); }} style={{ background: "none", border: "none", fontSize: 14, cursor: "pointer", color: "#e74c3c", padding: 0, opacity: isBookmarked(bKey) ? 0.9 : 0.35 }}>
                         {isBookmarked(bKey) ? "♥" : "♡"}
                       </button>
                       {hasMemo && <span style={{ fontSize: 11, opacity: 0.6 }}>📝</span>}
@@ -742,7 +742,7 @@ window.BibleApp = function BibleApp() {
 
   const HymnListScreen = () => (
     <div style={{ paddingBottom: 90 }}>
-      <div style={{ padding: "12px 16px", position: "sticky", top: 49, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
+      <div style={{ padding: "12px 16px", position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
         <div style={{ position: "relative", marginBottom: 8 }}>
           <input
             type="text" placeholder="찬송가 검색 (번호 또는 제목)" value={hymnSearch}
@@ -810,7 +810,7 @@ window.BibleApp = function BibleApp() {
               <p style={{ fontSize: 12, color: t.sub, margin: "2px 0 0" }}>새찬송가 {selectedHymn.n}장</p>
             </div>
             {/* Bookmark - heart only */}
-            <button onClick={() => toggleBookmark("hymn", { key: bKey, title: selectedHymn.t, number: selectedHymn.n, text: selectedHymn.t })} style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: isBookmarked(bKey) ? "#e74c3c" : t.sub, padding: "4px" }}>
+            <button onClick={() => toggleBookmark("hymn", { key: bKey, title: selectedHymn.t, number: selectedHymn.n, text: selectedHymn.t })} style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#e74c3c", padding: "4px", opacity: isBookmarked(bKey) ? 1 : 0.4 }}>
               {isBookmarked(bKey) ? "♥" : "♡"}
             </button>
           </div>
@@ -904,7 +904,7 @@ window.BibleApp = function BibleApp() {
   const searchTimeout = useRef(null);
   const SearchScreen = () => (
     <div style={{ paddingBottom: 90 }}>
-      <div style={{ padding: "12px 16px", position: "sticky", top: 49, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
+      <div style={{ padding: "12px 16px", position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
         <div style={{ position: "relative" }}>
           <input
             type="text" placeholder="성경 구절, 찬송가 검색..." value={searchQuery}
@@ -986,7 +986,7 @@ window.BibleApp = function BibleApp() {
     return (
       <div style={{ paddingBottom: 90 }}>
         {/* Sub-tabs */}
-        <div style={{ display: "flex", gap: 6, padding: "10px 16px", borderBottom: `1px solid ${t.border}`, position: "sticky", top: 49, background: t.bg, zIndex: 50 }}>
+        <div style={{ display: "flex", gap: 6, padding: "10px 16px", borderBottom: `1px solid ${t.border}`, position: "sticky", top: 0, background: t.bg, zIndex: 50 }}>
           <Pill active={bookmarkTab === 'bookmarks'} label={`북마크 (${bookmarks.length})`} onClick={() => setBookmarkTab('bookmarks')} small />
           <Pill active={bookmarkTab === 'memos'} label={`메모 (${memoEntries.length})`} onClick={() => setBookmarkTab('memos')} small />
           <Pill active={bookmarkTab === 'highlights'} label={`형광펜 (${highlightEntries.length})`} onClick={() => setBookmarkTab('highlights')} small />
@@ -1111,10 +1111,10 @@ window.BibleApp = function BibleApp() {
         { id: "bible", icon: "📖", label: "성경" },
         { id: "hymn", icon: "🎵", label: "찬송가" },
         { id: "search", icon: "🔍", label: "검색" },
-        { id: "bookmarks", icon: "♡", label: "북마크" },
+        { id: "bookmarks", icon: "♥", label: "북마크" },
       ].map(item => (
         <button key={item.id} onClick={() => navigate(item.id)} style={{ background: "none", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 1, cursor: "pointer", padding: "6px 14px", color: mainTab === item.id ? t.accent : t.sub, transition: "all 0.2s" }}>
-          <span style={{ fontSize: 20 }}>{item.icon}</span>
+          <span style={{ fontSize: 20, color: item.id === "bookmarks" ? "#e74c3c" : undefined, opacity: item.id === "bookmarks" && mainTab !== item.id ? 0.5 : 1 }}>{item.icon}</span>
           <span style={{ fontSize: 10, fontWeight: mainTab === item.id ? 700 : 400 }}>{item.label}</span>
         </button>
       ))}

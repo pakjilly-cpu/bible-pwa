@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Convert KJV Bible JSON files from github.com/aruljohn/Bible-kjv
+Convert NIV Bible JSON files from github.com/aruljohn/Bible-niv
 to the format used by our bible-pwa app.
 
-KJV source format:
+NIV source format:
 {
   "book": "Genesis",
   "chapters": [
@@ -30,7 +30,7 @@ import json
 import os
 import sys
 
-KJV_DIR = "/tmp/kjv-bible"
+KJV_DIR = "/tmp/Bible-niv"
 INDEX_FILE = "/home/parksh/bible-pwa/public/data/bible/index.json"
 KOREAN_DIR = "/home/parksh/bible-pwa/public/data/bible"
 OUTPUT_DIR = "/home/parksh/bible-pwa/public/data/bible-en"
@@ -56,11 +56,10 @@ SHORT_NAMES = {
 
 def name_to_kjv_filename(name_en):
     """
-    Convert our nameEn field to the KJV repo filename (without .json).
-    e.g. "Song of Solomon" -> "SongofSolomon"
-         "1 Samuel" -> "1Samuel"
+    Convert our nameEn field to the NIV repo filename (without .json).
+    NIV files keep spaces: "1 Samuel" -> "1 Samuel", "Song of Solomon" -> "Song of Solomon"
     """
-    return name_en.replace(" ", "")
+    return name_en
 
 
 def load_index():
