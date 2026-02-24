@@ -1106,95 +1106,19 @@ window.BibleApp = function BibleApp() {
 
   // ── WORSHIP SCREEN (구역예배) ──
   const WorshipScreen = () => {
-    const [worshipWeeks, setWorshipWeeks] = useState([]);
-    const [worshipView, setWorshipView] = useState('list'); // 'list' or 'detail'
-    const [selectedWeek, setSelectedWeek] = useState(null);
-    const [imgLoaded, setImgLoaded] = useState({});
-    const [imgError, setImgError] = useState({});
-
-    useEffect(() => {
-      const weeks = [];
-      const now = new Date();
-      const day = now.getDay();
-      const lastSat = new Date(now);
-      lastSat.setDate(now.getDate() - (day === 6 ? 0 : day + 1));
-      for (let i = 0; i < 20; i++) {
-        const d = new Date(lastSat);
-        d.setDate(lastSat.getDate() - i * 7);
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        const dateStr = `${yyyy}${mm}${dd}`;
-        const label = `${yyyy}년 ${mm}월 ${dd}일`;
-        const imgUrl = `https://gntc.net/SNAS_MCIC/${encodeURIComponent('은혜와진리소식지')}/${yyyy}(${encodeURIComponent('구역공과')})/${dateStr}.jpg`;
-        const pageUrl = `https://gntc.net/?page_id=3928`;
-        weeks.push({ dateStr, label, imgUrl, pageUrl, yyyy, mm, dd });
-      }
-      setWorshipWeeks(weeks);
-    }, []);
-
-    const selectWeek = (dateStr) => {
-      setSelectedWeek(dateStr);
-      setWorshipView('detail');
-    };
-
-    const selected = worshipWeeks.find(w => w.dateStr === selectedWeek);
-
-    if (worshipView === 'detail' && selected) {
-      return (
-        <div style={{ paddingBottom: 90 }}>
-          <div style={{ padding: "12px 16px", position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}`, display: "flex", alignItems: "center", gap: 8 }}>
-            <button onClick={() => setWorshipView('list')} style={{ background: "none", border: "none", fontSize: 22, color: t.accent, cursor: "pointer", padding: "2px 6px 2px 0" }}>‹</button>
-            <span style={{ fontSize: 15, fontWeight: 600, color: t.text }}>{selected.label} 구역공과</span>
-          </div>
-          <div style={{ padding: "8px" }}>
-            {!imgError[selectedWeek] && (
-              <img
-                src={selected.imgUrl}
-                alt={`${selected.label} 구역공과`}
-                referrerPolicy="no-referrer"
-                crossOrigin="anonymous"
-                onLoad={() => setImgLoaded(prev => ({ ...prev, [selectedWeek]: true }))}
-                onError={() => setImgError(prev => ({ ...prev, [selectedWeek]: true }))}
-                style={{ width: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}`, display: imgLoaded[selectedWeek] ? 'block' : 'none' }}
-              />
-            )}
-            {!imgLoaded[selectedWeek] && !imgError[selectedWeek] && (
-              <div style={{ textAlign: "center", padding: "40px 20px", color: t.sub }}>
-                <div style={{ fontSize: 24, marginBottom: 8 }}>⏳</div>
-                <p style={{ fontSize: 13 }}>이미지 로딩중...</p>
-              </div>
-            )}
-            {imgError[selectedWeek] && (
-              <div style={{ textAlign: "center", padding: "30px 20px" }}>
-                <p style={{ fontSize: 13, color: t.sub, marginBottom: 16 }}>이미지를 직접 로드할 수 없습니다</p>
-                <iframe
-                  src={`https://gntc.net/?page_id=3928`}
-                  style={{ width: "100%", height: "70vh", border: `1px solid ${t.border}`, borderRadius: 8 }}
-                  title="구역공과"
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    // List view
     return (
       <div style={{ paddingBottom: 90 }}>
-        <div style={{ padding: "16px" }}>
-          <p style={{ fontSize: 13, color: t.sub, marginBottom: 12 }}>은혜와진리교회 구역예배</p>
-          {worshipWeeks.map(w => (
-            <button key={w.dateStr} onClick={() => selectWeek(w.dateStr)}
-              style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "14px 16px", marginBottom: 6, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>⛪</div>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 500, color: t.text }}>{w.label}</div>
-                <div style={{ fontSize: 11, color: t.sub, marginTop: 2 }}>구역공과</div>
-              </div>
-            </button>
-          ))}
+        <div style={{ padding: "24px 16px" }}>
+          <p style={{ fontSize: 13, color: t.sub, marginBottom: 16 }}>은혜와진리교회</p>
+          <button onClick={() => window.open('https://gntc.net/?page_id=3928', '_blank')}
+            style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "20px 16px", display: "flex", alignItems: "center", gap: 14, cursor: "pointer", textAlign: "left" }}>
+            <div style={{ width: 48, height: 48, borderRadius: 12, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>⛪</div>
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: t.text }}>구역예배</div>
+              <div style={{ fontSize: 12, color: t.sub, marginTop: 3 }}>구역공과 보기</div>
+            </div>
+            <div style={{ marginLeft: "auto", fontSize: 18, color: t.sub }}>›</div>
+          </button>
         </div>
       </div>
     );
