@@ -1143,19 +1143,9 @@ window.BibleApp = function BibleApp() {
     if (worshipView === 'detail' && selected) {
       return (
         <div style={{ paddingBottom: 90 }}>
-          <div style={{ padding: "10px 16px", position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <button onClick={() => setWorshipView('list')} style={{ background: "none", border: "none", fontSize: 20, color: t.accent, cursor: "pointer", padding: "2px 4px 2px 0" }}>‹</button>
-              <span style={{ fontSize: 14, fontWeight: 600, color: t.text }}>{selected.label} 구역공과</span>
-            </div>
-            <div style={{ display: "flex", gap: 5, overflowX: "auto", paddingBottom: 2 }}>
-              {worshipWeeks.slice(0, 10).map(w => (
-                <button key={w.dateStr} onClick={() => selectWeek(w.dateStr)}
-                  style={{ padding: "5px 10px", borderRadius: 16, border: `1.5px solid ${selectedWeek === w.dateStr ? t.accent : t.border}`, background: selectedWeek === w.dateStr ? t.accentBg : "transparent", color: selectedWeek === w.dateStr ? t.accent : t.sub, fontWeight: selectedWeek === w.dateStr ? 600 : 400, fontSize: 11, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
-                  {w.mm}/{w.dd}
-                </button>
-              ))}
-            </div>
+          <div style={{ padding: "12px 16px", position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}`, display: "flex", alignItems: "center", gap: 8 }}>
+            <button onClick={() => setWorshipView('list')} style={{ background: "none", border: "none", fontSize: 22, color: t.accent, cursor: "pointer", padding: "2px 6px 2px 0" }}>‹</button>
+            <span style={{ fontSize: 15, fontWeight: 600, color: t.text }}>{selected.label} 구역공과</span>
           </div>
           <div style={{ padding: "8px" }}>
             {!imgError[selectedWeek] && (
