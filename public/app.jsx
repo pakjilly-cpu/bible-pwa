@@ -149,6 +149,9 @@ window.BibleApp = function BibleApp() {
   const [activeVerseMenu, setActiveVerseMenu] = useState(null);
   const [bookmarkTab, setBookmarkTab] = useState('bookmarks');
 
+  // Bible reading plan (통독)
+  const [biblePlan, setBiblePlan] = useState(() => loadStorage('biblePlan', null));
+
   // TTS
   const [ttsPlaying, setTtsPlaying] = useState(false);
   const [ttsPaused, setTtsPaused] = useState(false);
@@ -165,6 +168,7 @@ window.BibleApp = function BibleApp() {
   useEffect(() => { saveStorage('bibleLang', bibleLang); }, [bibleLang]);
   useEffect(() => { saveStorage('highlights', highlights); }, [highlights]);
   useEffect(() => { saveStorage('memos', memos); }, [memos]);
+  useEffect(() => { saveStorage('biblePlan', biblePlan); }, [biblePlan]);
 
   // Load initial data
   useEffect(() => {
@@ -263,6 +267,7 @@ window.BibleApp = function BibleApp() {
     else if (target === "hymn") { setMainTab("hymn"); setScreen("hymnList"); setSelectedHymn(null); setHymnLyrics(null); }
     else if (target === "search") { setMainTab("search"); setScreen("search"); }
     else if (target === "worship") { setMainTab("worship"); setScreen("worship"); }
+    else if (target === "tongdok") { setMainTab("tongdok"); setScreen("tongdok"); }
     else if (target === "bookmarks") { setMainTab("bookmarks"); setScreen("bookmarks"); }
     else setScreen(target);
   };
@@ -1108,6 +1113,156 @@ window.BibleApp = function BibleApp() {
     );
   };
 
+  // ── TONGDOK SCREEN (통독) ──
+  const TongdokScreen = () => {
+    // Build flat chapter list from booksIndex
+    const allChapters = useMemo(() => {
+      const list = [];
+      booksIndex.forEach(book => {
+        for (let ch = 1; ch <= book.chapters; ch++) {
+          list.push({ bookId: book.id, bookName: book.name, chapter: ch });
+        }
+      });
+      return list;
+    }, [booksIndex]);
+
+    const totalChapters = allChapters.length; // 1189
+
+    const planDays = { '1year': 365, '6month': 180, '3month': 90 };
+    const planLabels = { '1year': '1년', '6month': '6개월', '3month': '3개월' };
+
+    const startPlan = (type) => {
+      setBiblePlan({ plan: type, startDate: new Date().toISOString().slice(0, 10), completed: [] });
+    };
+
+    const resetPlan = () => { if (confirm('통독 플랜을 초기화하시겠습니까?')) setBiblePlan(null); };
+
+    // Get today's reading assignment
+    const getTodayAssignment = () => {
+      if (!biblePlan || totalChapters === 0) return [];
+      const days = planDays[biblePlan.plan];
+      const start = new Date(biblePlan.startDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      start.setHours(0, 0, 0, 0);
+      const dayIndex = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+      if (dayIndex < 0 || dayIndex >= days) return [];
+      const perDay = totalChapters / days;
+      const startIdx = Math.floor(dayIndex * perDay);
+      const endIdx = Math.floor((dayIndex + 1) * perDay);
+      return allChapters.slice(startIdx, endIdx);
+    };
+
+    const todayAssignment = getTodayAssignment();
+    const completedSet = new Set(biblePlan?.completed || []);
+    const completedCount = completedSet.size;
+    const progress = totalChapters > 0 ? (completedCount / totalChapters * 100) : 0;
+
+    const toggleComplete = (key) => {
+      setBiblePlan(prev => {
+        const set = new Set(prev.completed);
+        if (set.has(key)) set.delete(key); else set.add(key);
+        return { ...prev, completed: [...set] };
+      });
+    };
+
+    const goToChapter = (bookId, chapter) => {
+      const book = booksIndex.find(b => b.id === bookId);
+      if (book) {
+        setSelectedBook(book);
+        setSelectedChapter(chapter);
+        setScreen("reading");
+      }
+    };
+
+    // Plan selection
+    if (!biblePlan) {
+      return (
+        <div style={{ paddingBottom: 90 }}>
+          <div style={{ padding: "24px 16px" }}>
+            <p style={{ fontSize: 15, fontWeight: 600, color: t.text, marginBottom: 4 }}>성경 통독 플랜</p>
+            <p style={{ fontSize: 12, color: t.sub, marginBottom: 20 }}>목표 기간을 선택하면 매일 읽을 분량이 자동으로 배정됩니다</p>
+            {[
+              { type: '1year', label: '1년 플랜', desc: `하루 약 ${Math.ceil(1189 / 365)}장` },
+              { type: '6month', label: '6개월 플랜', desc: `하루 약 ${Math.ceil(1189 / 180)}장` },
+              { type: '3month', label: '3개월 플랜', desc: `하루 약 ${Math.ceil(1189 / 90)}장` },
+            ].map(p => (
+              <button key={p.type} onClick={() => startPlan(p.type)}
+                style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "18px 16px", marginBottom: 10, display: "flex", alignItems: "center", gap: 14, cursor: "pointer", textAlign: "left" }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>📖</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: t.text }}>{p.label}</div>
+                  <div style={{ fontSize: 12, color: t.sub, marginTop: 2 }}>{p.desc}</div>
+                </div>
+                <div style={{ fontSize: 18, color: t.sub }}>›</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // Progress view
+    const days = planDays[biblePlan.plan];
+    const start = new Date(biblePlan.startDate);
+    const today = new Date();
+    const dayIndex = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+
+    return (
+      <div style={{ paddingBottom: 90 }}>
+        <div style={{ padding: "20px 16px" }}>
+          {/* Summary */}
+          <div style={{ background: t.card, borderRadius: 12, padding: "16px", border: `1px solid ${t.border}`, marginBottom: 16 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <span style={{ fontSize: 14, fontWeight: 600, color: t.text }}>{planLabels[biblePlan.plan]} 통독</span>
+              <span style={{ fontSize: 13, color: t.accent, fontWeight: 600 }}>{progress.toFixed(1)}%</span>
+            </div>
+            {/* Progress bar */}
+            <div style={{ height: 8, borderRadius: 4, background: t.border, overflow: "hidden", marginBottom: 8 }}>
+              <div style={{ height: "100%", width: `${progress}%`, background: t.accent, borderRadius: 4, transition: "width 0.3s" }} />
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: t.sub }}>
+              <span>{completedCount} / {totalChapters}장 완료</span>
+              <span>{dayIndex + 1}일차 / {days}일</span>
+            </div>
+          </div>
+
+          {/* Today's assignment */}
+          <div style={{ marginBottom: 16 }}>
+            <p style={{ fontSize: 14, fontWeight: 600, color: t.text, marginBottom: 10 }}>
+              {dayIndex >= days ? "🎉 통독 기간이 완료되었습니다!" : "오늘 읽을 분량"}
+            </p>
+            {todayAssignment.length === 0 && dayIndex < days && (
+              <p style={{ fontSize: 13, color: t.sub }}>오늘은 읽을 분량이 없습니다</p>
+            )}
+            {todayAssignment.map((item, i) => {
+              const key = `${item.bookId}-${item.chapter}`;
+              const done = completedSet.has(key);
+              return (
+                <div key={key} style={{ display: "flex", alignItems: "center", gap: 10, background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 5 }}>
+                  <button onClick={() => toggleComplete(key)}
+                    style={{ width: 24, height: 24, borderRadius: 6, border: `2px solid ${done ? t.accent : t.border}`, background: done ? t.accent : "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, fontSize: 14, color: "#fff" }}>
+                    {done ? "✓" : ""}
+                  </button>
+                  <button onClick={() => goToChapter(item.bookId, item.chapter)}
+                    style={{ flex: 1, background: "none", border: "none", textAlign: "left", cursor: "pointer", fontSize: 14, color: done ? t.sub : t.text, textDecoration: done ? "line-through" : "none", fontFamily: "inherit" }}>
+                    {item.bookName} {item.chapter}장
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Reset */}
+          <button onClick={resetPlan}
+            style={{ width: "100%", padding: "12px", borderRadius: 10, border: `1px solid ${t.border}`, background: "transparent", color: t.sub, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>
+            플랜 초기화
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   // ── WORSHIP SCREEN (구역예배) ──
   const WorshipScreen = () => {
     return (
@@ -1145,6 +1300,7 @@ window.BibleApp = function BibleApp() {
         { id: "bible", icon: "📖", label: "성경" },
         { id: "hymn", icon: "🎵", label: "찬송가" },
         { id: "worship", icon: "⛪", label: "예배" },
+        { id: "tongdok", icon: "📋", label: "통독" },
         { id: "search", icon: "🔍", label: "검색" },
         { id: "bookmarks", icon: "♥", label: "북마크" },
       ].map(item => (
@@ -1168,6 +1324,7 @@ window.BibleApp = function BibleApp() {
     hymnList: { title: "찬송가", showBack: false },
     hymnDetail: { title: selectedHymn?.t || "", showBack: true, backTarget: "hymn" },
     worship: { title: "구역예배", showBack: false },
+    tongdok: { title: "통독", showBack: false },
     search: { title: "검색", showBack: false },
     bookmarks: { title: "북마크", showBack: false },
   };
@@ -1184,6 +1341,7 @@ window.BibleApp = function BibleApp() {
         {screen === "hymnList" && <HymnListScreen />}
         {screen === "hymnDetail" && <HymnDetailScreen />}
         {screen === "worship" && <WorshipScreen />}
+        {screen === "tongdok" && <TongdokScreen />}
         {screen === "search" && <SearchScreen />}
         {screen === "bookmarks" && <BookmarksScreen />}
       </div>
