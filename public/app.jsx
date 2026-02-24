@@ -960,8 +960,7 @@ window.BibleApp = function BibleApp() {
         </div>
       </div>
       <div style={{ padding: "12px 16px", minHeight: "70vh" }}>
-        {!searchQuery && (
-          <div style={{ textAlign: "center", padding: "40px 0" }}>
+        <div style={{ textAlign: "center", padding: "40px 0", opacity: searchQuery ? 0 : 1, maxHeight: searchQuery ? 0 : 200, overflow: "hidden", pointerEvents: searchQuery ? "none" : "auto", transition: "opacity 0.2s, max-height 0.2s" }}>
             <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.15 }}>🔍</div>
             <p style={{ color: t.sub, fontSize: 13, marginBottom: 16 }}>성경과 찬송가를 함께 검색합니다</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
@@ -970,7 +969,6 @@ window.BibleApp = function BibleApp() {
               ))}
             </div>
           </div>
-        )}
         {searching && (
           <div style={{ textAlign: "center", padding: "30px 0" }}>
             <div style={{ width: 28, height: 28, border: `2px solid ${t.border}`, borderTopColor: t.accent, borderRadius: "50%", animation: "spin 0.7s linear infinite", margin: "0 auto 10px" }} />
