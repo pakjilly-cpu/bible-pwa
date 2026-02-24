@@ -18,12 +18,12 @@ def create_icon(size, output_path):
     # "GNTC" - bold, white, dead center (smaller to leave padding)
     font_size = int(render_size * 0.24)
     try:
-        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
+        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-BoldOblique.ttf", font_size)
     except:
         font = ImageFont.truetype("/tmp/NotoSansKR.ttf", font_size)
 
     # Draw text on separate transparent layer, then stretch vertically 2x
-    text = "GNTC"
+    text = "gntc"
     bbox = draw.textbbox((0, 0), text, font=font)
     tw = bbox[2] - bbox[0]
     th = bbox[3] - bbox[1]
