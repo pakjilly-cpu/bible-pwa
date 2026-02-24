@@ -1119,6 +1119,15 @@ window.BibleApp = function BibleApp() {
             </div>
             <div style={{ marginLeft: "auto", fontSize: 18, color: t.sub }}>›</div>
           </button>
+          <button onClick={() => window.open('https://gntc.net/?page_id=138', '_blank')}
+            style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "20px 16px", marginTop: 10, display: "flex", alignItems: "center", gap: 14, cursor: "pointer", textAlign: "left" }}>
+            <div style={{ width: 48, height: 48, borderRadius: 12, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>🏠</div>
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: t.text }}>가정예배</div>
+              <div style={{ fontSize: 12, color: t.sub, marginTop: 3 }}>가정예배 보기</div>
+            </div>
+            <div style={{ marginLeft: "auto", fontSize: 18, color: t.sub }}>›</div>
+          </button>
         </div>
       </div>
     );
