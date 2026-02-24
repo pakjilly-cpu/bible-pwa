@@ -15,8 +15,8 @@ def create_icon(size, output_path):
     bg_color = (35, 100, 50)
     draw.rounded_rectangle([pad, pad, render_size - pad, render_size - pad], radius=corner, fill=bg_color)
 
-    # "GNTC" - bold, white, dead center
-    font_size = int(render_size * 0.30)
+    # "GNTC" - bold, white, dead center (smaller to leave padding)
+    font_size = int(render_size * 0.20)
     try:
         font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
     except:
