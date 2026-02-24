@@ -472,7 +472,7 @@ window.BibleApp = function BibleApp() {
 
       {/* Popular Hymns */}
       <div style={{ padding: "0 16px", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>인기 찬송가</h3>
+        <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>최근 찬송가</h3>
         {[305, 204, 320, 288, 259].map((num) => {
           const h = hymnsIndex.find(x => x.n === num);
           if (!h) return null;
