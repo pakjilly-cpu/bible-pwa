@@ -151,6 +151,7 @@ window.BibleApp = function BibleApp() {
 
   // Bible reading plan (통독)
   const [biblePlan, setBiblePlan] = useState(() => loadStorage('biblePlan', null));
+  const [fromTongdok, setFromTongdok] = useState(false);
 
   // TTS
   const [ttsPlaying, setTtsPlaying] = useState(false);
@@ -267,7 +268,7 @@ window.BibleApp = function BibleApp() {
     else if (target === "hymn") { setMainTab("hymn"); setScreen("hymnList"); setSelectedHymn(null); setHymnLyrics(null); }
     else if (target === "search") { setMainTab("search"); setScreen("search"); }
     else if (target === "worship") { setMainTab("worship"); setScreen("worship"); }
-    else if (target === "tongdok") { setMainTab("tongdok"); setScreen("tongdok"); }
+    else if (target === "tongdok") { setMainTab("tongdok"); setScreen("tongdok"); setFromTongdok(false); }
     else if (target === "bookmarks") { setMainTab("bookmarks"); setScreen("bookmarks"); }
     else setScreen(target);
   };
@@ -725,11 +726,30 @@ window.BibleApp = function BibleApp() {
         )}
 
         {/* Chapter Navigation */}
-        <div style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px 20px", borderTop: `1px solid ${t.border}` }}>
-          <button disabled={selectedChapter <= 1} onClick={() => { ttsStop(); setSelectedChapter(c => c - 1); }} style={{ padding: "10px 24px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: selectedChapter > 1 ? "pointer" : "default", color: t.text, fontFamily: "inherit", fontSize: 14, fontWeight: 600, opacity: selectedChapter <= 1 ? 0.3 : 1 }}>‹ 이전</button>
-          <button onClick={() => setScreen("chapters")} style={{ padding: "10px 20px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", color: t.sub, fontFamily: "inherit", fontSize: 13 }}>{selectedChapter}/{selectedBook.chapters}</button>
-          <button disabled={selectedChapter >= selectedBook.chapters} onClick={() => { ttsStop(); setSelectedChapter(c => c + 1); }} style={{ padding: "10px 24px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: selectedChapter < selectedBook.chapters ? "pointer" : "default", color: t.text, fontFamily: "inherit", fontSize: 14, fontWeight: 600, opacity: selectedChapter >= selectedBook.chapters ? 0.3 : 1 }}>다음 ›</button>
-        </div>
+        {fromTongdok ? (
+          <div style={{ padding: "12px 16px 20px", borderTop: `1px solid ${t.border}` }}>
+            <button onClick={() => {
+              const key = `${selectedBook.id}-${selectedChapter}`;
+              setBiblePlan(prev => {
+                if (!prev) return prev;
+                const set = new Set(prev.completed);
+                set.add(key);
+                return { ...prev, completed: [...set] };
+              });
+              ttsStop();
+              setFromTongdok(false);
+              setScreen("tongdok");
+            }} style={{ width: "100%", padding: "14px", borderRadius: 10, border: "none", background: t.accent, color: "#fff", fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+              ✓ 읽음 완료
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px 20px", borderTop: `1px solid ${t.border}` }}>
+            <button disabled={selectedChapter <= 1} onClick={() => { ttsStop(); setSelectedChapter(c => c - 1); }} style={{ padding: "10px 24px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: selectedChapter > 1 ? "pointer" : "default", color: t.text, fontFamily: "inherit", fontSize: 14, fontWeight: 600, opacity: selectedChapter <= 1 ? 0.3 : 1 }}>‹ 이전</button>
+            <button onClick={() => setScreen("chapters")} style={{ padding: "10px 20px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", color: t.sub, fontFamily: "inherit", fontSize: 13 }}>{selectedChapter}/{selectedBook.chapters}</button>
+            <button disabled={selectedChapter >= selectedBook.chapters} onClick={() => { ttsStop(); setSelectedChapter(c => c + 1); }} style={{ padding: "10px 24px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: selectedChapter < selectedBook.chapters ? "pointer" : "default", color: t.text, fontFamily: "inherit", fontSize: 14, fontWeight: 600, opacity: selectedChapter >= selectedBook.chapters ? 0.3 : 1 }}>다음 ›</button>
+          </div>
+        )}
       </div>
     );
   };
@@ -1171,6 +1191,7 @@ window.BibleApp = function BibleApp() {
       if (book) {
         setSelectedBook(book);
         setSelectedChapter(chapter);
+        setFromTongdok(true);
         setScreen("reading");
       }
     };
@@ -1319,7 +1340,7 @@ window.BibleApp = function BibleApp() {
     chapters: { title: selectedBook?.name || "", showBack: true, backTarget: "bible" },
     reading: {
       title: selectedBook ? `${selectedBook.name} ${selectedChapter}장` : "",
-      showBack: true, backTarget: "chapters"
+      showBack: true, backTarget: fromTongdok ? "tongdok" : "chapters"
     },
     hymnList: { title: "찬송가", showBack: false },
     hymnDetail: { title: selectedHymn?.t || "", showBack: true, backTarget: "hymn" },
