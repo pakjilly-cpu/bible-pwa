@@ -1229,9 +1229,29 @@ window.BibleApp = function BibleApp() {
     const today = new Date();
     const dayIndex = Math.floor((today - start) / (1000 * 60 * 60 * 24));
 
+    // Check today's completion & encouragement
+    const todayAllDone = todayAssignment.length > 0 && todayAssignment.every(item => completedSet.has(`${item.bookId}-${item.chapter}`));
+    const expectedByToday = totalChapters > 0 ? Math.floor((dayIndex + 1) * (totalChapters / days)) : 0;
+    const getMessage = () => {
+      if (dayIndex >= days && completedCount >= totalChapters) return { emoji: "🎉", text: "축하합니다! 성경 통독을 완료하셨습니다!", color: t.accent };
+      if (dayIndex >= days) return { emoji: "📖", text: "통독 기간이 지났지만 아직 완주할 수 있습니다. 힘내세요!", color: "#e67e22" };
+      if (todayAllDone) return { emoji: "🎉", text: "오늘 분량을 모두 읽으셨습니다! 수고하셨어요!", color: t.accent };
+      if (completedCount >= expectedByToday + 10) return { emoji: "🔥", text: "대단해요! 목표보다 훨씬 앞서가고 있어요!", color: t.accent };
+      if (completedCount >= expectedByToday) return { emoji: "💪", text: "잘하고 있어요! 이 페이스 그대로 꾸준히!", color: t.accent };
+      if (completedCount >= expectedByToday - 5) return { emoji: "📖", text: "조금만 더 하면 목표를 따라잡을 수 있어요!", color: "#e67e22" };
+      return { emoji: "🏃", text: "조금 밀렸지만 괜찮아요! 오늘부터 다시 시작해요!", color: "#e67e22" };
+    };
+    const msg = getMessage();
+
     return (
       <div style={{ paddingBottom: 90 }}>
         <div style={{ padding: "20px 16px" }}>
+          {/* Encouragement message */}
+          <div style={{ background: t.card, borderRadius: 12, padding: "14px 16px", border: `1px solid ${t.border}`, marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 22 }}>{msg.emoji}</span>
+            <span style={{ fontSize: 13, color: msg.color, fontWeight: 500, lineHeight: 1.4 }}>{msg.text}</span>
+          </div>
+
           {/* Summary */}
           <div style={{ background: t.card, borderRadius: 12, padding: "16px", border: `1px solid ${t.border}`, marginBottom: 16 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
@@ -1251,7 +1271,7 @@ window.BibleApp = function BibleApp() {
           {/* Today's assignment */}
           <div style={{ marginBottom: 16 }}>
             <p style={{ fontSize: 14, fontWeight: 600, color: t.text, marginBottom: 10 }}>
-              {dayIndex >= days ? "🎉 통독 기간이 완료되었습니다!" : "오늘 읽을 분량"}
+              {dayIndex >= days ? "남은 분량" : "오늘 읽을 분량"}
             </p>
             {todayAssignment.length === 0 && dayIndex < days && (
               <p style={{ fontSize: 13, color: t.sub }}>오늘은 읽을 분량이 없습니다</p>
