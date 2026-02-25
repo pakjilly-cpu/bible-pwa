@@ -41,17 +41,17 @@
       body { padding-bottom: env(safe-area-inset-bottom); }
     }
     #splash {
-      position: fixed; inset: 0; background: linear-gradient(135deg, #2d5a27 0%, #1a3d18 100%);
+      position: fixed; inset: 0; background: #1a3d18;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       z-index: 9999; transition: opacity 0.5s;
     }
     #splash.hide { opacity: 0; pointer-events: none; }
-    #splash .icon { font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
-    #splash h1 { font-size: 26px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
-    #splash p { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 6px; }
+    #splash .icon { width: 80px; height: 80px; margin-bottom: 20px; border-radius: 18px; }
+    #splash h1 { font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
+    #splash p { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 8px; }
     #splash .loading {
-      margin-top: 32px; width: 36px; height: 36px;
-      border: 2.5px solid rgba(255,255,255,0.2); border-top-color: #fff;
+      margin-top: 28px; width: 32px; height: 32px;
+      border: 2.5px solid rgba(255,255,255,0.15); border-top-color: rgba(255,255,255,0.7);
       border-radius: 50%; animation: spin 0.7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -62,7 +62,7 @@
 </head>
 <body>
   <div id="splash">
-    <div class="icon">⛪</div>
+    <img class="icon" src="/icon-192.png" alt="GNTC" />
     <h1>은혜와진리교회</h1>
     <p>성경 66권 · 찬송가 645곡</p>
     <div class="loading"></div>
