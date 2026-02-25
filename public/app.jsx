@@ -166,6 +166,9 @@ window.BibleApp = function BibleApp() {
   const [ttsVerse, setTtsVerse] = useState(-1);
   const [ttsSpeed, setTtsSpeed] = useState(1.0);
 
+  // Reset confirmation
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+
   // Sermon state
   const [sermonCategory, setSermonCategory] = useState("주일예배");
   const [sermonVideos, setSermonVideos] = useState({});
@@ -594,14 +597,58 @@ window.BibleApp = function BibleApp() {
             </div>
           </div>
           {/* Dark mode */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
             <span style={{ fontSize: 14, color: t.text }}>다크 모드</span>
             <button onClick={() => setDarkMode(!darkMode)} style={{ width: 48, height: 26, borderRadius: 13, border: "none", background: darkMode ? t.accent : t.border, cursor: "pointer", position: "relative", transition: "all 0.3s" }}>
               <div style={{ width: 20, height: 20, borderRadius: "50%", background: "#fff", position: "absolute", top: 3, left: darkMode ? 25 : 3, transition: "all 0.3s", boxShadow: "0 1px 3px rgba(0,0,0,0.2)" }} />
             </button>
           </div>
+          {/* Reset */}
+          <div style={{ borderTop: `1px solid ${t.border}`, paddingTop: 14 }}>
+            <button onClick={() => setShowResetConfirm(true)} style={{ width: "100%", padding: "12px", borderRadius: 10, border: `1px solid #e74c3c40`, background: "transparent", cursor: "pointer", color: "#e74c3c", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}>
+              데이터 초기화
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Reset Confirmation Dialog */}
+      {showResetConfirm && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }} onClick={() => setShowResetConfirm(false)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: t.card, borderRadius: 16, padding: "28px 24px", maxWidth: 340, width: "100%", boxShadow: "0 8px 30px rgba(0,0,0,0.2)" }}>
+            <div style={{ textAlign: "center", marginBottom: 16 }}>
+              <div style={{ fontSize: 36, marginBottom: 10 }}>⚠️</div>
+              <h3 style={{ fontSize: 17, fontWeight: 700, color: t.text, margin: "0 0 8px" }}>정말 초기화하시겠습니까?</h3>
+              <p style={{ fontSize: 13, color: t.sub, lineHeight: 1.7, margin: 0 }}>
+                초기화하면 아래 데이터가 모두 삭제되며<br/>복구할 수 없습니다.
+              </p>
+            </div>
+            <div style={{ background: darkMode ? '#2a2020' : '#fdf5f5', borderRadius: 10, padding: "14px 16px", marginBottom: 20 }}>
+              <div style={{ fontSize: 13, color: "#e74c3c", lineHeight: 1.8 }}>
+                • 최근 읽은 성경 구절<br/>
+                • 북마크 / 형광펜 / 메모<br/>
+                • 통독 플랜 진행 상황<br/>
+                • 찬송가 즐겨찾기
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button onClick={() => setShowResetConfirm(false)} style={{ flex: 1, padding: "13px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", color: t.text, fontSize: 14, fontWeight: 600, fontFamily: "inherit" }}>
+                취소
+              </button>
+              <button onClick={() => {
+                setReadHistory([]);
+                setBookmarks([]);
+                setHighlights({});
+                setMemos({});
+                setBiblePlan(null);
+                setShowResetConfirm(false);
+              }} style={{ flex: 1, padding: "13px", borderRadius: 10, border: "none", background: "#e74c3c", cursor: "pointer", color: "#fff", fontSize: 14, fontWeight: 600, fontFamily: "inherit" }}>
+                초기화
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -1460,15 +1507,7 @@ window.BibleApp = function BibleApp() {
               <Pill key={cat} active={sermonCategory === cat} label={cat} onClick={() => setSermonCategory(cat)} small />
             ))}
           </div>
-          <div style={{ padding: "0 16px 10px", display: "flex", justifyContent: "flex-end" }}>
-            <button onClick={() => {
-              sermonVideosRef.current = {};
-              setSermonVideos({});
-              fetchSermonVideos(sermonCategory);
-            }} style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 14px", borderRadius: 20, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", fontSize: 12, color: t.sub, fontFamily: "inherit" }}>
-              🔄 <span>새로고침</span>
-            </button>
-          </div>
+          <p style={{ fontSize: 10, color: t.sub, padding: "0 16px 8px", margin: 0 }}>새로고침하면 최신 설교 영상을 확인할 수 있습니다</p>
         </div>
 
         {YOUTUBE_API_KEY === "YOUR_API_KEY_HERE" ? (
@@ -1555,7 +1594,15 @@ window.BibleApp = function BibleApp() {
     hymnList: { title: "찬송가", showBack: false },
     hymnDetail: { title: selectedHymn?.t || "", showBack: true, backTarget: "hymn" },
     worship: { title: "예배", showBack: false },
-    sermon: { title: "설교말씀", showBack: true, backTarget: "worship" },
+    sermon: { title: "설교말씀", showBack: true, backTarget: "worship", right: (
+      <button onClick={() => {
+        sermonVideosRef.current = {};
+        setSermonVideos({});
+        fetchSermonVideos(sermonCategory);
+      }} style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 12px", borderRadius: 8, border: `1px solid ${t.accent}`, background: t.accentBg, cursor: "pointer", fontSize: 12, fontWeight: 600, color: t.accent, fontFamily: "inherit" }}>
+        🔄 새로고침
+      </button>
+    ) },
     tongdok: { title: "통독", showBack: false },
     bookmarks: { title: "북마크", showBack: false },
   };
