@@ -273,6 +273,35 @@ window.BibleApp = function BibleApp() {
   // Close verse menu on screen change
   useEffect(() => { setActiveVerseMenu(null); }, [screen, selectedChapter]);
 
+  // ── Swipe navigation between main tabs ──
+  const mainTabs = ["home", "bible", "hymn", "worship", "tongdok", "bookmarks"];
+  const swipeStartRef = useRef(null);
+  const swipeTrackRef = useRef(false);
+  const handleTouchStart = useCallback((e) => {
+    const touch = e.touches[0];
+    swipeStartRef.current = { x: touch.clientX, y: touch.clientY };
+    swipeTrackRef.current = true;
+  }, []);
+  const handleTouchEnd = useCallback((e) => {
+    if (!swipeStartRef.current || !swipeTrackRef.current) return;
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - swipeStartRef.current.x;
+    const dy = touch.clientY - swipeStartRef.current.y;
+    swipeStartRef.current = null;
+    // 가로 이동이 50px 이상이고, 세로보다 가로가 클 때만 스와이프
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    // 서브 화면(reading, chapters, hymnDetail, sermon)에서는 스와이프 비활성
+    const subScreens = ["chapters", "reading", "hymnDetail", "sermon"];
+    if (subScreens.includes(screen)) return;
+    const idx = mainTabs.indexOf(mainTab);
+    if (idx === -1) return;
+    if (dx < 0 && idx < mainTabs.length - 1) {
+      navigate(mainTabs[idx + 1]);
+    } else if (dx > 0 && idx > 0) {
+      navigate(mainTabs[idx - 1]);
+    }
+  }, [screen, mainTab]);
+
   // Scroll to top on screen/chapter change
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
@@ -1681,7 +1710,7 @@ window.BibleApp = function BibleApp() {
       <Header title={hdr.title} showBack={hdr.showBack} backTarget={hdr.backTarget} right={hdr.right} />
       {screen === "home" && HomeSearchHeader()}
       {screen === "hymnList" && HymnSearchHeader()}
-      <div ref={scrollRef} style={{ flex: 1, overflowY: "auto" }}>
+      <div ref={scrollRef} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ flex: 1, overflowY: "auto" }}>
         {screen === "home" && <HomeScreen />}
         {screen === "books" && <BooksScreen />}
         {screen === "chapters" && <ChaptersScreen />}
