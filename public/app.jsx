@@ -148,6 +148,7 @@ window.BibleApp = function BibleApp() {
   const [darkMode, setDarkMode] = useState(() => loadStorage('darkMode', false));
   const [bookmarks, setBookmarks] = useState(() => loadStorage('bookmarks', []));
   const [readHistory, setReadHistory] = useState(() => loadStorage('readHistory', []));
+  const [hymnHistory, setHymnHistory] = useState(() => loadStorage('hymnHistory', []));
   const [todayVerse, setTodayVerse] = useState(null);
 
   // Highlights & Memos
@@ -183,6 +184,7 @@ window.BibleApp = function BibleApp() {
   useEffect(() => { saveStorage('darkMode', darkMode); }, [darkMode]);
   useEffect(() => { saveStorage('bookmarks', bookmarks); }, [bookmarks]);
   useEffect(() => { saveStorage('readHistory', readHistory); }, [readHistory]);
+  useEffect(() => { saveStorage('hymnHistory', hymnHistory); }, [hymnHistory]);
   useEffect(() => { saveStorage('bibleLang', bibleLang); }, [bibleLang]);
   useEffect(() => { saveStorage('highlights', highlights); }, [highlights]);
   useEffect(() => { saveStorage('memos', memos); }, [memos]);
@@ -243,13 +245,19 @@ window.BibleApp = function BibleApp() {
     });
   }, [selectedBook, selectedChapter, bibleLang]);
 
-  // Load hymn lyrics
+  // Load hymn lyrics + save to hymn history
   useEffect(() => {
     if (!selectedHymn) return;
     setHymnLyrics(null);
     setHymnViewMode('lyrics');
     getHymnLyrics(selectedHymn.n).then(data => {
       setHymnLyrics(data);
+    });
+    // Save to hymn history
+    setHymnHistory(prev => {
+      const entry = { n: selectedHymn.n, t: selectedHymn.t, v: selectedHymn.v, date: new Date().toLocaleDateString('ko-KR') };
+      const filtered = prev.filter(h => h.n !== entry.n);
+      return [entry, ...filtered].slice(0, 20);
     });
   }, [selectedHymn]);
 
@@ -557,19 +565,25 @@ window.BibleApp = function BibleApp() {
         )}
       </div>
 
-      {/* Popular Hymns */}
+      {/* Recent Hymns */}
       <div style={{ padding: "0 16px", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>추천 찬송가</h3>
-        {[305, 204, 320, 288, 259].map((num) => {
-          const h = hymnsIndex.find(x => x.n === num);
-          if (!h) return null;
-          return (
-            <button key={num} onClick={() => { setSelectedHymn(h); setMainTab("hymn"); setScreen("hymnDetail"); }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 6, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
+        <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>최근 찬송가</h3>
+        {hymnHistory.length > 0 ? (
+          hymnHistory.slice(0, 8).map((h) => (
+            <button key={h.n} onClick={() => { setSelectedHymn(h); setMainTab("hymn"); setScreen("hymnDetail"); }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 6, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
               <div style={{ width: 36, height: 36, borderRadius: 8, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: t.accent, flexShrink: 0 }}>{h.n}</div>
-              <div style={{ fontSize: 14, fontWeight: 500, color: t.text }}>{h.t}</div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 500, color: t.text }}>{h.t}</div>
+                <div style={{ fontSize: 11, color: t.sub, marginTop: 2 }}>{h.date}</div>
+              </div>
             </button>
-          );
-        })}
+          ))
+        ) : (
+          <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "24px 16px", textAlign: "center" }}>
+            <div style={{ fontSize: 32, marginBottom: 8 }}>🎵</div>
+            <div style={{ fontSize: 13, color: t.sub }}>찬송가를 들으면 여기에 기록됩니다</div>
+          </div>
+        )}
       </div>
 
       {/* Settings */}
@@ -626,6 +640,7 @@ window.BibleApp = function BibleApp() {
             <div style={{ background: darkMode ? '#2a2020' : '#fdf5f5', borderRadius: 10, padding: "14px 16px", marginBottom: 20 }}>
               <div style={{ fontSize: 13, color: "#e74c3c", lineHeight: 1.8 }}>
                 • 최근 읽은 성경 구절<br/>
+                • 최근 찬송가<br/>
                 • 북마크 / 형광펜 / 메모<br/>
                 • 통독 플랜 진행 상황
               </div>
@@ -636,6 +651,7 @@ window.BibleApp = function BibleApp() {
               </button>
               <button onClick={() => {
                 setReadHistory([]);
+                setHymnHistory([]);
                 setBookmarks([]);
                 setHighlights({});
                 setMemos({});
