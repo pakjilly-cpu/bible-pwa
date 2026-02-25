@@ -277,7 +277,6 @@ window.BibleApp = function BibleApp() {
   const mainTabs = ["home", "bible", "hymn", "worship", "tongdok", "bookmarks"];
   const swipeStartRef = useRef(null);
   const swipeTrackRef = useRef(false);
-  const [swipeAnim, setSwipeAnim] = useState(null); // "left" or "right"
   const handleTouchStart = useCallback((e) => {
     const touch = e.touches[0];
     swipeStartRef.current = { x: touch.clientX, y: touch.clientY };
@@ -294,13 +293,8 @@ window.BibleApp = function BibleApp() {
     if (subScreens.includes(screen)) return;
     const idx = mainTabs.indexOf(mainTab);
     if (idx === -1) return;
-    if (dx < 0 && idx < mainTabs.length - 1) {
-      setSwipeAnim("left");
-      setTimeout(() => { navigate(mainTabs[idx + 1]); setSwipeAnim(null); }, 100);
-    } else if (dx > 0 && idx > 0) {
-      setSwipeAnim("right");
-      setTimeout(() => { navigate(mainTabs[idx - 1]); setSwipeAnim(null); }, 100);
-    }
+    if (dx < 0 && idx < mainTabs.length - 1) navigate(mainTabs[idx + 1]);
+    else if (dx > 0 && idx > 0) navigate(mainTabs[idx - 1]);
   }, [screen, mainTab]);
 
   // Scroll to top on screen/chapter change
@@ -1711,7 +1705,7 @@ window.BibleApp = function BibleApp() {
       <Header title={hdr.title} showBack={hdr.showBack} backTarget={hdr.backTarget} right={hdr.right} />
       {screen === "home" && HomeSearchHeader()}
       {screen === "hymnList" && HymnSearchHeader()}
-      <div ref={scrollRef} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ flex: 1, overflowY: "auto", transition: swipeAnim ? "transform 0.1s ease-out, opacity 0.1s ease-out" : "none", transform: swipeAnim === "left" ? "translateX(-60px)" : swipeAnim === "right" ? "translateX(60px)" : "none", opacity: swipeAnim ? 0.3 : 1 }}>
+      <div ref={scrollRef} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ flex: 1, overflowY: "auto" }}>
         {screen === "home" && <HomeScreen />}
         {screen === "books" && <BooksScreen />}
         {screen === "chapters" && <ChaptersScreen />}
