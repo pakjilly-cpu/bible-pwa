@@ -1701,11 +1701,11 @@ window.BibleApp = function BibleApp() {
   const hdr = headerConfig[screen] || { title: "", showBack: false };
 
   return (
-    <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: t.bg, color: t.text, position: "relative", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s" }}>
+    <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: t.bg, color: t.text, position: "relative", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s" }}>
       <Header title={hdr.title} showBack={hdr.showBack} backTarget={hdr.backTarget} right={hdr.right} />
       {screen === "home" && HomeSearchHeader()}
       {screen === "hymnList" && HymnSearchHeader()}
-      <div style={{ flex: 1, overflow: "hidden" }}><div ref={scrollRef} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ height: "100%", overflowY: "scroll", WebkitOverflowScrolling: "touch", paddingRight: 20, marginRight: -20 }}>
+      <div style={{ flex: 1, overflow: "hidden" }}><div ref={scrollRef} style={{ height: "100%", overflowY: "scroll", WebkitOverflowScrolling: "touch", paddingRight: 20, marginRight: -20 }}>
         {screen === "home" && <HomeScreen />}
         {screen === "books" && <BooksScreen />}
         {screen === "chapters" && <ChaptersScreen />}
