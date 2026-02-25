@@ -1423,7 +1423,7 @@ window.BibleApp = function BibleApp() {
     try {
       const channelId = await fetchSermonChannelId();
       if (!channelId) { setSermonLoading(false); return; }
-      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&q=${encodeURIComponent(category)}&type=video&order=date&maxResults=20&key=${YOUTUBE_API_KEY}`);
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&q=${encodeURIComponent(category)}&type=video&order=date&maxResults=50&key=${YOUTUBE_API_KEY}`);
       const data = await res.json();
       if (data.error) {
         setSermonError(data.error.message || "API 오류가 발생했습니다");
@@ -1431,7 +1431,8 @@ window.BibleApp = function BibleApp() {
         return;
       }
       if (data.items) {
-        setSermonVideos(prev => ({ ...prev, [category]: data.items }));
+        const filtered = data.items.filter(v => v.snippet.title.includes(category));
+        setSermonVideos(prev => ({ ...prev, [category]: filtered }));
       }
     } catch (e) {
       setSermonError("영상을 불러올 수 없습니다. 네트워크를 확인해주세요.");
