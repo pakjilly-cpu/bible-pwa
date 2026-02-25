@@ -296,10 +296,10 @@ window.BibleApp = function BibleApp() {
     if (idx === -1) return;
     if (dx < 0 && idx < mainTabs.length - 1) {
       setSwipeAnim("left");
-      setTimeout(() => { navigate(mainTabs[idx + 1]); setSwipeAnim(null); }, 200);
+      setTimeout(() => { navigate(mainTabs[idx + 1]); setSwipeAnim(null); }, 100);
     } else if (dx > 0 && idx > 0) {
       setSwipeAnim("right");
-      setTimeout(() => { navigate(mainTabs[idx - 1]); setSwipeAnim(null); }, 200);
+      setTimeout(() => { navigate(mainTabs[idx - 1]); setSwipeAnim(null); }, 100);
     }
   }, [screen, mainTab]);
 
@@ -1711,7 +1711,7 @@ window.BibleApp = function BibleApp() {
       <Header title={hdr.title} showBack={hdr.showBack} backTarget={hdr.backTarget} right={hdr.right} />
       {screen === "home" && HomeSearchHeader()}
       {screen === "hymnList" && HymnSearchHeader()}
-      <div ref={scrollRef} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ flex: 1, overflowY: "auto", transition: swipeAnim ? "transform 0.2s ease-out, opacity 0.2s ease-out" : "none", transform: swipeAnim === "left" ? "translateX(-60px)" : swipeAnim === "right" ? "translateX(60px)" : "none", opacity: swipeAnim ? 0.3 : 1 }}>
+      <div ref={scrollRef} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ flex: 1, overflowY: "auto", transition: swipeAnim ? "transform 0.1s ease-out, opacity 0.1s ease-out" : "none", transform: swipeAnim === "left" ? "translateX(-60px)" : swipeAnim === "right" ? "translateX(60px)" : "none", opacity: swipeAnim ? 0.3 : 1 }}>
         {screen === "home" && <HomeScreen />}
         {screen === "books" && <BooksScreen />}
         {screen === "chapters" && <ChaptersScreen />}
