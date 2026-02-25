@@ -474,6 +474,7 @@ window.BibleApp = function BibleApp() {
           <input
             ref={searchInputRef}
             type="text" placeholder="성경 구절, 찬송가 검색..." defaultValue={searchQuery}
+            autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" data-form-type="other"
             onChange={e => {
               const val = e.target.value;
               clearTimeout(homeSearchTimeout.current);
@@ -922,6 +923,7 @@ window.BibleApp = function BibleApp() {
         <input
           ref={hymnSearchInputRef}
           type="text" placeholder="찬송가 검색 (번호 또는 제목)" defaultValue={hymnSearch}
+          autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" data-form-type="other"
           onChange={e => {
             const val = e.target.value;
             clearTimeout(hymnSearchTimeout.current);
