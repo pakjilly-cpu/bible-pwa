@@ -170,7 +170,7 @@ window.BibleApp = function BibleApp() {
   const [sermonCategory, setSermonCategory] = useState("주일예배");
   const [sermonVideos, setSermonVideos] = useState({});
   const [sermonChannelId, setSermonChannelId] = useState(null);
-  const [selectedSermon, setSelectedSermon] = useState(null);
+
   const [sermonLoading, setSermonLoading] = useState(false);
 
   const scrollRef = useRef(null);
@@ -301,7 +301,7 @@ window.BibleApp = function BibleApp() {
     else if (target === "bible") { setMainTab("bible"); setScreen("books"); }
     else if (target === "hymn") { setMainTab("hymn"); setScreen("hymnList"); setSelectedHymn(null); setHymnLyrics(null); }
     else if (target === "worship") { setMainTab("worship"); setScreen("worship"); }
-    else if (target === "sermon") { setScreen("sermon"); setSelectedSermon(null); }
+    else if (target === "sermon") { setScreen("sermon"); }
     else if (target === "tongdok") { setMainTab("tongdok"); setScreen("tongdok"); setFromTongdok(false); }
     else if (target === "bookmarks") { setMainTab("bookmarks"); setScreen("bookmarks"); }
     else setScreen(target);
@@ -1447,31 +1447,6 @@ window.BibleApp = function BibleApp() {
   }, [screen, sermonCategory, fetchSermonVideos]);
 
   const SermonScreen = () => {
-    if (selectedSermon) {
-      return (
-        <div style={{ paddingBottom: 90 }}>
-          <div style={{ background: "#000" }}>
-            <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
-              <iframe
-                src={`https://www.youtube.com/embed/${selectedSermon.id.videoId}?autoplay=1&rel=0`}
-                title={selectedSermon.snippet.title}
-                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-              />
-            </div>
-          </div>
-          <div style={{ padding: "16px" }}>
-            <h3 style={{ fontSize: 15, fontWeight: 600, color: t.text, lineHeight: 1.5, margin: "0 0 8px" }}>{selectedSermon.snippet.title}</h3>
-            <p style={{ fontSize: 12, color: t.sub }}>{new Date(selectedSermon.snippet.publishedAt).toLocaleDateString('ko-KR')}</p>
-            <button onClick={() => setSelectedSermon(null)} style={{ marginTop: 16, padding: "10px 20px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", color: t.text, fontSize: 14, fontWeight: 600, fontFamily: "inherit" }}>
-              ‹ 목록으로
-            </button>
-          </div>
-        </div>
-      );
-    }
-
     const videos = sermonVideos[sermonCategory] || [];
 
     return (
@@ -1516,7 +1491,7 @@ window.BibleApp = function BibleApp() {
         ) : (
           <div style={{ padding: "12px 16px" }}>
             {videos.map((video) => (
-              <button key={video.id.videoId} onClick={() => setSelectedSermon(video)}
+              <button key={video.id.videoId} onClick={() => window.open(`https://www.youtube.com/watch?v=${video.id.videoId}`, '_blank')}
                 style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: 0, marginBottom: 10, cursor: "pointer", textAlign: "left", overflow: "hidden" }}>
                 <img
                   src={video.snippet.thumbnails.medium?.url || video.snippet.thumbnails.default?.url}
