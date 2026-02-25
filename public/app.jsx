@@ -1524,7 +1524,16 @@ window.BibleApp = function BibleApp() {
               <Pill key={cat} active={sermonCategory === cat} label={cat} onClick={() => setSermonCategory(cat)} small />
             ))}
           </div>
-          <p style={{ fontSize: 10, color: t.sub, padding: "0 16px 8px", margin: 0 }}>업데이트를 누르면 최신 설교 영상을 확인할 수 있습니다</p>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px 8px" }}>
+            <p style={{ fontSize: 10, color: t.sub, margin: 0 }}>업데이트를 누르면 최신 설교 영상을 확인할 수 있습니다</p>
+            <button onClick={() => {
+              sermonVideosRef.current = {};
+              setSermonVideos({});
+              fetchSermonVideos(sermonCategory);
+            }} style={{ padding: "5px 12px", borderRadius: 8, border: `1px solid ${t.accent}`, background: t.accentBg, cursor: "pointer", fontSize: 11, fontWeight: 600, color: t.accent, fontFamily: "inherit", flexShrink: 0, marginLeft: 8 }}>
+              업데이트
+            </button>
+          </div>
         </div>
 
         {YOUTUBE_API_KEY === "YOUR_API_KEY_HERE" ? (
@@ -1611,15 +1620,7 @@ window.BibleApp = function BibleApp() {
     hymnList: { title: "찬송가", showBack: false },
     hymnDetail: { title: selectedHymn?.t || "", showBack: true, backTarget: "hymn" },
     worship: { title: "예배", showBack: false },
-    sermon: { title: "설교말씀", showBack: true, backTarget: "worship", right: (
-      <button onClick={() => {
-        sermonVideosRef.current = {};
-        setSermonVideos({});
-        fetchSermonVideos(sermonCategory);
-      }} style={{ padding: "6px 12px", borderRadius: 8, border: `1px solid ${t.accent}`, background: t.accentBg, cursor: "pointer", fontSize: 12, fontWeight: 600, color: t.accent, fontFamily: "inherit" }}>
-        업데이트
-      </button>
-    ) },
+    sermon: { title: "", showBack: false },
     tongdok: { title: "통독", showBack: false },
     bookmarks: { title: "북마크", showBack: false },
   };
