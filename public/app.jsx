@@ -1665,7 +1665,7 @@ window.BibleApp = function BibleApp() {
 
   // ── NAV BAR ──
   const NavBar = () => (
-    <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, background: t.nav, borderTop: `1px solid ${t.border}`, display: "flex", justifyContent: "space-around", padding: "4px 0 env(safe-area-inset-bottom, 8px)", zIndex: 100 }}>
+    <div style={{ flexShrink: 0, width: "100%", background: t.nav, borderTop: `1px solid ${t.border}`, display: "flex", justifyContent: "space-around", padding: "4px 0 env(safe-area-inset-bottom, 8px)", zIndex: 100 }}>
       {[
         { id: "home", icon: "🏠", label: "홈" },
         { id: "bible", icon: "📖", label: "성경" },
@@ -1701,7 +1701,7 @@ window.BibleApp = function BibleApp() {
   const hdr = headerConfig[screen] || { title: "", showBack: false };
 
   return (
-    <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: t.bg, color: t.text, position: "relative", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s" }}>
+    <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ maxWidth: 480, margin: "0 auto", height: "100vh", height: "100dvh", background: t.bg, color: t.text, position: "relative", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s", overflow: "hidden" }}>
       <Header title={hdr.title} showBack={hdr.showBack} backTarget={hdr.backTarget} right={hdr.right} />
       {screen === "home" && HomeSearchHeader()}
       {screen === "hymnList" && HymnSearchHeader()}
