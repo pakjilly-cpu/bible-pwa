@@ -445,7 +445,7 @@ window.BibleApp = function BibleApp() {
       {/* Hero */}
       <div style={{ padding: "32px 20px 20px", textAlign: "center" }}>
         <div style={{ fontSize: 40, marginBottom: 8 }}>📖</div>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: t.text, letterSpacing: -0.5 }}>말씀과 함께</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: t.text, letterSpacing: -0.5 }}>은혜와진리교회</h1>
         <p style={{ color: t.sub, fontSize: 13, marginTop: 4 }}>성경 66권 (한/영) · 찬송가 645곡</p>
       </div>
 
@@ -458,39 +458,28 @@ window.BibleApp = function BibleApp() {
         </div>
       )}
 
-      {/* Quick Access */}
-      <div style={{ padding: "0 16px", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>바로가기</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-          {[
-            { icon: "📜", label: "창세기", bookId: "gen", ch: 1 },
-            { icon: "🎵", label: "시편", bookId: "psa", ch: 1 },
-            { icon: "✨", label: "요한복음", bookId: "jhn", ch: 1 },
-            { icon: "📕", label: "마태복음", bookId: "mat", ch: 1 },
-            { icon: "💌", label: "로마서", bookId: "rom", ch: 1 },
-            { icon: "🔥", label: "요한계시록", bookId: "rev", ch: 1 },
-          ].map((item, i) => (
-            <button key={i} onClick={() => { const book = booksIndex.find(b => b.id === item.bookId); if (book) { setSelectedBook(book); setSelectedChapter(item.ch); setMainTab("bible"); setScreen("reading"); }}} style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "14px 12px", textAlign: "left", cursor: "pointer", boxShadow: `0 1px 3px ${t.shadow}` }}>
-              <div style={{ fontSize: 20, marginBottom: 4 }}>{item.icon}</div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: t.text }}>{item.label} {item.ch}장</div>
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Recent Reading */}
-      {readHistory.length > 0 && (
-        <div style={{ padding: "0 16px", marginBottom: 20 }}>
-          <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>최근 읽은 말씀</h3>
-          <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }}>
+      <div style={{ padding: "0 16px", marginBottom: 20 }}>
+        <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>최근 읽은 성경 구절</h3>
+        {readHistory.length > 0 ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {readHistory.slice(0, 8).map((h, i) => (
-              <button key={i} onClick={() => { const book = booksIndex.find(b => b.id === h.bookId); if (book) { setSelectedBook(book); setSelectedChapter(h.chapter); setMainTab("bible"); setScreen("reading"); }}} style={{ flexShrink: 0, background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "10px 14px", cursor: "pointer", textAlign: "center" }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: t.text, whiteSpace: "nowrap" }}>{h.bookName} {h.chapter}장</div>
+              <button key={i} onClick={() => { const book = booksIndex.find(b => b.id === h.bookId); if (book) { setSelectedBook(book); setSelectedChapter(h.chapter); setMainTab("bible"); setScreen("reading"); }}} style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "14px 16px", cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", gap: 12, boxShadow: `0 1px 3px ${t.shadow}` }}>
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>📖</div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: t.text }}>{h.bookName} {h.chapter}장</div>
+                  <div style={{ fontSize: 11, color: t.sub, marginTop: 2 }}>{h.date}</div>
+                </div>
               </button>
             ))}
           </div>
-        </div>
-      )}
+        ) : (
+          <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "24px 16px", textAlign: "center" }}>
+            <div style={{ fontSize: 32, marginBottom: 8 }}>📖</div>
+            <div style={{ fontSize: 13, color: t.sub }}>성경을 읽으면 여기에 기록됩니다</div>
+          </div>
+        )}
+      </div>
 
       {/* Popular Hymns */}
       <div style={{ padding: "0 16px", marginBottom: 20 }}>
@@ -1409,7 +1398,7 @@ window.BibleApp = function BibleApp() {
 
   // ── HEADER CONFIG ──
   const headerConfig = {
-    home: { title: "말씀과 함께", showBack: false },
+    home: { title: "은혜와진리교회", showBack: false },
     books: { title: "성경", showBack: false },
     chapters: { title: selectedBook?.name || "", showBack: true, backTarget: "bible" },
     reading: {

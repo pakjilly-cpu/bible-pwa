@@ -30,7 +30,7 @@ def create_icon(size, output_path):
 
     txt_img = Image.new('RGBA', (tw + 20, th + 20), (0, 0, 0, 0))
     txt_draw = ImageDraw.Draw(txt_img)
-    txt_draw.text((-bbox[0] + 10, -bbox[1] + 10), text, fill=(255, 255, 255), font=font)
+    txt_draw.text((-bbox[0] + 10, -bbox[1] + 10), text, fill=(255, 255, 255), font=font, stroke_width=4, stroke_fill=(255, 255, 255))
 
     # Stretch: keep width, double the height
     stretched = txt_img.resize((txt_img.width, txt_img.height * 2), Image.LANCZOS)
@@ -45,5 +45,5 @@ def create_icon(size, output_path):
     print(f"Created {output_path} ({size}x{size})")
 
 
-create_icon(512, '/home/parksh/bible-pwa/public/icon-512.png')
-create_icon(192, '/home/parksh/bible-pwa/public/icon-192.png')
+create_icon(512, 'C:/Users/허수영/AppData/Local/Temp/bible-pwa/public/icon-512.png')
+create_icon(192, 'C:/Users/허수영/AppData/Local/Temp/bible-pwa/public/icon-192.png')
