@@ -258,6 +258,26 @@ window.BibleApp = function BibleApp() {
     document.body.scrollTop = 0;
   }, [screen, selectedChapter]);
 
+  // ── Back button (History API) ──
+  const isPopstateRef = useRef(false);
+  useEffect(() => {
+    history.replaceState({ screen: "home", mainTab: "home" }, "");
+    const handlePopState = (e) => {
+      if (e.state) {
+        isPopstateRef.current = true;
+        setScreen(e.state.screen);
+        setMainTab(e.state.mainTab);
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+  useEffect(() => {
+    if (isPopstateRef.current) { isPopstateRef.current = false; return; }
+    if (screen === "home" && mainTab === "home") return; // don't push initial state
+    history.pushState({ screen, mainTab }, "");
+  }, [screen]);
+
   // ── Theme ──
   const t = darkMode
     ? { bg: "#121212", card: "#1e1e1e", text: "#e0e0e0", sub: "#888", accent: "#66bb6a", accentBg: "rgba(102,187,106,0.1)", border: "#2a2a2a", header: "#1a1a1a", nav: "#1a1a1a", shadow: "rgba(0,0,0,0.3)", verseNum: "#66bb6a" }
@@ -963,8 +983,8 @@ window.BibleApp = function BibleApp() {
 
   const SearchScreen = () => (
     <div style={{ paddingBottom: 90 }}>
-      <div style={{ padding: "12px 16px" }}>
-        <div style={{ textAlign: "center", padding: "40px 0", opacity: searchQuery ? 0 : 1, maxHeight: searchQuery ? 0 : 300, overflow: "hidden", pointerEvents: searchQuery ? "none" : "auto", transition: "opacity 0.2s, max-height 0.2s" }}>
+      <div style={{ padding: "8px 16px" }}>
+        <div style={{ textAlign: "center", padding: "40px 0", opacity: searchQuery ? 0 : 1, maxHeight: searchQuery ? 0 : 300, overflow: "hidden", pointerEvents: searchQuery ? "none" : "auto", transition: "opacity 0.15s, max-height 0.15s" }}>
             <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.15 }}>🔍</div>
             <p style={{ color: t.sub, fontSize: 13, marginBottom: 16 }}>성경과 찬송가를 함께 검색합니다</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
