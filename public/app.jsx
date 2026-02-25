@@ -1453,11 +1453,18 @@ window.BibleApp = function BibleApp() {
 
     return (
       <div style={{ paddingBottom: 90 }}>
-        {/* Category tabs */}
-        <div style={{ display: "flex", gap: 6, padding: "12px 16px", overflowX: "auto", borderBottom: `1px solid ${t.border}`, position: "sticky", top: 0, background: t.bg, zIndex: 50 }}>
+        {/* Category tabs + refresh */}
+        <div style={{ display: "flex", gap: 6, padding: "12px 16px", overflowX: "auto", borderBottom: `1px solid ${t.border}`, position: "sticky", top: 0, background: t.bg, zIndex: 50, alignItems: "center" }}>
           {sermonCategories.map(cat => (
             <Pill key={cat} active={sermonCategory === cat} label={cat} onClick={() => setSermonCategory(cat)} small />
           ))}
+          <button onClick={() => {
+            sermonVideosRef.current = {};
+            setSermonVideos({});
+            fetchSermonVideos(sermonCategory);
+          }} style={{ marginLeft: "auto", background: "none", border: "none", fontSize: 18, cursor: "pointer", padding: "4px 2px", color: t.sub, flexShrink: 0 }} title="새로고침">
+            🔄
+          </button>
         </div>
 
         {YOUTUBE_API_KEY === "YOUR_API_KEY_HERE" ? (
