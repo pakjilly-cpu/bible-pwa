@@ -559,7 +559,7 @@ window.BibleApp = function BibleApp() {
 
       {/* Popular Hymns */}
       <div style={{ padding: "0 16px", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>최근 찬송가</h3>
+        <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>추천 찬송가</h3>
         {[305, 204, 320, 288, 259].map((num) => {
           const h = hymnsIndex.find(x => x.n === num);
           if (!h) return null;
@@ -627,8 +627,7 @@ window.BibleApp = function BibleApp() {
               <div style={{ fontSize: 13, color: "#e74c3c", lineHeight: 1.8 }}>
                 • 최근 읽은 성경 구절<br/>
                 • 북마크 / 형광펜 / 메모<br/>
-                • 통독 플랜 진행 상황<br/>
-                • 찬송가 즐겨찾기
+                • 통독 플랜 진행 상황
               </div>
             </div>
             <div style={{ display: "flex", gap: 10 }}>
@@ -1507,7 +1506,7 @@ window.BibleApp = function BibleApp() {
               <Pill key={cat} active={sermonCategory === cat} label={cat} onClick={() => setSermonCategory(cat)} small />
             ))}
           </div>
-          <p style={{ fontSize: 10, color: t.sub, padding: "0 16px 8px", margin: 0 }}>새로고침하면 최신 설교 영상을 확인할 수 있습니다</p>
+          <p style={{ fontSize: 10, color: t.sub, padding: "0 16px 8px", margin: 0 }}>업데이트를 누르면 최신 설교 영상을 확인할 수 있습니다</p>
         </div>
 
         {YOUTUBE_API_KEY === "YOUR_API_KEY_HERE" ? (
@@ -1599,8 +1598,8 @@ window.BibleApp = function BibleApp() {
         sermonVideosRef.current = {};
         setSermonVideos({});
         fetchSermonVideos(sermonCategory);
-      }} style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 12px", borderRadius: 8, border: `1px solid ${t.accent}`, background: t.accentBg, cursor: "pointer", fontSize: 12, fontWeight: 600, color: t.accent, fontFamily: "inherit" }}>
-        🔄 새로고침
+      }} style={{ padding: "6px 12px", borderRadius: 8, border: `1px solid ${t.accent}`, background: t.accentBg, cursor: "pointer", fontSize: 12, fontWeight: 600, color: t.accent, fontFamily: "inherit" }}>
+        업데이트
       </button>
     ) },
     tongdok: { title: "통독", showBack: false },
