@@ -580,7 +580,7 @@ window.BibleApp = function BibleApp() {
           ))
         ) : (
           <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "24px 16px", textAlign: "center" }}>
-            <div style={{ fontSize: 32, marginBottom: 8 }}>🎵</div>
+            <div style={{ fontSize: 32, marginBottom: 8, opacity: 0.45 }}>🎵</div>
             <div style={{ fontSize: 13, color: t.sub }}>찬송가를 들으면 여기에 기록됩니다</div>
           </div>
         )}
