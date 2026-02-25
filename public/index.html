@@ -57,8 +57,8 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     input:focus { outline: none; border-color: var(--accent) !important; }
     button { font-family: inherit; }
-    * { scrollbar-width: none; -ms-overflow-style: none; }
-    *::-webkit-scrollbar { display: none; }
+    *, html, body, div { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+    *::-webkit-scrollbar, html::-webkit-scrollbar, body::-webkit-scrollbar, div::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
   </style>
 </head>
 <body>
