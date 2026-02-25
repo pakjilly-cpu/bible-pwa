@@ -281,7 +281,7 @@ window.BibleApp = function BibleApp() {
   // ── Theme ──
   const t = darkMode
     ? { bg: "#121212", card: "#1e1e1e", text: "#e0e0e0", sub: "#888", accent: "#66bb6a", accentBg: "rgba(102,187,106,0.1)", border: "#2a2a2a", header: "#1a1a1a", nav: "#1a1a1a", shadow: "rgba(0,0,0,0.3)", verseNum: "#66bb6a" }
-    : { bg: "#f5f5f0", card: "#ffffff", text: "#1a1a1a", sub: "#888", accent: "#2d5a27", accentBg: "rgba(45,90,39,0.06)", border: "#e8e8e3", header: "#ffffff", nav: "#ffffff", shadow: "rgba(0,0,0,0.04)", verseNum: "#2d5a27" };
+    : { bg: "#f8f5ef", card: "#ffffff", text: "#1a1a1a", sub: "#888", accent: "#2d5a27", accentBg: "rgba(45,90,39,0.06)", border: "#e8e5de", header: "#ffffff", nav: "#ffffff", shadow: "rgba(0,0,0,0.04)", verseNum: "#2d5a27" };
 
   // ── Navigation ──
   const navigate = (target) => {
@@ -452,7 +452,7 @@ window.BibleApp = function BibleApp() {
 
       {/* Today's Verse */}
       {todayVerse && (
-        <div onClick={() => { const book = booksIndex.find(b => b.id === todayVerse.bookId); if (book) { setSelectedBook(book); setSelectedChapter(todayVerse.ch); setMainTab("bible"); setScreen("reading"); }}} style={{ margin: "0 16px 16px", padding: "20px", background: darkMode ? "linear-gradient(135deg, #1b3a1a, #1a2e1a)" : "linear-gradient(135deg, #eef5ee, #f0f7ec)", borderRadius: 16, cursor: "pointer", border: `1px solid ${darkMode ? '#2a4a2a' : '#d5e8d0'}` }}>
+        <div onClick={() => { const book = booksIndex.find(b => b.id === todayVerse.bookId); if (book) { setSelectedBook(book); setSelectedChapter(todayVerse.ch); setMainTab("bible"); setScreen("reading"); }}} style={{ margin: "0 16px 16px", padding: "20px", background: darkMode ? "linear-gradient(135deg, #1b3a1a, #1a2e1a)" : "linear-gradient(135deg, #f5f0e6, #f2ede3)", borderRadius: 16, cursor: "pointer", border: `1px solid ${darkMode ? '#2a4a2a' : '#e0dbd0'}` }}>
           <div style={{ fontSize: 10, color: t.accent, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>TODAY'S VERSE</div>
           <p style={{ fontSize: 15, lineHeight: 1.8, color: t.text, wordBreak: "keep-all" }}>"{todayVerse.text}"</p>
           <p style={{ fontSize: 12, color: t.accent, fontWeight: 600, marginTop: 10 }}>— {todayVerse.ref}</p>
