@@ -454,12 +454,11 @@ window.BibleApp = function BibleApp() {
     </button>
   );
 
-  // ── HOME SCREEN ──
+  // ── HOME SEARCH HEADER (rendered outside HomeScreen to preserve input focus) ──
   const homeSearchTimeout = useRef(null);
-  const HomeScreen = () => (
-    <div style={{ paddingBottom: 90 }}>
-      {/* Search Bar */}
-      <div style={{ padding: "16px 16px 8px" }}>
+  const HomeSearchHeader = () => (
+    <div>
+      <div style={{ padding: "12px 16px", background: t.bg, borderBottom: `1px solid ${t.border}` }}>
         <div style={{ position: "relative" }}>
           <input
             ref={searchInputRef}
@@ -477,10 +476,8 @@ window.BibleApp = function BibleApp() {
           <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 15, opacity: 0.35 }}>🔍</span>
         </div>
       </div>
-
-      {/* Search Results (shown when query exists) */}
       {searchQuery && (
-        <div style={{ padding: "0 16px 8px" }}>
+        <div style={{ padding: "8px 16px", background: t.bg }}>
           {searching && (
             <div style={{ textAlign: "center", padding: "30px 0" }}>
               <div style={{ width: 28, height: 28, border: `2px solid ${t.border}`, borderTopColor: t.accent, borderRadius: "50%", animation: "spin 0.7s linear infinite", margin: "0 auto 10px" }} />
@@ -519,7 +516,12 @@ window.BibleApp = function BibleApp() {
           )}
         </div>
       )}
+    </div>
+  );
 
+  // ── HOME SCREEN ──
+  const HomeScreen = () => (
+    <div style={{ paddingBottom: 90 }}>
       {/* Today's Verse */}
       {todayVerse && (
         <div onClick={() => { const book = booksIndex.find(b => b.id === todayVerse.bookId); if (book) { setSelectedBook(book); setSelectedChapter(todayVerse.ch); setMainTab("bible"); setScreen("reading"); }}} style={{ margin: "0 16px 16px", padding: "20px", background: darkMode ? "linear-gradient(135deg, #1b3a1a, #1a2e1a)" : "linear-gradient(135deg, #f5f0e6, #f2ede3)", borderRadius: 16, cursor: "pointer", border: `1px solid ${darkMode ? '#2a4a2a' : '#e0dbd0'}` }}>
@@ -1551,6 +1553,7 @@ window.BibleApp = function BibleApp() {
   return (
     <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: t.bg, color: t.text, position: "relative", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s" }}>
       <Header title={hdr.title} showBack={hdr.showBack} backTarget={hdr.backTarget} right={hdr.right} />
+      {screen === "home" && HomeSearchHeader()}
       {screen === "hymnList" && HymnSearchHeader()}
       <div ref={scrollRef} style={{ flex: 1, overflowY: "auto" }}>
         {screen === "home" && <HomeScreen />}
