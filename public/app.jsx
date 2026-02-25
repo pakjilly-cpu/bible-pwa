@@ -1705,7 +1705,7 @@ window.BibleApp = function BibleApp() {
       <Header title={hdr.title} showBack={hdr.showBack} backTarget={hdr.backTarget} right={hdr.right} />
       {screen === "home" && HomeSearchHeader()}
       {screen === "hymnList" && HymnSearchHeader()}
-      <div style={{ flex: 1, overflow: "hidden" }}><div ref={scrollRef} style={{ height: "100%", overflowY: "scroll", WebkitOverflowScrolling: "touch", paddingRight: 20, marginRight: -20 }}>
+      <div ref={scrollRef} style={{ flex: 1, overflowY: "auto" }}>
         {screen === "home" && <HomeScreen />}
         {screen === "books" && <BooksScreen />}
         {screen === "chapters" && <ChaptersScreen />}
@@ -1716,7 +1716,7 @@ window.BibleApp = function BibleApp() {
         {screen === "sermon" && <SermonScreen />}
         {screen === "tongdok" && <TongdokScreen />}
         {screen === "bookmarks" && <BookmarksScreen />}
-      </div></div>
+      </div>
       <NavBar />
     </div>
   );
