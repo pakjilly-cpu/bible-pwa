@@ -57,8 +57,10 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     input:focus { outline: none; border-color: var(--accent) !important; }
     button { font-family: inherit; }
-    *, html, body, div { scrollbar-width: none !important; -ms-overflow-style: none !important; }
-    *::-webkit-scrollbar, html::-webkit-scrollbar, body::-webkit-scrollbar, div::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+    *, html, body, div, section, main, article, aside, nav, ul, ol { scrollbar-width: none !important; -ms-overflow-style: none !important; overflow: -moz-scrollbars-none; }
+    *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; }
+    *::-webkit-scrollbar-thumb { background: transparent !important; }
+    *::-webkit-scrollbar-track { background: transparent !important; }
   </style>
 </head>
 <body>

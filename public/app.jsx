@@ -1705,7 +1705,7 @@ window.BibleApp = function BibleApp() {
       <Header title={hdr.title} showBack={hdr.showBack} backTarget={hdr.backTarget} right={hdr.right} />
       {screen === "home" && HomeSearchHeader()}
       {screen === "hymnList" && HymnSearchHeader()}
-      <div ref={scrollRef} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ flex: 1, overflowY: "auto" }}>
+      <div ref={scrollRef} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ flex: 1, overflowY: "scroll", WebkitOverflowScrolling: "touch", msOverflowStyle: "none", scrollbarWidth: "none" }}>
         {screen === "home" && <HomeScreen />}
         {screen === "books" && <BooksScreen />}
         {screen === "chapters" && <ChaptersScreen />}
