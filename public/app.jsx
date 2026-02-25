@@ -1,6 +1,11 @@
 const { useState, useEffect, useCallback, useRef, useMemo } = React;
 
 // ══════════════════════════════════════
+// YOUTUBE API KEY (발급 후 여기에 입력)
+// ══════════════════════════════════════
+const YOUTUBE_API_KEY = "AIzaSyDPQbSrAbrbh34uH8VW8qIs_W0pIZr45Ik";
+
+// ══════════════════════════════════════
 // DATA LOADING
 // ══════════════════════════════════════
 const dataCache = { books: null, hymnsIndex: null, hymnChunks: {}, bibleBooks: {}, englishBooks: {} };
@@ -161,6 +166,13 @@ window.BibleApp = function BibleApp() {
   const [ttsVerse, setTtsVerse] = useState(-1);
   const [ttsSpeed, setTtsSpeed] = useState(1.0);
 
+  // Sermon state
+  const [sermonCategory, setSermonCategory] = useState("주일예배");
+  const [sermonVideos, setSermonVideos] = useState({});
+  const [sermonChannelId, setSermonChannelId] = useState(null);
+  const [selectedSermon, setSelectedSermon] = useState(null);
+  const [sermonLoading, setSermonLoading] = useState(false);
+
   const scrollRef = useRef(null);
 
   // Persist settings
@@ -288,8 +300,8 @@ window.BibleApp = function BibleApp() {
     if (target === "home") { setMainTab("home"); setScreen("home"); }
     else if (target === "bible") { setMainTab("bible"); setScreen("books"); }
     else if (target === "hymn") { setMainTab("hymn"); setScreen("hymnList"); setSelectedHymn(null); setHymnLyrics(null); }
-    else if (target === "search") { setMainTab("search"); setScreen("search"); }
     else if (target === "worship") { setMainTab("worship"); setScreen("worship"); }
+    else if (target === "sermon") { setScreen("sermon"); setSelectedSermon(null); }
     else if (target === "tongdok") { setMainTab("tongdok"); setScreen("tongdok"); setFromTongdok(false); }
     else if (target === "bookmarks") { setMainTab("bookmarks"); setScreen("bookmarks"); }
     else setScreen(target);
@@ -443,15 +455,70 @@ window.BibleApp = function BibleApp() {
   );
 
   // ── HOME SCREEN ──
+  const homeSearchTimeout = useRef(null);
   const HomeScreen = () => (
     <div style={{ paddingBottom: 90 }}>
-      {/* Hero */}
-      <div style={{ padding: "32px 20px 20px", textAlign: "center" }}>
-        <div style={{ fontSize: 40, marginBottom: 8 }}>🙏</div>
-        <p style={{ fontSize: 15, fontWeight: 400, color: t.accent, lineHeight: 1.8, fontStyle: "italic", letterSpacing: -0.3, wordBreak: "keep-all" }}>"은혜와 진리는 예수 그리스도로 말미암아 온 것이라"</p>
-        <p style={{ fontSize: 11, color: t.sub, marginTop: 6, fontWeight: 500, letterSpacing: 0.5 }}>요한복음 1:17</p>
-        <p style={{ fontSize: 13, color: t.sub, marginTop: 12 }}>성경 66권 (한/영) · 찬송가 645곡</p>
+      {/* Search Bar */}
+      <div style={{ padding: "16px 16px 8px" }}>
+        <div style={{ position: "relative" }}>
+          <input
+            ref={searchInputRef}
+            type="text" placeholder="성경 구절, 찬송가 검색..." defaultValue={searchQuery}
+            onChange={e => {
+              const val = e.target.value;
+              clearTimeout(homeSearchTimeout.current);
+              homeSearchTimeout.current = setTimeout(() => {
+                setSearchQuery(val);
+                doSearch(val);
+              }, 400);
+            }}
+            style={{ width: "100%", padding: "12px 14px 12px 38px", borderRadius: 10, border: `1.5px solid ${t.border}`, background: t.card, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", color: t.text }}
+          />
+          <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 15, opacity: 0.35 }}>🔍</span>
+        </div>
       </div>
+
+      {/* Search Results (shown when query exists) */}
+      {searchQuery && (
+        <div style={{ padding: "0 16px 8px" }}>
+          {searching && (
+            <div style={{ textAlign: "center", padding: "30px 0" }}>
+              <div style={{ width: 28, height: 28, border: `2px solid ${t.border}`, borderTopColor: t.accent, borderRadius: "50%", animation: "spin 0.7s linear infinite", margin: "0 auto 10px" }} />
+              <p style={{ color: t.sub, fontSize: 13 }}>검색 중...</p>
+            </div>
+          )}
+          {searchResults.map((r, i) => (
+            <button key={i} onClick={() => {
+              if (r.type === "hymn") {
+                setSelectedHymn({ n: r.number, t: r.title, v: r.vid });
+                setMainTab("hymn"); setScreen("hymnDetail");
+              } else {
+                const book = booksIndex.find(b => b.id === r.bookId);
+                if (book) { setSelectedBook(book); setSelectedChapter(r.chapter); setMainTab("bible"); setScreen("reading"); }
+              }
+            }} style={{ width: "100%", textAlign: "left", padding: "12px 14px", marginBottom: 6, borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", fontFamily: "inherit" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: r.type === "hymn" ? "#7b1fa220" : t.accentBg, color: r.type === "hymn" ? "#7b1fa2" : t.accent, fontWeight: 700 }}>
+                  {r.type === "hymn" ? "찬송" : "성경"}
+                </span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: t.accent }}>
+                  {r.type === "hymn" ? `${r.number}장 ${r.title}` : `${r.bookName} ${r.chapter}:${r.verse}`}
+                </span>
+              </div>
+              {r.text && <p style={{ fontSize: 13, color: t.text, lineHeight: 1.5, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.text}</p>}
+              {r.textEn && <p style={{ fontSize: 12, color: t.sub, lineHeight: 1.4, margin: "2px 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontStyle: "italic" }}>{r.textEn}</p>}
+            </button>
+          ))}
+          {!searching && searchResults.length === 0 && (
+            <div style={{ textAlign: "center", padding: "30px 0" }}>
+              <p style={{ color: t.sub, fontSize: 13 }}>검색 결과가 없습니다</p>
+            </div>
+          )}
+          {searchResults.length >= 100 && (
+            <p style={{ textAlign: "center", color: t.sub, fontSize: 12, padding: "10px 0" }}>최대 100개 결과까지 표시됩니다</p>
+          )}
+        </div>
+      )}
 
       {/* Today's Verse */}
       {todayVerse && (
@@ -951,81 +1018,6 @@ window.BibleApp = function BibleApp() {
     );
   };
 
-  // ── SEARCH SCREEN ──
-  const searchTimeout = useRef(null);
-  const SearchHeader = () => (
-    <div style={{ padding: "12px 16px", background: t.bg, borderBottom: `1px solid ${t.border}` }}>
-      <div style={{ position: "relative" }}>
-        <input
-          ref={searchInputRef}
-          type="text" placeholder="성경 구절, 찬송가 검색..." defaultValue={searchQuery}
-          onChange={e => {
-            const val = e.target.value;
-            clearTimeout(searchTimeout.current);
-            searchTimeout.current = setTimeout(() => {
-              setSearchQuery(val);
-              doSearch(val);
-            }, 400);
-          }}
-          style={{ width: "100%", padding: "12px 14px 12px 38px", borderRadius: 10, border: `1.5px solid ${t.border}`, background: t.card, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", color: t.text }}
-        />
-        <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 15, opacity: 0.35 }}>🔍</span>
-      </div>
-    </div>
-  );
-
-  const SearchScreen = () => (
-    <div style={{ paddingBottom: 90 }}>
-      <div style={{ padding: "8px 16px" }}>
-        <div style={{ textAlign: "center", padding: searchQuery ? 0 : "40px 0", opacity: searchQuery ? 0 : 1, maxHeight: searchQuery ? 0 : 300, overflow: "hidden", pointerEvents: searchQuery ? "none" : "auto", transition: "opacity 0.15s, max-height 0.15s, padding 0.15s" }}>
-            <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.15 }}>🔍</div>
-            <p style={{ color: t.sub, fontSize: 13, marginBottom: 16 }}>성경과 찬송가를 함께 검색합니다</p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
-              {["사랑", "하나님", "은혜", "믿음", "영생", "평안", "소망", "축복"].map(word => (
-                <button key={word} onClick={() => { if (searchInputRef.current) searchInputRef.current.value = word; setSearchQuery(word); doSearch(word); }} style={{ padding: "7px 14px", borderRadius: 18, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", fontSize: 12, color: t.text, fontFamily: "inherit" }}>{word}</button>
-              ))}
-            </div>
-          </div>
-        {searching && (
-          <div style={{ textAlign: "center", padding: "30px 0" }}>
-            <div style={{ width: 28, height: 28, border: `2px solid ${t.border}`, borderTopColor: t.accent, borderRadius: "50%", animation: "spin 0.7s linear infinite", margin: "0 auto 10px" }} />
-            <p style={{ color: t.sub, fontSize: 13 }}>검색 중...</p>
-          </div>
-        )}
-        {searchResults.map((r, i) => (
-          <button key={i} onClick={() => {
-            if (r.type === "hymn") {
-              setSelectedHymn({ n: r.number, t: r.title, v: r.vid });
-              setMainTab("hymn"); setScreen("hymnDetail");
-            } else {
-              const book = booksIndex.find(b => b.id === r.bookId);
-              if (book) { setSelectedBook(book); setSelectedChapter(r.chapter); setMainTab("bible"); setScreen("reading"); }
-            }
-          }} style={{ width: "100%", textAlign: "left", padding: "12px 14px", marginBottom: 6, borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", fontFamily: "inherit" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-              <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: r.type === "hymn" ? "#7b1fa220" : t.accentBg, color: r.type === "hymn" ? "#7b1fa2" : t.accent, fontWeight: 700 }}>
-                {r.type === "hymn" ? "찬송" : "성경"}
-              </span>
-              <span style={{ fontSize: 12, fontWeight: 600, color: t.accent }}>
-                {r.type === "hymn" ? `${r.number}장 ${r.title}` : `${r.bookName} ${r.chapter}:${r.verse}`}
-              </span>
-            </div>
-            {r.text && <p style={{ fontSize: 13, color: t.text, lineHeight: 1.5, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.text}</p>}
-            {r.textEn && <p style={{ fontSize: 12, color: t.sub, lineHeight: 1.4, margin: "2px 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontStyle: "italic" }}>{r.textEn}</p>}
-          </button>
-        ))}
-        {searchQuery && !searching && searchResults.length === 0 && (
-          <div style={{ textAlign: "center", padding: "40px 0" }}>
-            <p style={{ color: t.sub, fontSize: 13 }}>검색 결과가 없습니다</p>
-          </div>
-        )}
-        {searchResults.length >= 100 && (
-          <p style={{ textAlign: "center", color: t.sub, fontSize: 12, padding: "10px 0" }}>최대 100개 결과까지 표시됩니다</p>
-        )}
-      </div>
-    </div>
-  );
-
   // ── BOOKMARKS SCREEN (with memos tab) ──
   const BookmarksScreen = () => {
     const memoEntries = Object.entries(memos);
@@ -1351,7 +1343,7 @@ window.BibleApp = function BibleApp() {
     );
   };
 
-  // ── WORSHIP SCREEN (구역예배) ──
+  // ── WORSHIP SCREEN (예배) ──
   const WorshipScreen = () => {
     return (
       <div style={{ paddingBottom: 90 }}>
@@ -1374,7 +1366,171 @@ window.BibleApp = function BibleApp() {
             </div>
             <div style={{ marginLeft: "auto", fontSize: 18, color: t.sub }}>›</div>
           </button>
+          <button onClick={() => navigate("sermon")}
+            style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "20px 16px", marginTop: 10, display: "flex", alignItems: "center", gap: 14, cursor: "pointer", textAlign: "left" }}>
+            <div style={{ width: 48, height: 48, borderRadius: 12, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>🎬</div>
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: t.text }}>설교말씀</div>
+              <div style={{ fontSize: 12, color: t.sub, marginTop: 3 }}>당회장 목사님 설교 영상</div>
+            </div>
+            <div style={{ marginLeft: "auto", fontSize: 18, color: t.sub }}>›</div>
+          </button>
         </div>
+      </div>
+    );
+  };
+
+  // ── SERMON SCREEN (설교말씀) ──
+  const sermonCategories = ["주일예배", "월요기도회", "수요예배", "금요기도회"];
+  const [sermonError, setSermonError] = useState(null);
+  const sermonChannelIdRef = useRef(null);
+  const sermonVideosRef = useRef({});
+
+  // Keep refs in sync with state
+  useEffect(() => { sermonChannelIdRef.current = sermonChannelId; }, [sermonChannelId]);
+  useEffect(() => { sermonVideosRef.current = sermonVideos; }, [sermonVideos]);
+
+  const fetchSermonChannelId = useCallback(async () => {
+    if (sermonChannelIdRef.current) return sermonChannelIdRef.current;
+    if (YOUTUBE_API_KEY === "YOUR_API_KEY_HERE") return null;
+    try {
+      // Try forHandle first (newer API), fall back to search
+      let res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=@GNTC&key=${YOUTUBE_API_KEY}`);
+      let data = await res.json();
+      if (data.items && data.items.length > 0) {
+        const id = data.items[0].id;
+        setSermonChannelId(id);
+        return id;
+      }
+      // Fallback: search for channel
+      res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=GNTC&type=channel&maxResults=1&key=${YOUTUBE_API_KEY}`);
+      data = await res.json();
+      if (data.items && data.items.length > 0) {
+        const id = data.items[0].snippet.channelId;
+        setSermonChannelId(id);
+        return id;
+      }
+    } catch (e) {
+      setSermonError("채널 정보를 불러올 수 없습니다");
+    }
+    return null;
+  }, []);
+
+  const fetchSermonVideos = useCallback(async (category) => {
+    if (sermonVideosRef.current[category]) return;
+    setSermonLoading(true);
+    setSermonError(null);
+    try {
+      const channelId = await fetchSermonChannelId();
+      if (!channelId) { setSermonLoading(false); return; }
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&q=${encodeURIComponent(category)}&type=video&order=date&maxResults=20&key=${YOUTUBE_API_KEY}`);
+      const data = await res.json();
+      if (data.error) {
+        setSermonError(data.error.message || "API 오류가 발생했습니다");
+        setSermonLoading(false);
+        return;
+      }
+      if (data.items) {
+        setSermonVideos(prev => ({ ...prev, [category]: data.items }));
+      }
+    } catch (e) {
+      setSermonError("영상을 불러올 수 없습니다. 네트워크를 확인해주세요.");
+    }
+    setSermonLoading(false);
+  }, [fetchSermonChannelId]);
+
+  useEffect(() => {
+    if (screen === "sermon") {
+      fetchSermonVideos(sermonCategory);
+    }
+  }, [screen, sermonCategory, fetchSermonVideos]);
+
+  const SermonScreen = () => {
+    if (selectedSermon) {
+      return (
+        <div style={{ paddingBottom: 90 }}>
+          <div style={{ background: "#000" }}>
+            <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+              <iframe
+                src={`https://www.youtube.com/embed/${selectedSermon.id.videoId}?autoplay=1&rel=0`}
+                title={selectedSermon.snippet.title}
+                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
+            </div>
+          </div>
+          <div style={{ padding: "16px" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 600, color: t.text, lineHeight: 1.5, margin: "0 0 8px" }}>{selectedSermon.snippet.title}</h3>
+            <p style={{ fontSize: 12, color: t.sub }}>{new Date(selectedSermon.snippet.publishedAt).toLocaleDateString('ko-KR')}</p>
+            <button onClick={() => setSelectedSermon(null)} style={{ marginTop: 16, padding: "10px 20px", borderRadius: 10, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", color: t.text, fontSize: 14, fontWeight: 600, fontFamily: "inherit" }}>
+              ‹ 목록으로
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    const videos = sermonVideos[sermonCategory] || [];
+
+    return (
+      <div style={{ paddingBottom: 90 }}>
+        {/* Category tabs */}
+        <div style={{ display: "flex", gap: 6, padding: "12px 16px", overflowX: "auto", borderBottom: `1px solid ${t.border}`, position: "sticky", top: 0, background: t.bg, zIndex: 50 }}>
+          {sermonCategories.map(cat => (
+            <Pill key={cat} active={sermonCategory === cat} label={cat} onClick={() => setSermonCategory(cat)} small />
+          ))}
+        </div>
+
+        {YOUTUBE_API_KEY === "YOUR_API_KEY_HERE" ? (
+          <div style={{ textAlign: "center", padding: "60px 20px" }}>
+            <div style={{ fontSize: 40, marginBottom: 14, opacity: 0.2 }}>🔑</div>
+            <p style={{ fontSize: 14, fontWeight: 600, color: t.text, marginBottom: 8 }}>YouTube API 키를 설정해주세요</p>
+            <p style={{ fontSize: 12, color: t.sub, lineHeight: 1.6 }}>
+              app.jsx 상단의 YOUTUBE_API_KEY에<br/>
+              Google Cloud Console에서 발급받은<br/>
+              YouTube Data API v3 키를 입력하세요
+            </p>
+          </div>
+        ) : sermonError ? (
+          <div style={{ textAlign: "center", padding: "60px 20px" }}>
+            <div style={{ fontSize: 40, marginBottom: 14, opacity: 0.2 }}>⚠️</div>
+            <p style={{ fontSize: 14, fontWeight: 600, color: t.text, marginBottom: 8 }}>오류가 발생했습니다</p>
+            <p style={{ fontSize: 12, color: t.sub, lineHeight: 1.6, marginBottom: 16 }}>{sermonError}</p>
+            <button onClick={() => { setSermonVideos(prev => { const next = {...prev}; delete next[sermonCategory]; return next; }); fetchSermonVideos(sermonCategory); }}
+              style={{ padding: "10px 20px", borderRadius: 10, border: `1px solid ${t.accent}`, background: "transparent", color: t.accent, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+              다시 시도
+            </button>
+          </div>
+        ) : sermonLoading ? (
+          <div style={{ textAlign: "center", padding: "60px 20px" }}>
+            <div style={{ width: 32, height: 32, border: `2px solid ${t.border}`, borderTopColor: t.accent, borderRadius: "50%", animation: "spin 0.7s linear infinite", margin: "0 auto 12px" }} />
+            <p style={{ color: t.sub, fontSize: 13 }}>영상을 불러오고 있습니다...</p>
+          </div>
+        ) : videos.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "60px 20px" }}>
+            <div style={{ fontSize: 40, marginBottom: 14, opacity: 0.15 }}>🎬</div>
+            <p style={{ color: t.sub, fontSize: 13 }}>영상이 없습니다</p>
+          </div>
+        ) : (
+          <div style={{ padding: "12px 16px" }}>
+            {videos.map((video) => (
+              <button key={video.id.videoId} onClick={() => setSelectedSermon(video)}
+                style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: 0, marginBottom: 10, cursor: "pointer", textAlign: "left", overflow: "hidden" }}>
+                <img
+                  src={video.snippet.thumbnails.medium?.url || video.snippet.thumbnails.default?.url}
+                  alt={video.snippet.title}
+                  style={{ width: "100%", height: "auto", display: "block" }}
+                  loading="lazy"
+                />
+                <div style={{ padding: "12px 14px" }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: t.text, lineHeight: 1.4, marginBottom: 4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{video.snippet.title}</div>
+                  <div style={{ fontSize: 11, color: t.sub }}>{new Date(video.snippet.publishedAt).toLocaleDateString('ko-KR')}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     );
   };
@@ -1388,7 +1544,6 @@ window.BibleApp = function BibleApp() {
         { id: "hymn", icon: "🎵", label: "찬송가" },
         { id: "worship", icon: "⛪", label: "예배" },
         { id: "tongdok", icon: "📋", label: "통독" },
-        { id: "search", icon: "🔍", label: "검색" },
         { id: "bookmarks", icon: "✨", label: "북마크" },
       ].map(item => (
         <button key={item.id} onClick={() => navigate(item.id)} style={{ background: "none", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 1, cursor: "pointer", padding: "6px 8px", color: mainTab === item.id ? t.accent : t.sub, transition: "all 0.2s" }}>
@@ -1410,9 +1565,9 @@ window.BibleApp = function BibleApp() {
     },
     hymnList: { title: "찬송가", showBack: false },
     hymnDetail: { title: selectedHymn?.t || "", showBack: true, backTarget: "hymn" },
-    worship: { title: "구역예배", showBack: false },
+    worship: { title: "예배", showBack: false },
+    sermon: { title: "설교말씀", showBack: true, backTarget: "worship" },
     tongdok: { title: "통독", showBack: false },
-    search: { title: "검색", showBack: false },
     bookmarks: { title: "북마크", showBack: false },
   };
   const hdr = headerConfig[screen] || { title: "", showBack: false };
@@ -1421,7 +1576,6 @@ window.BibleApp = function BibleApp() {
     <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: t.bg, color: t.text, position: "relative", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s" }}>
       <Header title={hdr.title} showBack={hdr.showBack} backTarget={hdr.backTarget} right={hdr.right} />
       {screen === "hymnList" && HymnSearchHeader()}
-      {screen === "search" && SearchHeader()}
       <div ref={scrollRef} style={{ flex: 1, overflowY: "auto" }}>
         {screen === "home" && <HomeScreen />}
         {screen === "books" && <BooksScreen />}
@@ -1430,8 +1584,8 @@ window.BibleApp = function BibleApp() {
         {screen === "hymnList" && <HymnListScreen />}
         {screen === "hymnDetail" && <HymnDetailScreen />}
         {screen === "worship" && <WorshipScreen />}
+        {screen === "sermon" && <SermonScreen />}
         {screen === "tongdok" && <TongdokScreen />}
-        {screen === "search" && <SearchScreen />}
         {screen === "bookmarks" && <BookmarksScreen />}
       </div>
       <NavBar />
