@@ -1453,18 +1453,22 @@ window.BibleApp = function BibleApp() {
 
     return (
       <div style={{ paddingBottom: 90 }}>
-        {/* Category tabs + refresh */}
-        <div style={{ display: "flex", gap: 6, padding: "12px 16px", overflowX: "auto", borderBottom: `1px solid ${t.border}`, position: "sticky", top: 0, background: t.bg, zIndex: 50, alignItems: "center" }}>
-          {sermonCategories.map(cat => (
-            <Pill key={cat} active={sermonCategory === cat} label={cat} onClick={() => setSermonCategory(cat)} small />
-          ))}
-          <button onClick={() => {
-            sermonVideosRef.current = {};
-            setSermonVideos({});
-            fetchSermonVideos(sermonCategory);
-          }} style={{ marginLeft: "auto", background: "none", border: "none", fontSize: 18, cursor: "pointer", padding: "4px 2px", color: t.sub, flexShrink: 0 }} title="새로고침">
-            🔄
-          </button>
+        {/* Category tabs */}
+        <div style={{ position: "sticky", top: 0, background: t.bg, zIndex: 50, borderBottom: `1px solid ${t.border}` }}>
+          <div style={{ display: "flex", gap: 6, padding: "12px 16px", overflowX: "auto" }}>
+            {sermonCategories.map(cat => (
+              <Pill key={cat} active={sermonCategory === cat} label={cat} onClick={() => setSermonCategory(cat)} small />
+            ))}
+          </div>
+          <div style={{ padding: "0 16px 10px", display: "flex", justifyContent: "flex-end" }}>
+            <button onClick={() => {
+              sermonVideosRef.current = {};
+              setSermonVideos({});
+              fetchSermonVideos(sermonCategory);
+            }} style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 14px", borderRadius: 20, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", fontSize: 12, color: t.sub, fontFamily: "inherit" }}>
+              🔄 <span>새로고침</span>
+            </button>
+          </div>
         </div>
 
         {YOUTUBE_API_KEY === "YOUR_API_KEY_HERE" ? (
