@@ -423,15 +423,18 @@ window.BibleApp = function BibleApp() {
   // ══════════════════════════════════════
 
   // ── Shared Components ──
-  const Header = ({ title, showBack, backTarget, right }) => (
-    <div style={{ background: t.header, borderBottom: `1px solid ${t.border}`, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
-        {showBack && <button onClick={() => navigate(backTarget || "home")} style={{ background: "none", border: "none", fontSize: 24, color: t.accent, cursor: "pointer", padding: "2px 8px 2px 0", lineHeight: 1 }}>‹</button>}
-        <span style={{ fontSize: 17, fontWeight: 700, color: t.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{title}</span>
+  const Header = ({ title, showBack, backTarget, right }) => {
+    if (!showBack && !right) return null;
+    return (
+      <div style={{ background: t.bg, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
+          {showBack && <button onClick={() => navigate(backTarget || "home")} style={{ background: "none", border: "none", fontSize: 24, color: t.accent, cursor: "pointer", padding: "2px 8px 2px 0", lineHeight: 1 }}>‹</button>}
+          {showBack && <span style={{ fontSize: 17, fontWeight: 700, color: t.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{title}</span>}
+        </div>
+        <div style={{ display: "flex", gap: 6, alignItems: "center", flexShrink: 0 }}>{right}</div>
       </div>
-      <div style={{ display: "flex", gap: 6, alignItems: "center", flexShrink: 0 }}>{right}</div>
-    </div>
-  );
+    );
+  };
 
   const Pill = ({ active, label, onClick, small }) => (
     <button onClick={onClick} style={{ padding: small ? "6px 14px" : "8px 18px", borderRadius: 20, border: `1.5px solid ${active ? t.accent : t.border}`, background: active ? t.accentBg : "transparent", color: active ? t.accent : t.sub, fontWeight: active ? 600 : 400, fontSize: small ? 12 : 13, cursor: "pointer", transition: "all 0.2s", fontFamily: "inherit", whiteSpace: "nowrap" }}>
@@ -444,7 +447,7 @@ window.BibleApp = function BibleApp() {
     <div style={{ paddingBottom: 90 }}>
       {/* Hero */}
       <div style={{ padding: "32px 20px 20px", textAlign: "center" }}>
-        <div style={{ fontSize: 40, marginBottom: 8 }}>📖</div>
+        <div style={{ fontSize: 40, marginBottom: 8 }}>🙏</div>
         <p style={{ fontSize: 15, fontWeight: 400, color: t.accent, lineHeight: 1.8, fontStyle: "italic", letterSpacing: -0.3, wordBreak: "keep-all" }}>"은혜와 진리는 예수 그리스도로 말미암아 온 것이라"</p>
         <p style={{ fontSize: 11, color: t.sub, marginTop: 6, fontWeight: 500, letterSpacing: 0.5 }}>요한복음 1:17</p>
         <p style={{ fontSize: 13, color: t.sub, marginTop: 12 }}>성경 66권 (한/영) · 찬송가 645곡</p>
