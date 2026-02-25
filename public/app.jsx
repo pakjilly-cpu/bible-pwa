@@ -445,8 +445,9 @@ window.BibleApp = function BibleApp() {
       {/* Hero */}
       <div style={{ padding: "32px 20px 20px", textAlign: "center" }}>
         <div style={{ fontSize: 40, marginBottom: 8 }}>📖</div>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: t.text, letterSpacing: -0.5 }}>은혜와진리교회</h1>
-        <p style={{ color: t.sub, fontSize: 13, marginTop: 4 }}>성경 66권 (한/영) · 찬송가 645곡</p>
+        <p style={{ fontSize: 15, fontWeight: 400, color: t.accent, lineHeight: 1.8, fontStyle: "italic", letterSpacing: -0.3, wordBreak: "keep-all" }}>"은혜와 진리는 예수 그리스도로 말미암아 온 것이라"</p>
+        <p style={{ fontSize: 11, color: t.sub, marginTop: 6, fontWeight: 500, letterSpacing: 0.5 }}>요한복음 1:17</p>
+        <p style={{ fontSize: 13, color: t.sub, marginTop: 12 }}>성경 66권 (한/영) · 찬송가 645곡</p>
       </div>
 
       {/* Today's Verse */}
@@ -1352,7 +1353,7 @@ window.BibleApp = function BibleApp() {
     return (
       <div style={{ paddingBottom: 90 }}>
         <div style={{ padding: "24px 16px" }}>
-          <p style={{ fontSize: 13, color: t.sub, marginBottom: 16 }}>은혜와진리교회</p>
+          <p style={{ fontSize: 13, color: t.sub, marginBottom: 16 }}>Grace and Truth Church</p>
           <button onClick={() => window.open('https://gntc.net/?page_id=3928', '_blank')}
             style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "20px 16px", display: "flex", alignItems: "center", gap: 14, cursor: "pointer", textAlign: "left" }}>
             <div style={{ width: 48, height: 48, borderRadius: 12, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>⛪</div>
@@ -1398,7 +1399,7 @@ window.BibleApp = function BibleApp() {
 
   // ── HEADER CONFIG ──
   const headerConfig = {
-    home: { title: "은혜와진리교회", showBack: false },
+    home: { title: "Grace and Truth Church", showBack: false },
     books: { title: "성경", showBack: false },
     chapters: { title: selectedBook?.name || "", showBack: true, backTarget: "bible" },
     reading: {
