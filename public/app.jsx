@@ -1227,8 +1227,18 @@ window.BibleApp = function BibleApp() {
     const planDays = { '1year': 365, '6month': 180, '3month': 90 };
     const planLabels = { '1year': '1년', '6month': '6개월', '3month': '3개월' };
 
+    const getLocalDateStr = () => {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    };
+
+    const parseLocalDate = (str) => {
+      const parts = str.split('-');
+      return new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+    };
+
     const startPlan = (type) => {
-      setBiblePlan({ plan: type, startDate: new Date().toISOString().slice(0, 10), completed: [] });
+      setBiblePlan({ plan: type, startDate: getLocalDateStr(), completed: [] });
     };
 
     const resetPlan = () => { if (confirm('통독 플랜을 초기화하시겠습니까?')) setBiblePlan(null); };
@@ -1236,11 +1246,11 @@ window.BibleApp = function BibleApp() {
     // Get reading assignment for a given day offset (0=today, 1=tomorrow, ...)
     const getAssignment = (offset) => {
       if (!biblePlan || totalChapters === 0) return [];
-      const days = planDays[biblePlan.plan];
-      const start = new Date(biblePlan.startDate);
+      const days = biblePlan.plan === 'custom' ? biblePlan.totalDays : planDays[biblePlan.plan];
+      if (!days || days <= 0) return [];
+      const start = parseLocalDate(biblePlan.startDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      start.setHours(0, 0, 0, 0);
       const dayIndex = Math.floor((today - start) / (1000 * 60 * 60 * 24)) + offset;
       if (dayIndex < 0 || dayIndex >= days) return [];
       const perDay = totalChapters / days;
@@ -1274,6 +1284,18 @@ window.BibleApp = function BibleApp() {
       }
     };
 
+    // Custom plan handler
+    const [customEndDate, setCustomEndDate] = useState('');
+    const startCustomPlan = () => {
+      if (!customEndDate) return;
+      const todayLocal = getLocalDateStr();
+      const startD = parseLocalDate(todayLocal);
+      const endD = parseLocalDate(customEndDate);
+      const diffDays = Math.ceil((endD - startD) / (1000 * 60 * 60 * 24));
+      if (diffDays <= 0) return;
+      setBiblePlan({ plan: 'custom', startDate: todayLocal, endDate: customEndDate, totalDays: diffDays, completed: [] });
+    };
+
     // Plan selection
     if (!biblePlan) {
       return (
@@ -1296,15 +1318,43 @@ window.BibleApp = function BibleApp() {
                 <div style={{ fontSize: 18, color: t.sub }}>›</div>
               </button>
             ))}
+
+            {/* Custom plan */}
+            <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "18px 16px", marginTop: 6 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>🎯</div>
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: t.text }}>나만의 플랜</div>
+                  <div style={{ fontSize: 12, color: t.sub, marginTop: 2 }}>목표 날짜를 직접 설정합니다</div>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input type="date" value={customEndDate} onChange={e => setCustomEndDate(e.target.value)}
+                  min={getLocalDateStr()}
+                  style={{ flex: 1, padding: "10px 12px", borderRadius: 8, border: `1px solid ${t.border}`, background: t.bg, fontSize: 14, fontFamily: "inherit", color: t.text, boxSizing: "border-box" }} />
+                <button onClick={startCustomPlan}
+                  style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: customEndDate ? t.accent : t.border, color: customEndDate ? "#fff" : t.sub, fontSize: 14, fontWeight: 600, cursor: customEndDate ? "pointer" : "default", fontFamily: "inherit", flexShrink: 0 }}>
+                  시작
+                </button>
+              </div>
+              {customEndDate && (() => {
+                const startD = parseLocalDate(getLocalDateStr());
+                const endD = parseLocalDate(customEndDate);
+                const diffDays = Math.ceil((endD - startD) / (1000 * 60 * 60 * 24));
+                if (diffDays <= 0) return null;
+                return <p style={{ fontSize: 11, color: t.sub, marginTop: 8 }}>{diffDays}일간, 하루 약 {Math.ceil(1189 / diffDays)}장</p>;
+              })()}
+            </div>
           </div>
         </div>
       );
     }
 
     // Progress view
-    const days = planDays[biblePlan.plan];
-    const start = new Date(biblePlan.startDate);
+    const days = biblePlan.plan === 'custom' ? biblePlan.totalDays : planDays[biblePlan.plan];
+    const start = parseLocalDate(biblePlan.startDate);
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const dayIndex = Math.floor((today - start) / (1000 * 60 * 60 * 24));
 
     // Check today's completion & encouragement
@@ -1336,7 +1386,7 @@ window.BibleApp = function BibleApp() {
           {/* Summary */}
           <div style={{ background: t.card, borderRadius: 12, padding: "16px", border: `1px solid ${t.border}`, marginBottom: 16 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-              <span style={{ fontSize: 14, fontWeight: 600, color: t.text }}>{planLabels[biblePlan.plan]} 통독</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: t.text }}>{biblePlan.plan === 'custom' ? `${days}일` : planLabels[biblePlan.plan]} 통독</span>
               <span style={{ fontSize: 13, color: t.accent, fontWeight: 600 }}>{progress.toFixed(1)}%</span>
             </div>
             {/* Progress bar */}
@@ -1600,7 +1650,7 @@ window.BibleApp = function BibleApp() {
         { id: "tongdok", icon: "📋", label: "통독" },
         { id: "bookmarks", icon: "✨", label: "북마크" },
       ].map(item => (
-        <button key={item.id} onClick={() => navigate(item.id)} style={{ background: "none", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 1, cursor: "pointer", padding: "6px 8px", color: mainTab === item.id ? t.accent : t.sub, transition: "all 0.2s" }}>
+        <button key={item.id} onClick={() => navigate(item.id)} style={{ background: "none", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 1, cursor: "pointer", padding: "6px 8px", color: mainTab === item.id ? t.text : t.sub, transition: "all 0.2s" }}>
           <span style={{ fontSize: 20, opacity: item.id === "bookmarks" && mainTab !== item.id ? 0.5 : 1 }}>{item.icon}</span>
           <span style={{ fontSize: 10, fontWeight: mainTab === item.id ? 700 : 400 }}>{item.label}</span>
         </button>
