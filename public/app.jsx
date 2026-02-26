@@ -572,7 +572,7 @@ window.BibleApp = function BibleApp() {
         <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>최근 읽은 성경 구절</h3>
         {readHistory.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {readHistory.slice(0, 8).map((h, i) => (
+            {readHistory.slice(0, 3).map((h, i) => (
               <button key={i} onClick={() => { const book = booksIndex.find(b => b.id === h.bookId); if (book) { setSelectedBook(book); setSelectedChapter(h.chapter); setMainTab("bible"); setScreen("reading"); }}} style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "14px 16px", cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", gap: 12, boxShadow: `0 1px 3px ${t.shadow}` }}>
                 <div style={{ width: 36, height: 36, borderRadius: 8, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>📖</div>
                 <div>
@@ -594,7 +594,7 @@ window.BibleApp = function BibleApp() {
       <div style={{ padding: "0 16px", marginBottom: 20 }}>
         <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>최근 찬송가</h3>
         {hymnHistory.length > 0 ? (
-          hymnHistory.slice(0, 8).map((h) => (
+          hymnHistory.slice(0, 3).map((h) => (
             <button key={h.n} onClick={() => { setSelectedHymn(h); setMainTab("hymn"); setScreen("hymnDetail"); }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 6, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
               <div style={{ width: 36, height: 36, borderRadius: 8, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: t.accent, flexShrink: 0 }}>{h.n}</div>
               <div>
