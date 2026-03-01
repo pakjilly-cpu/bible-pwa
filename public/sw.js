@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bible-pwa-v24';
+const CACHE_NAME = 'bible-pwa-v26';
 const CORE_ASSETS = [
   '/',
   '/index.html',
@@ -6,6 +6,8 @@ const CORE_ASSETS = [
   '/manifest.json',
   '/data/bible/index.json',
   '/data/hymns/index.json',
+  '/data/ghymn_index.json',
+  '/data/khymn_index.json',
 ];
 
 // Install: cache core assets

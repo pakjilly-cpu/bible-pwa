@@ -18,11 +18,11 @@ function createIcon(size) {
   ctx.fillStyle = bgColor;
   ctx.fill();
 
-  // Text settings - bold italic
-  const fontSize = Math.floor(renderSize * 0.24);
-  const fontStr = `900 italic ${fontSize}px Arial, sans-serif`;
+  // Text settings - bold
+  const fontSize = Math.floor(renderSize * 0.28);
+  const fontStr = `900 ${fontSize}px Arial, sans-serif`;
   const strokeWidth = 6;
-  const text = 'gntc';
+  const text = '성경';
 
   // Measure actual text bounds including descenders
   ctx.font = fontStr;
@@ -54,9 +54,9 @@ function createIcon(size) {
   txtCtx.strokeText(text, tx, ty);
   txtCtx.fillText(text, tx, ty);
 
-  // Draw stretched text (2x height) centered on main canvas
+  // Draw text centered on main canvas (no stretch for Korean)
   const destWidth = txtCanvas.width;
-  const destHeight = txtCanvas.height * 2;
+  const destHeight = txtCanvas.height;
   const dx = (renderSize - destWidth) / 2;
   const dy = (renderSize - destHeight) / 2;
 

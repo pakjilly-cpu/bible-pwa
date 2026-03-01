@@ -4,8 +4,8 @@
   "description": "성경 66권 + 찬송가 645곡",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a3d18",
-  "theme_color": "#2d5a27",
+  "background_color": "#00007f",
+  "theme_color": "#00007f",
   "orientation": "portrait",
   "icons": [
     {
