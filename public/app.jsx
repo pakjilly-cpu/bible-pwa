@@ -1042,7 +1042,8 @@ window.BibleApp = function BibleApp() {
           {categories.map(cat => (
             <button key={cat.id} onClick={() => {
               if (cat.id === "choir") {
-                window.open('https://choir.gntc.net/mobile_ChoirCenter/index_mobile.php#ChoirPage1a', '_blank');
+                setHymnCategory("choir");
+                setScreen("choirScreen");
                 return;
               }
               setHymnCategory(cat.id);
@@ -1135,7 +1136,7 @@ window.BibleApp = function BibleApp() {
     const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "새찬송가";
     const catColor = hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent;
     // Audio URL for gHymn/kHymn
-    const audioBaseUrl = hymnCategory === "ghymn" ? "http://svc.gntc.net/MCIC/DATA/gHymn/" : hymnCategory === "khymn" ? "http://svc.gntc.net/MCIC/DATA/kHymn/" : null;
+    const audioBaseUrl = hymnCategory === "ghymn" ? "https://svc.gntc.net/MCIC/DATA/gHymn/ar/" : hymnCategory === "khymn" ? "https://svc.gntc.net/MCIC/DATA/kHymn/ar/" : null;
     const audioUrl = audioBaseUrl && selectedHymn.f ? `${audioBaseUrl}${selectedHymn.f}.mp3` : null;
 
     return (
@@ -1685,22 +1686,10 @@ window.BibleApp = function BibleApp() {
   const fetchFamilyData = useCallback((date) => {
     setFamilyLoading(true);
     setFamilyError(null);
-    const script = document.createElement('script');
-    const cbName = `_familyCb_${Date.now()}`;
-    window[cbName] = (data) => {
-      setFamilyData(data);
-      setFamilyLoading(false);
-      delete window[cbName];
-      script.remove();
-    };
-    script.onerror = () => {
-      setFamilyError("가정예배 데이터를 불러올 수 없습니다");
-      setFamilyLoading(false);
-      delete window[cbName];
-      script.remove();
-    };
-    script.src = `http://bible.gntc.net/WebService/Bible.asmx/getFamilyService?callback=${cbName}&versions=kor&date=${date}`;
-    document.head.appendChild(script);
+    fetch(`/api/family?versions=kor&date=${date}`)
+      .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+      .then(data => { setFamilyData(data); setFamilyLoading(false); })
+      .catch(() => { setFamilyError("가정예배 데이터를 불러올 수 없습니다"); setFamilyLoading(false); });
   }, []);
 
   useEffect(() => {
@@ -1967,6 +1956,7 @@ window.BibleApp = function BibleApp() {
     hymnCategory: { title: "찬송가", showBack: false },
     hymnList: { title: hymnCategoryLabels[hymnCategory] || "찬송가", showBack: true, backTarget: "hymnCategoryBack" },
     hymnDetail: { title: selectedHymn?.t || "", showBack: true, backTarget: "hymnListBack" },
+    choirScreen: { title: "성가대찬양", showBack: true, backTarget: "hymnCategoryBack" },
     worship: { title: "예배", showBack: false },
     sermon: { title: "", showBack: false },
     familyWorship: { title: "가정예배", showBack: true, backTarget: "worship" },
@@ -1988,6 +1978,7 @@ window.BibleApp = function BibleApp() {
         {screen === "hymnCategory" && <HymnCategoryScreen />}
         {screen === "hymnList" && <HymnListScreen />}
         {screen === "hymnDetail" && <HymnDetailScreen />}
+        {screen === "choirScreen" && <div style={{ position: "fixed", top: 48, left: 0, right: 0, bottom: 56, zIndex: 10, background: t.bg }}><iframe src="https://choir.gntc.net/mobile_ChoirCenter/index_mobile.php#ChoirPage1a" style={{ width: "100%", height: "100%", border: "none" }} title="성가대찬양" /></div>}
         {screen === "worship" && <WorshipScreen />}
         {screen === "sermon" && <SermonScreen />}
         {screen === "familyWorship" && <FamilyWorshipScreen />}
