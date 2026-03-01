@@ -22,6 +22,11 @@ export default async function handler(req, res) {
       const contentMatch = pageHtml.match(/content-box[^>]*>([\s\S]*?)<\/td>/);
       if (contentMatch) {
         const raw = contentMatch[1].replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').trim();
+        // Extract new hymn number from ● 찬송 : 493장(새찬송 436장)
+        const hymnLineMatch = raw.match(/●\s*찬송\s*[:：]\s*\d+장\s*\(\s*새찬송?\s*(\d+)장\s*\)/);
+        if (hymnLineMatch) {
+          data.newHymnNo = hymnLineMatch[1];
+        }
         // Remove ● 성경 : ... and ● 찬송 : ... lines
         const cleaned = raw.replace(/●\s*성경\s*[:：][^\n]*/g, '').replace(/●\s*찬송\s*[:：][^\n]*/g, '').trim();
         // Find the LAST occurrence of 기도: (to avoid matching "기도하고" in body text)

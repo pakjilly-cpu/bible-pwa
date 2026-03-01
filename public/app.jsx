@@ -1310,7 +1310,7 @@ window.BibleApp = function BibleApp() {
             const oldNum = hymnCategory === "hymn" ? NEW2OLD[h.n] : null;
             return (
             <button key={h.n} onClick={() => {
-              setSelectedHymn(h); setScreen("hymnDetail");
+              setSelectedHymn(h); setScreen("hymnDetail"); setHymnViewMode(hymnCategory === "ghymn" || hymnCategory === "khymn" ? "sheet" : "lyrics");
             }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "11px 14px", marginBottom: 5, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
               <div style={{ minWidth: 38, height: 38, borderRadius: 8, background: hymnCategory === "ghymn" ? "rgba(123,31,162,0.1)" : hymnCategory === "khymn" ? "rgba(230,126,34,0.1)" : t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: oldNum ? 11 : 13, fontWeight: 700, color: hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent, flexShrink: 0, padding: "0 4px", flexDirection: "column", lineHeight: 1.3 }}>
                 {oldNum ? <><span>{oldNum}</span><span style={{ fontSize: 9, opacity: 0.6 }}>({h.n})</span></> : h.n}
@@ -1340,14 +1340,16 @@ window.BibleApp = function BibleApp() {
     const lyricsLines = lyrics.split("\n");
     const [sheetError, setSheetError] = useState(false);
     const [showYT, setShowYT] = useState(false);
-    const sheetUrl = `/data/hymns/sheets/${String(selectedHymn.n).padStart(3, '0')}.jpg`;
+    const sheetUrl = isRegularHymn ? `/data/hymns/sheets/${String(selectedHymn.n).padStart(3, '0')}.jpg`
+      : hymnCategory === "ghymn" ? `http://svc.gntc.net/MCIC/DATA/gHymn/images/${selectedHymn.n}.png`
+      : hymnCategory === "khymn" ? `http://svc.gntc.net/MCIC/DATA/kHymn/images/${selectedHymn.n}.png` : null;
     const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "찬송가";
     const catColor = hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent;
     const oldNum = isRegularHymn ? NEW2OLD[selectedHymn.n] : null;
     const displayNum = oldNum || selectedHymn.n;
     const subLabel = isRegularHymn ? (oldNum ? `구찬송가 ${oldNum}장 (새찬송가 ${selectedHymn.n}장)` : `새찬송가 ${selectedHymn.n}장`) : `${catLabel} ${selectedHymn.n}장`;
     // Audio URL for gHymn/kHymn
-    const audioBaseUrl = hymnCategory === "ghymn" ? "https://gntcsv.synology.me/MCIC/DATA/gHymn/ar/" : hymnCategory === "khymn" ? "https://gntcsv.synology.me/MCIC/DATA/kHymn/ar/" : null;
+    const audioBaseUrl = hymnCategory === "ghymn" ? "http://svc.gntc.net/MCIC/DATA/gHymn/ar/" : hymnCategory === "khymn" ? "http://svc.gntc.net/MCIC/DATA/kHymn/ar/" : null;
     const audioUrl = audioBaseUrl && selectedHymn.f ? `${audioBaseUrl}${selectedHymn.f}.mp3` : null;
 
     return (
@@ -1419,50 +1421,59 @@ window.BibleApp = function BibleApp() {
         )}
 
         {/* Content area */}
-        {isRegularHymn ? (
-          hymnViewMode === 'sheet' ? (
-            /* Sheet music view */
-            <div style={{ padding: "16px", textAlign: "center" }}>
-              {!sheetError ? (
-                <img
-                  src={sheetUrl}
-                  alt={`${selectedHymn.t} 악보`}
-                  onError={() => setSheetError(true)}
-                  style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}` }}
-                  loading="lazy"
-                />
-              ) : (
-                <div style={{ padding: "40px 0", textAlign: "center" }}>
-                  <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.15 }}>🎵</div>
-                  <p style={{ color: t.sub, fontSize: 13 }}>악보를 불러올 수 없습니다</p>
-                </div>
-              )}
+        {!isRegularHymn && sheetUrl ? (
+          /* Sheet music view (ghymn/khymn - always show directly) */
+          <div style={{ padding: "16px", textAlign: "center" }}>
+            {!sheetError ? (
+              <img
+                src={sheetUrl}
+                alt={`${selectedHymn.t} 악보`}
+                onError={() => setSheetError(true)}
+                style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}` }}
+                loading="lazy"
+              />
+            ) : (
+              <div style={{ padding: "40px 0", textAlign: "center" }}>
+                <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.15 }}>🎵</div>
+                <p style={{ color: t.sub, fontSize: 13 }}>악보를 불러올 수 없습니다</p>
+              </div>
+            )}
+          </div>
+        ) : isRegularHymn && hymnViewMode === 'sheet' && sheetUrl ? (
+          /* Sheet music view (regular hymns - via button) */
+          <div style={{ padding: "16px", textAlign: "center" }}>
+            {!sheetError ? (
+              <img
+                src={sheetUrl}
+                alt={`${selectedHymn.t} 악보`}
+                onError={() => setSheetError(true)}
+                style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}` }}
+                loading="lazy"
+              />
+            ) : (
+              <div style={{ padding: "40px 0", textAlign: "center" }}>
+                <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.15 }}>🎵</div>
+                <p style={{ color: t.sub, fontSize: 13 }}>악보를 불러올 수 없습니다</p>
+              </div>
+            )}
+          </div>
+        ) : isRegularHymn ? (
+          /* Lyrics view (regular hymns) */
+          !hymnLyrics ? (
+            <div style={{ padding: "60px 20px", textAlign: "center" }}>
+              <div style={{ width: 32, height: 32, border: `2px solid ${t.border}`, borderTopColor: t.accent, borderRadius: "50%", animation: "spin 0.7s linear infinite", margin: "0 auto 12px" }} />
+              <p style={{ color: t.sub, fontSize: 13 }}>가사를 불러오고 있습니다...</p>
             </div>
           ) : (
-            /* Lyrics view */
-            !hymnLyrics ? (
-              <div style={{ padding: "60px 20px", textAlign: "center" }}>
-                <div style={{ width: 32, height: 32, border: `2px solid ${t.border}`, borderTopColor: t.accent, borderRadius: "50%", animation: "spin 0.7s linear infinite", margin: "0 auto 12px" }} />
-                <p style={{ color: t.sub, fontSize: 13 }}>가사를 불러오고 있습니다...</p>
-              </div>
-            ) : (
-              <div style={{ padding: "24px 20px" }}>
-                {lyricsLines.map((line, i) => (
-                  <p key={i} style={{ fontSize, lineHeight: 2, color: line.match(/^\d+\./) ? t.accent : t.text, fontWeight: line.match(/^\d+\./) ? 600 : 400, margin: 0, textAlign: "center", minHeight: line.trim() === "" ? 20 : "auto" }}>
-                    {line}
-                  </p>
-                ))}
-              </div>
-            )
+            <div style={{ padding: "24px 20px" }}>
+              {lyricsLines.map((line, i) => (
+                <p key={i} style={{ fontSize, lineHeight: 2, color: line.match(/^\d+\./) ? t.accent : t.text, fontWeight: line.match(/^\d+\./) ? 600 : 400, margin: 0, textAlign: "center", minHeight: line.trim() === "" ? 20 : "auto" }}>
+                  {line}
+                </p>
+              ))}
+            </div>
           )
-        ) : (
-          /* gHymn/kHymn - audio player in header */
-          <div style={{ padding: "60px 20px", textAlign: "center" }}>
-            <p style={{ fontSize: 13, color: t.sub, lineHeight: 1.6 }}>
-              {audioUrl || selectedHymn.v ? "상단에서 음원을 재생할 수 있습니다" : "재생 가능한 음원이 없습니다"}
-            </p>
-          </div>
-        )}
+        ) : null}
       </div>
     );
   };
@@ -1889,6 +1900,7 @@ window.BibleApp = function BibleApp() {
   const [familyData, setFamilyData] = useState(null);
   const [familyLoading, setFamilyLoading] = useState(false);
   const [familyError, setFamilyError] = useState(null);
+  const [familyCollapsed, setFamilyCollapsed] = useState({ hymn: false, body: false, bible: true });
   const [familyDate, setFamilyDate] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -1920,7 +1932,7 @@ window.BibleApp = function BibleApp() {
         };
         document.head.appendChild(script);
       });
-  }, [scrapeGntcNet]);
+  }, []);
 
   useEffect(() => {
     if (screen === "familyWorship") fetchFamilyData(familyDate);
@@ -1931,6 +1943,7 @@ window.BibleApp = function BibleApp() {
     d.setDate(d.getDate() + offset);
     const str = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     setFamilyDate(str);
+    setFamilyCollapsed({ hymn: false, body: false, bible: true });
   };
 
   const FamilyWorshipScreen = () => {
@@ -1975,41 +1988,74 @@ window.BibleApp = function BibleApp() {
           {/* Hymn */}
           {familyData.hymnNo && familyData.hymnNo !== "0" && (() => {
             const oNum = parseInt(familyData.hymnNo);
-            const nNum = OLD2NEW[oNum];
+            const nNum = OLD2NEW[oNum] || (familyData.newHymnNo ? parseInt(familyData.newHymnNo) : null) || ((hymnsIndex.find(h => h.t === familyData.hymnTitle)) || {}).n || null;
+            const hymnSheetUrl = nNum ? `/data/hymns/sheets/${String(nNum).padStart(3, '0')}.jpg` : null;
+            const hymnAudioUrl = nNum ? `/data/hymns/mp3/${String(nNum).padStart(3, '0')}.mp3` : null;
+            const collapsed = familyCollapsed.hymn;
             return (
             <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px", marginBottom: 10 }}>
-              <div style={{ fontSize: 10, color: t.sub, fontWeight: 600, marginBottom: 4 }}>찬송가</div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: t.text }}>{oNum}장{nNum ? <span style={{ fontSize: 11, color: t.sub, fontWeight: 400 }}> (새찬송가 {nNum}장)</span> : null}</div>
-              <div style={{ fontSize: 12, color: t.sub, marginTop: 2 }}>{familyData.hymnTitle}</div>
+              <div onClick={() => setFamilyCollapsed(p => ({ ...p, hymn: !p.hymn }))} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
+                <div>
+                  <div style={{ fontSize: 10, color: t.sub, fontWeight: 600, marginBottom: 4 }}>찬송가</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: t.text }}>{oNum}장{nNum ? <span style={{ fontSize: 11, color: t.sub, fontWeight: 400 }}> (새찬송가 {nNum}장)</span> : null}</div>
+                  <div style={{ fontSize: 12, color: t.sub, marginTop: 2 }}>{familyData.hymnTitle}</div>
+                </div>
+                <span style={{ fontSize: 12, color: t.sub, flexShrink: 0, padding: "4px 8px" }}>{collapsed ? "펼치기 ▼" : "접기 ▲"}</span>
+              </div>
+              {!collapsed && (
+                <div style={{ marginTop: 10, borderTop: `1px solid ${t.border}`, paddingTop: 10 }}>
+                  {hymnAudioUrl && <audio controls preload="none" style={{ width: "100%", height: 36, marginBottom: 10 }}>
+                    <source src={hymnAudioUrl} type="audio/mpeg" />
+                  </audio>}
+                  {hymnSheetUrl && <img src={hymnSheetUrl} alt={`${familyData.hymnTitle} 악보`} style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}` }} loading="lazy" />}
+                </div>
+              )}
             </div>);
           })()}
 
-          {/* Prayer */}
-          {prayerText && (
-            <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px", marginBottom: 16 }}>
-              <div style={{ fontSize: 10, color: "#e67e22", fontWeight: 600, marginBottom: 4 }}>오늘의 기도</div>
-              <p style={{ fontSize: 14, lineHeight: 1.8, color: t.text, margin: 0, wordBreak: "keep-all" }}>{prayerText}</p>
+          {/* Devotional body */}
+          {bodyText && (
+            <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "16px", marginBottom: 10 }}>
+              <div onClick={() => setFamilyCollapsed(p => ({ ...p, body: !p.body }))} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: t.accent }}>예배말씀</div>
+                <span style={{ fontSize: 12, color: t.sub, flexShrink: 0, padding: "4px 8px" }}>{familyCollapsed.body ? "펼치기 ▼" : "접기 ▲"}</span>
+              </div>
+              {!familyCollapsed.body && (
+                <div style={{ marginTop: 10 }}>
+                  {bodyText.split('\n').map((line, i) => (
+                    line.trim() ? <p key={i} style={{ fontSize: 14, lineHeight: 1.9, color: t.text, wordBreak: "keep-all", margin: "0 0 4px 0" }}>{line}</p>
+                    : <div key={i} style={{ height: 8 }} />
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
-          {/* Devotional body */}
-          {bodyText && (
-            <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "16px", marginBottom: 16 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: t.accent, marginBottom: 10 }}>예배말씀</div>
-              <p style={{ fontSize: 14, lineHeight: 1.9, color: t.text, wordBreak: "keep-all", margin: 0 }}>{bodyText}</p>
+          {/* Prayer */}
+          {prayerText && (
+            <div style={{ background: darkMode ? "linear-gradient(135deg, #2a2215, #251f12)" : "linear-gradient(135deg, #fdf6e9, #faf0dc)", border: `1px solid ${darkMode ? '#3a3220' : '#e8dcc0'}`, borderRadius: 10, padding: "12px", marginBottom: 16 }}>
+              <div style={{ fontSize: 10, color: "#e67e22", fontWeight: 700, marginBottom: 6 }}>기도</div>
+              <p style={{ fontSize: 14, lineHeight: 1.8, color: t.text, margin: 0, wordBreak: "keep-all" }}>{prayerText}</p>
             </div>
           )}
 
           {/* Bible text */}
           {familyData.texts && familyData.texts.length > 0 && (
             <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "16px" }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: t.accent, marginBottom: 12 }}>본문 말씀</div>
-              {familyData.texts[0].text.map((text, i) => (
-                <div key={i} style={{ display: "flex", gap: 0, marginBottom: 2, padding: "6px 4px" }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: t.verseNum, minWidth: 28, paddingTop: 3, opacity: 0.7, flexShrink: 0 }}>{familyData.texts[0].verse[i]}</span>
-                  <p style={{ fontSize, lineHeight: 1.85, margin: 0, wordBreak: "keep-all", color: t.text }}>{text}</p>
+              <div onClick={() => setFamilyCollapsed(p => ({ ...p, bible: !p.bible }))} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: t.accent }}>본문 말씀</div>
+                <span style={{ fontSize: 12, color: t.sub, flexShrink: 0, padding: "4px 8px" }}>{familyCollapsed.bible ? "펼치기 ▼" : "접기 ▲"}</span>
+              </div>
+              {!familyCollapsed.bible && (
+                <div style={{ marginTop: 10 }}>
+                  {familyData.texts[0].text.map((text, i) => (
+                    <div key={i} style={{ display: "flex", gap: 0, marginBottom: 2, padding: "6px 4px" }}>
+                      <span style={{ fontSize: 10, fontWeight: 700, color: t.verseNum, minWidth: 24, paddingTop: 3, opacity: 0.7, flexShrink: 0 }}>{familyData.texts[0].verse[i]}</span>
+                      <p style={{ fontSize: 14, lineHeight: 1.85, margin: 0, wordBreak: "keep-all", color: t.text }}>{text}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
           )}
         </div>
