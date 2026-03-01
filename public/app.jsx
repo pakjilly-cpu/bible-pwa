@@ -1136,7 +1136,7 @@ window.BibleApp = function BibleApp() {
     const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "새찬송가";
     const catColor = hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent;
     // Audio URL for gHymn/kHymn
-    const audioBaseUrl = hymnCategory === "ghymn" ? "https://svc.gntc.net/MCIC/DATA/gHymn/ar/" : hymnCategory === "khymn" ? "https://svc.gntc.net/MCIC/DATA/kHymn/ar/" : null;
+    const audioBaseUrl = hymnCategory === "ghymn" ? "https://gntcsv.synology.me/MCIC/DATA/gHymn/ar/" : hymnCategory === "khymn" ? "https://gntcsv.synology.me/MCIC/DATA/kHymn/ar/" : null;
     const audioUrl = audioBaseUrl && selectedHymn.f ? `${audioBaseUrl}${selectedHymn.f}.mp3` : null;
 
     return (
