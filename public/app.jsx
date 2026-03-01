@@ -200,12 +200,13 @@ window.BibleApp = function BibleApp() {
   const [ttsPaused, setTtsPaused] = useState(false);
   const [ttsVerse, setTtsVerse] = useState(-1);
   const [ttsSpeed, setTtsSpeed] = useState(1.0);
+  const [ttsError, setTtsError] = useState('');
   const ttsSpeedRef = useRef(ttsSpeed);
   const ttsTextsRef = useRef([]);
   const ttsVerseMapRef = useRef(null);
   const ttsLangMapRef = useRef(null);
   const ttsIdxRef = useRef(0);
-  const ttsActivatedRef = useRef(false);
+  const ttsClickTimeRef = useRef(0);
 
   // Reset confirmation
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -555,7 +556,7 @@ window.BibleApp = function BibleApp() {
   }, []);
 
   // ── TTS ──
-  // Preload voices on first interaction (no speak() call to avoid cancel/speak race on mobile)
+  // Preload voices on first interaction
   useEffect(() => {
     const init = () => { if (window.speechSynthesis) window.speechSynthesis.getVoices(); };
     document.addEventListener('touchstart', init, { once: true, passive: true });
@@ -570,32 +571,45 @@ window.BibleApp = function BibleApp() {
 
   const ttsSpeak = useCallback((texts, startIdx = 0, verseMap = null, langMap = null) => {
     const synth = window.speechSynthesis;
-    if (!synth) return;
-    ttsTextsRef.current = texts;
-    if (verseMap !== null) ttsVerseMapRef.current = verseMap;
-    if (langMap !== null) ttsLangMapRef.current = langMap;
-    if (startIdx >= texts.length) { ttsStop(); return; }
-    setTtsPlaying(true); setTtsPaused(false);
-    ttsIdxRef.current = startIdx;
-    const vm = ttsVerseMapRef.current;
-    setTtsVerse(vm ? vm[startIdx] : startIdx);
-    const utter = new SpeechSynthesisUtterance(texts[startIdx]);
-    const lm = ttsLangMapRef.current;
-    const lang = lm ? lm[startIdx] : 'ko-KR';
-    utter.lang = lang;
-    const voice = getPreferredVoice(lang);
-    if (voice) { utter.voice = voice; utter.lang = voice.lang; }
-    utter.rate = ttsSpeedRef.current;
-    utter.onend = () => { if (startIdx + 1 < texts.length) ttsSpeak(texts, startIdx + 1); else ttsStop(); };
-    utter.onerror = (ev) => { if (ev.error !== 'canceled' && ev.error !== 'interrupted') ttsStop(); };
-    // On mobile Chrome, cancel() immediately before speak() silently drops the utterance.
-    // Only cancel if actually speaking/pending, and use resume() to clear paused state.
-    if (synth.speaking || synth.pending) {
-      synth.cancel();
+    if (!synth) {
+      setTtsError('이 브라우저에서는 읽어주기를 지원하지 않습니다. Chrome 앱을 사용해 주세요.');
+      return;
     }
-    synth.resume();
-    synth.speak(utter);
+    try {
+      ttsTextsRef.current = texts;
+      if (verseMap !== null) ttsVerseMapRef.current = verseMap;
+      if (langMap !== null) ttsLangMapRef.current = langMap;
+      if (startIdx >= texts.length) { ttsStop(); return; }
+      setTtsError('');
+      setTtsPlaying(true); setTtsPaused(false);
+      ttsIdxRef.current = startIdx;
+      const vm = ttsVerseMapRef.current;
+      setTtsVerse(vm ? vm[startIdx] : startIdx);
+      const utter = new SpeechSynthesisUtterance(texts[startIdx]);
+      const lm = ttsLangMapRef.current;
+      const lang = lm ? lm[startIdx] : 'ko-KR';
+      utter.lang = lang;
+      const voice = getPreferredVoice(lang);
+      if (voice) { utter.voice = voice; utter.lang = voice.lang; }
+      utter.rate = ttsSpeedRef.current;
+      utter.onend = () => { if (startIdx + 1 < texts.length) ttsSpeak(texts, startIdx + 1); else ttsStop(); };
+      utter.onerror = (ev) => { if (ev.error !== 'canceled' && ev.error !== 'interrupted') ttsStop(); };
+      if (synth.speaking || synth.pending) { synth.cancel(); }
+      synth.speak(utter);
+    } catch (e) {
+      setTtsError('읽어주기 오류: ' + e.message);
+      ttsStop();
+    }
   }, [ttsStop]);
+
+  // Debounced TTS trigger (handles both onClick and onTouchEnd to ensure mobile works)
+  const triggerTts = useCallback((getTtsDataFn) => {
+    const now = Date.now();
+    if (now - ttsClickTimeRef.current < 400) return;
+    ttsClickTimeRef.current = now;
+    const d = getTtsDataFn();
+    ttsSpeak(d.texts, 0, d.verseMap, d.langMap);
+  }, [ttsSpeak]);
 
   const ttsTogglePause = useCallback(() => {
     if (!window.speechSynthesis) return;
@@ -1083,16 +1097,17 @@ window.BibleApp = function BibleApp() {
         {/* TTS Bar */}
         {verses && verses.length > 0 && (
           <div style={{ padding: "10px 16px", borderBottom: `1px solid ${t.border}`, background: t.accentBg, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            {ttsError && <p style={{ width: "100%", margin: 0, fontSize: 11, color: "#e53935" }}>{ttsError}</p>}
             {!ttsPlaying ? (
-              <button onClick={() => { const d = getTtsData(); ttsSpeak(d.texts, 0, d.verseMap, d.langMap); }} style={{ display: "flex", alignItems: "center", gap: 4, padding: "7px 16px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+              <button onClick={() => triggerTts(getTtsData)} onTouchEnd={() => triggerTts(getTtsData)} style={{ display: "flex", alignItems: "center", gap: 4, padding: "7px 16px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
                 ▶ 읽어주기
               </button>
             ) : (
               <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={ttsTogglePause} style={{ padding: "7px 14px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+                <button onClick={ttsTogglePause} onTouchEnd={ttsTogglePause} style={{ padding: "7px 14px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
                   {ttsPaused ? "▶ 계속" : "⏸ 일시정지"}
                 </button>
-                <button onClick={ttsStop} style={{ padding: "7px 14px", borderRadius: 20, border: `1px solid ${t.accent}`, background: "transparent", color: t.accent, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+                <button onClick={ttsStop} onTouchEnd={ttsStop} style={{ padding: "7px 14px", borderRadius: 20, border: `1px solid ${t.accent}`, background: "transparent", color: t.accent, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
                   ■ 정지
                 </button>
               </div>
@@ -1408,15 +1423,15 @@ window.BibleApp = function BibleApp() {
         {lyrics && hymnViewMode === 'lyrics' && (
           <div style={{ padding: "10px 16px", borderBottom: `1px solid ${t.border}`, background: t.accentBg, display: "flex", alignItems: "center", gap: 8 }}>
             {!ttsPlaying ? (
-              <button onClick={() => { const lines = lyricsLines.filter(l => l.trim()); ttsSpeak(lines, 0); }} style={{ display: "flex", alignItems: "center", gap: 4, padding: "7px 16px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+              <button onClick={() => triggerTts(() => ({ texts: lyricsLines.filter(l => l.trim()), verseMap: null, langMap: null }))} onTouchEnd={() => triggerTts(() => ({ texts: lyricsLines.filter(l => l.trim()), verseMap: null, langMap: null }))} style={{ display: "flex", alignItems: "center", gap: 4, padding: "7px 16px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
                 ▶ 가사 읽기
               </button>
             ) : (
               <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={ttsTogglePause} style={{ padding: "7px 14px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+                <button onClick={ttsTogglePause} onTouchEnd={ttsTogglePause} style={{ padding: "7px 14px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
                   {ttsPaused ? "▶ 계속" : "⏸"}
                 </button>
-                <button onClick={ttsStop} style={{ padding: "7px 14px", borderRadius: 20, border: `1px solid ${t.accent}`, background: "transparent", color: t.accent, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>■</button>
+                <button onClick={ttsStop} onTouchEnd={ttsStop} style={{ padding: "7px 14px", borderRadius: 20, border: `1px solid ${t.accent}`, background: "transparent", color: t.accent, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>■</button>
               </div>
             )}
           </div>
