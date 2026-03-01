@@ -123,7 +123,8 @@ const readRoundColors = [
 ];
 
 // 새찬송가→구찬송가 매핑 (통일찬송가 번호)
-const NEW2OLD = {1:1,2:6,3:2,4:4,5:3,6:8,8:9,9:53,10:34,12:22,14:30,15:55,19:44,20:41,21:21,22:26,23:23,25:25,26:14,27:27,28:28,29:29,31:46,32:48,33:12,34:45,35:50,36:36,37:37,39:39,40:43,42:11,43:57,44:56,46:58,49:72,50:71,53:59,54:61,55:62,56:60,58:66,59:68,60:67,64:13,65:19,66:20,67:31,68:32,69:33,70:79,71:438,73:73,74:74,75:47,78:75,79:40,80:101,81:452,82:90,83:83,84:96,85:85,86:86,87:87,88:88,89:89,90:98,91:91,92:97,93:93,94:102,95:82,96:94,101:106,102:107,104:104,105:105,108:113,109:109,111:111,112:112,114:114,115:115,116:116,117:117,119:119,120:120,121:121,122:122,123:123,125:125,126:126,138:52,139:128,140:130,141:132,143:141,144:144,145:145,146:146,147:136,148:142,149:147,150:135,151:138,154:139,159:149,160:150,161:159,162:151,163:160,164:154,165:155,166:156,167:157,168:158,174:161,175:162,176:163,177:164,179:167,180:168,182:169,183:172,184:173,185:179,186:176,187:171,188:180,189:181,190:177,191:427,195:175,196:174,197:178,198:284,199:234,200:235,201:240,202:241,204:379,205:236,207:243,208:246,209:247,210:245,211:346,212:347,213:348,214:349,215:354,216:356,217:362,218:369,219:279,220:278,221:525,222:524,225:298,227:283,228:285,229:281,232:282,234:220,235:222,236:223,237:226,239:230,240:231,241:232,242:233,243:224,245:228,246:221,249:249,250:182,251:137,252:184,254:186,255:187,257:189,258:190,259:193,260:194,261:195,262:196,263:197,264:198,265:199,266:200,267:201,268:202,269:211,270:214,272:330,273:331,274:332,275:333,276:334,277:335,278:336,279:337,280:338,282:339,283:183,284:206,285:209,286:218,287:205,288:204,289:208,290:412,291:413,292:415,293:414,294:416,295:417,297:191,298:35,299:418,300:406,301:460,302:408,303:403,304:404,305:405,309:409,310:410,311:185,312:341,313:352,314:511,315:512,317:353,320:350,321:351,322:357,323:355,324:360,325:359,326:368,327:361,328:374,329:267,330:370,331:375,333:381,336:383,337:363,338:364,339:365,340:366,341:367,342:395,343:443,346:398,347:382,348:388,349:387,350:393,351:389,352:390,353:391,354:394,355:386,356:396,357:397,358:400,359:401,360:402,361:480,362:481,363:479,364:482,366:485,368:486,369:487,370:455,371:419,372:420,373:503,374:423,375:421,376:422,377:451,378:430,379:429,380:424,381:425,382:432,383:433,384:434,385:435,386:439,387:440,388:441,390:444,391:446,393:447,394:449,395:450,397:454,401:457,406:464,407:465,408:466,410:468,411:473,412:469,413:470,414:475,415:471,417:476,418:478,461:519,462:517,463:518,465:523,471:528,472:530,475:272,478:78,479:290,480:293,481:531,482:49,483:532,484:533,485:534,486:474,487:535,488:539,489:541,490:542,491:543,492:544,493:545,494:188,495:271,496:260,497:274,498:275,499:277,500:258,501:255,502:259,503:373,504:266,505:268,507:273,508:270,509:314,510:276,511:263,512:328,515:256,516:265,518:252,519:251,520:257,521:253,522:269,523:262,524:313,525:315,526:316,527:317,528:319,529:320,530:321,531:323,534:324,535:325,536:326,537:329,538:327,539:483,540:219,542:340,543:342,544:343,545:344,546:399,549:431,550:248,551:296,552:358,554:297,559:305,563:411,564:299,565:300,566:301,567:436,569:442,570:453,574:303,575:302,579:304,580:371,582:261,585:384,586:521,587:306,588:307,589:308,590:309,591:310,592:311,593:312,595:372,597:378,598:244,600:242,602:286,604:288,605:287,606:291,607:292,608:295,610:289,631:547,632:549,635:548,638:70,639:550,641:552,643:554,644:557,645:556};
+// 새찬송가→구찬송가 매핑 (성가대찬양 사이트 기준, 오디오 파일 번호로 사용)
+const NEW2OLD = {1:1,2:6,3:2,4:4,5:3,6:8,8:9,9:53,10:34,12:22,14:30,15:55,19:44,20:41,21:21,22:26,23:23,25:25,26:14,27:27,28:28,29:29,31:46,32:48,33:12,34:45,35:50,36:36,37:37,39:39,40:43,42:11,43:57,44:56,46:58,49:72,50:71,53:59,54:61,55:62,56:60,58:66,59:68,60:67,64:13,65:19,66:20,67:31,68:32,69:33,70:79,71:438,73:73,74:74,75:47,78:75,79:40,80:101,81:452,82:90,83:83,84:96,85:85,86:86,87:87,88:88,89:89,90:98,91:91,92:97,93:93,94:102,95:82,96:94,101:106,102:107,104:104,105:105,108:113,109:109,111:111,112:112,114:114,115:115,116:116,117:117,118:118,119:119,120:120,121:121,122:122,123:123,125:125,126:126,130:42,131:24,132:38,134:84,135:133,138:52,139:128,140:130,141:141,143:132,144:144,145:145,146:146,147:136,148:142,149:147,150:135,151:138,154:139,159:149,160:150,161:159,162:151,163:160,164:154,165:155,166:156,167:157,168:158,170:16,172:152,174:161,175:162,176:163,177:164,179:167,180:168,182:169,183:172,184:173,185:179,186:176,187:171,188:180,189:181,190:177,191:427,195:175,196:174,197:178,198:284,199:234,200:235,201:240,202:241,204:379,205:236,207:243,208:246,209:247,210:245,211:346,212:347,213:348,214:349,215:354,216:356,217:362,218:369,219:279,220:278,221:525,222:524,225:298,227:283,228:285,229:281,232:282,234:220,235:222,236:223,237:226,239:230,240:231,241:232,242:233,243:224,245:228,246:221,249:249,250:182,251:137,252:184,254:186,255:187,257:189,258:190,259:193,260:194,261:195,262:196,263:197,264:198,265:199,266:200,267:201,268:202,269:211,270:214,272:330,273:331,274:332,275:333,276:334,277:335,278:336,279:337,280:338,282:339,283:183,284:206,285:209,286:218,287:205,288:204,289:208,290:412,291:413,292:415,293:414,294:416,295:417,297:191,298:35,299:418,300:406,301:460,302:408,303:403,304:404,305:405,309:409,310:410,311:185,312:341,313:352,314:511,315:512,317:353,320:350,321:351,322:357,323:355,324:360,325:359,326:368,327:361,328:374,329:267,330:370,331:375,333:381,336:383,337:363,338:364,339:365,340:366,341:367,342:395,345:461,346:398,347:382,348:388,349:387,350:393,351:389,352:390,353:443,354:394,355:386,356:396,357:397,358:400,359:401,360:402,361:480,362:481,363:479,364:482,365:484,366:485,368:486,369:487,370:455,371:419,372:420,373:503,374:423,375:421,376:422,377:451,378:430,379:429,380:424,381:425,382:432,383:433,384:434,385:435,386:439,387:440,388:441,390:444,391:446,393:447,394:449,395:450,397:454,400:463,401:457,404:477,405:458,406:464,407:465,408:466,410:468,411:473,412:469,413:470,414:475,415:471,417:476,419:478,420:212,421:210,423:213,424:216,425:217,426:215,427:516,428:488,429:489,430:456,432:462,433:490,434:491,435:492,436:493,438:495,439:496,440:497,441:498,442:499,445:502,446:500,447:448,449:377,450:376,451:504,452:505,453:506,454:508,455:507,456:509,457:510,458:513,459:514,460:515,461:519,462:517,463:518,465:523,471:528,472:530,475:272,478:78,479:290,480:293,481:531,482:49,483:532,484:533,485:534,486:474,487:535,488:539,489:541,490:542,491:543,492:544,493:545,494:188,495:271,496:260,497:274,498:275,499:277,500:258,501:255,502:259,503:373,504:266,505:268,507:273,508:270,509:314,510:276,511:263,512:328,515:256,516:265,518:252,519:251,520:257,521:253,522:269,523:262,524:313,525:315,526:316,527:317,528:318,529:319,530:320,531:321,532:323,534:324,535:325,536:326,537:329,538:327,539:483,540:219,542:340,543:342,544:343,545:344,546:399,549:431,550:248,551:296,552:358,554:297,559:305,563:411,564:299,565:300,566:301,567:436,569:442,570:453,574:303,575:302,579:304,580:371,582:261,585:384,586:521,587:306,588:307,589:308,590:309,591:310,592:311,593:312,595:372,597:378,598:244,600:242,602:286,604:288,605:287,606:291,607:292,608:295,610:289,631:547,632:549,635:548,638:70,639:550,640:554,641:552,643:556,644:557,645:558};
 // 구찬송가→새찬송가 (역방향)
 const OLD2NEW = {};
 Object.entries(NEW2OLD).forEach(([n,o]) => { if (!OLD2NEW[o]) OLD2NEW[o] = parseInt(n); });
@@ -554,15 +555,12 @@ window.BibleApp = function BibleApp() {
   }, []);
 
   // ── TTS ──
-  // iOS warm-up: first speechSynthesis call often fails silently on iOS.
-  // Speak an empty utterance on the very first user interaction to "unlock" the API.
-  const ttsWarmUp = useCallback(() => {
-    if (ttsActivatedRef.current || !window.speechSynthesis) return;
-    ttsActivatedRef.current = true;
-    const warmUp = new SpeechSynthesisUtterance('');
-    warmUp.volume = 0;
-    warmUp.rate = 10;
-    window.speechSynthesis.speak(warmUp);
+  // Preload voices on first interaction (no speak() call to avoid cancel/speak race on mobile)
+  useEffect(() => {
+    const init = () => { if (window.speechSynthesis) window.speechSynthesis.getVoices(); };
+    document.addEventListener('touchstart', init, { once: true, passive: true });
+    document.addEventListener('click', init, { once: true });
+    return () => { document.removeEventListener('touchstart', init); document.removeEventListener('click', init); };
   }, []);
 
   const ttsStop = useCallback(() => {
@@ -571,14 +569,8 @@ window.BibleApp = function BibleApp() {
   }, []);
 
   const ttsSpeak = useCallback((texts, startIdx = 0, verseMap = null, langMap = null) => {
-    if (!window.speechSynthesis) return;
-    // Warm up on first use (handles iOS first-call-fails bug)
-    ttsWarmUp();
-    // cancel + resume workaround: cancel() has an async cleanup that can
-    // swallow the next speak() call (Mozilla bug 1522074). Calling resume()
-    // after cancel() flushes the internal state so speak() is accepted.
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.resume();
+    const synth = window.speechSynthesis;
+    if (!synth) return;
     ttsTextsRef.current = texts;
     if (verseMap !== null) ttsVerseMapRef.current = verseMap;
     if (langMap !== null) ttsLangMapRef.current = langMap;
@@ -595,9 +587,15 @@ window.BibleApp = function BibleApp() {
     if (voice) { utter.voice = voice; utter.lang = voice.lang; }
     utter.rate = ttsSpeedRef.current;
     utter.onend = () => { if (startIdx + 1 < texts.length) ttsSpeak(texts, startIdx + 1); else ttsStop(); };
-    utter.onerror = (ev) => { if (ev.error !== 'canceled') ttsStop(); };
-    window.speechSynthesis.speak(utter);
-  }, [ttsStop, ttsWarmUp]);
+    utter.onerror = (ev) => { if (ev.error !== 'canceled' && ev.error !== 'interrupted') ttsStop(); };
+    // On mobile Chrome, cancel() immediately before speak() silently drops the utterance.
+    // Only cancel if actually speaking/pending, and use resume() to clear paused state.
+    if (synth.speaking || synth.pending) {
+      synth.cancel();
+    }
+    synth.resume();
+    synth.speak(utter);
+  }, [ttsStop]);
 
   const ttsTogglePause = useCallback(() => {
     if (!window.speechSynthesis) return;
@@ -1361,13 +1359,18 @@ window.BibleApp = function BibleApp() {
     const sheetUrl = isRegularHymn ? `/data/hymns/sheets/${String(selectedHymn.n).padStart(3, '0')}.jpg`
       : hymnCategory === "ghymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/images/${selectedHymn.f}.png`
       : hymnCategory === "khymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/images/${selectedHymn.f}.png` : null;
+    const sheetUrl2 = (!isRegularHymn && selectedHymn.s === 1 && selectedHymn.f)
+      ? (hymnCategory === "ghymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/images/${selectedHymn.f + 1}.png`
+        : hymnCategory === "khymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/images/${selectedHymn.f + 1}.png` : null)
+      : null;
     const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "찬송가";
     const catColor = hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent;
     const oldNum = isRegularHymn ? NEW2OLD[selectedHymn.n] : null;
     const displayNum = oldNum || selectedHymn.n;
     const subLabel = isRegularHymn ? (oldNum ? `구찬송가 ${oldNum}장 (새찬송가 ${selectedHymn.n}장)` : `새찬송가 ${selectedHymn.n}장`) : `${catLabel} ${selectedHymn.n}장`;
-    // Audio URL: all from choir.gntc.net (HTTPS). gHymn audio uses n, kHymn uses f
-    const audioUrl = isRegularHymn ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${selectedHymn.n}.mp3`
+    // Audio URL: choir.gntc.net uses 구찬송가 numbers for regular hymns
+    const oldHymnNum = isRegularHymn ? NEW2OLD[selectedHymn.n] : null;
+    const audioUrl = isRegularHymn && oldHymnNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oldHymnNum}.mp3`
       : hymnCategory === "ghymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/ar/${selectedHymn.n}.mp3`
       : hymnCategory === "khymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/ar/${selectedHymn.f}.mp3` : null;
 
@@ -1421,16 +1424,26 @@ window.BibleApp = function BibleApp() {
 
         {/* Content area */}
         {!isRegularHymn && sheetUrl ? (
-          /* Sheet music view (ghymn/khymn - always show directly) */
+          /* Sheet music view (ghymn/khymn - always show directly, supports multi-page) */
           <div style={{ padding: "16px", textAlign: "center" }}>
             {!sheetError ? (
-              <img
-                src={sheetUrl}
-                alt={`${selectedHymn.t} 악보`}
-                onError={() => setSheetError(true)}
-                style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}` }}
-                loading="lazy"
-              />
+              <>
+                <img
+                  src={sheetUrl}
+                  alt={`${selectedHymn.t} 악보`}
+                  onError={() => setSheetError(true)}
+                  style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}` }}
+                  loading="lazy"
+                />
+                {sheetUrl2 && (
+                  <img
+                    src={sheetUrl2}
+                    alt={`${selectedHymn.t} 악보 2`}
+                    style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}`, marginTop: 8 }}
+                    loading="lazy"
+                  />
+                )}
+              </>
             ) : (
               <div style={{ padding: "40px 0", textAlign: "center" }}>
                 <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.15 }}>🎵</div>
@@ -1989,7 +2002,7 @@ window.BibleApp = function BibleApp() {
             const oNum = parseInt(familyData.hymnNo);
             const nNum = OLD2NEW[oNum] || (familyData.newHymnNo ? parseInt(familyData.newHymnNo) : null) || ((hymnsIndex.find(h => h.t === familyData.hymnTitle)) || {}).n || null;
             const hymnSheetUrl = nNum ? `/data/hymns/sheets/${String(nNum).padStart(3, '0')}.jpg` : null;
-            const hymnAudioUrl = nNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${nNum}.mp3` : null;
+            const hymnAudioUrl = oNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oNum}.mp3` : null;
             const collapsed = familyCollapsed.hymn;
             return (
             <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px", marginBottom: 10 }}>
