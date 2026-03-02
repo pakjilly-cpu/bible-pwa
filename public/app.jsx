@@ -617,9 +617,16 @@ window.BibleApp = function BibleApp() {
 
   const ttsTogglePause = useCallback(() => {
     if (!window.speechSynthesis) return;
-    if (ttsPaused) { window.speechSynthesis.resume(); setTtsPaused(false); }
-    else { window.speechSynthesis.pause(); setTtsPaused(true); }
-  }, [ttsPaused]);
+    if (ttsPaused) {
+      // Android Chrome에서 resume() 안 됨 → 현재 위치부터 다시 speak
+      window.speechSynthesis.cancel();
+      setTtsPaused(false);
+      ttsSpeak(ttsTextsRef.current, ttsIdxRef.current);
+    } else {
+      window.speechSynthesis.cancel();
+      setTtsPaused(true);
+    }
+  }, [ttsPaused, ttsSpeak]);
 
   // ── Search (bilingual) ──
   const doSearch = useCallback(async (query) => {
