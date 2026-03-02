@@ -597,9 +597,8 @@ window.BibleApp = function BibleApp() {
       utter.rate = ttsSpeedRef.current;
       utter.onend = () => { if (startIdx + 1 < texts.length) ttsSpeak(texts, startIdx + 1); else ttsStop(); };
       utter.onerror = (ev) => { if (ev.error !== 'canceled' && ev.error !== 'interrupted') ttsStop(); };
-      // Clear any stale state before speaking
+      // Clear any stale state before speaking (no resume() - causes silent failure on Android Chrome)
       synth.cancel();
-      synth.resume();
       synth.speak(utter);
     } catch (e) {
       setTtsError('읽어주기 오류: ' + e.message);
