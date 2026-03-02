@@ -1404,7 +1404,7 @@ window.BibleApp = function BibleApp() {
     const catColor = hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent;
     const oldNum = isRegularHymn ? NEW2OLD[selectedHymn.n] : null;
     const displayNum = oldNum || selectedHymn.n;
-    const subLabel = isRegularHymn ? (oldNum ? `구찬송가 ${oldNum}장 (새찬송가 ${selectedHymn.n}장)` : `새찬송가 ${selectedHymn.n}장`) : `${catLabel} ${selectedHymn.n}장`;
+    const subLabel = isRegularHymn ? (oldNum ? `통일찬송가 ${oldNum}장 (새찬송가 ${selectedHymn.n}장)` : `새찬송가 ${selectedHymn.n}장`) : `${catLabel} ${selectedHymn.n}장`;
     // Audio URL: choir.gntc.net uses 구찬송가 numbers for regular hymns
     const oldHymnNum = isRegularHymn ? NEW2OLD[selectedHymn.n] : null;
     const audioUrl = isRegularHymn && oldHymnNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oldHymnNum}.mp3`
