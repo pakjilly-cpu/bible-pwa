@@ -1103,20 +1103,15 @@ window.BibleApp = function BibleApp() {
           <div style={{ padding: "10px 16px", borderBottom: `1px solid ${t.border}`, background: t.accentBg, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             {ttsError && <p style={{ width: "100%", margin: 0, fontSize: 11, color: "#e53935" }}>{ttsError}</p>}
             {!ttsPlaying ? (
-              <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                <button onClick={() => triggerTts(getTtsData)} onTouchEnd={() => triggerTts(getTtsData)} style={{ display: "flex", alignItems: "center", gap: 4, padding: "7px 16px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
-                  ▶ 읽어주기
-                </button>
-                <button onClick={() => { const s = window.speechSynthesis; if (!s) { setTtsError('speechSynthesis 미지원'); return; } s.cancel(); const u = new SpeechSynthesisUtterance('테스트 음성입니다'); u.lang = 'ko'; u.onend = () => setTtsError('테스트 완료 (소리 들렸으면 정상)'); u.onerror = (e) => setTtsError('테스트 오류: ' + e.error); s.speak(u); setTtsError('테스트 중... 음성: ' + (s.getVoices().length) + '개'); }} onTouchEnd={() => { const s = window.speechSynthesis; if (!s) { setTtsError('speechSynthesis 미지원'); return; } s.cancel(); const u = new SpeechSynthesisUtterance('테스트 음성입니다'); u.lang = 'ko'; u.onend = () => setTtsError('테스트 완료 (소리 들렸으면 정상)'); u.onerror = (e) => setTtsError('테스트 오류: ' + e.error); s.speak(u); setTtsError('테스트 중... 음성: ' + (s.getVoices().length) + '개'); }} style={{ padding: "7px 10px", borderRadius: 20, border: `1px solid ${t.border}`, background: "transparent", color: t.sub, fontSize: 11, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
-                  음성테스트
-                </button>
-              </div>
+              <button onClick={() => triggerTts(getTtsData)} onTouchEnd={(e) => { e.preventDefault(); triggerTts(getTtsData); }} style={{ display: "flex", alignItems: "center", gap: 4, padding: "7px 16px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+                ▶ 읽어주기
+              </button>
             ) : (
               <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={ttsTogglePause} onTouchEnd={ttsTogglePause} style={{ padding: "7px 14px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+                <button onClick={ttsTogglePause} onTouchEnd={(e) => { e.preventDefault(); ttsTogglePause(); }} style={{ padding: "7px 14px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
                   {ttsPaused ? "▶ 계속" : "⏸ 일시정지"}
                 </button>
-                <button onClick={ttsStop} onTouchEnd={ttsStop} style={{ padding: "7px 14px", borderRadius: 20, border: `1px solid ${t.accent}`, background: "transparent", color: t.accent, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+                <button onClick={ttsStop} onTouchEnd={(e) => { e.preventDefault(); ttsStop(); }} style={{ padding: "7px 14px", borderRadius: 20, border: `1px solid ${t.accent}`, background: "transparent", color: t.accent, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
                   ■ 정지
                 </button>
               </div>
