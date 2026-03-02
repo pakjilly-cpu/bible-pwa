@@ -592,11 +592,22 @@ window.BibleApp = function BibleApp() {
       const lm = ttsLangMapRef.current;
       const lang = lm ? lm[startIdx] : 'ko-KR';
       utter.lang = lang;
-      const voice = getPreferredVoice(lang);
-      if (voice) { utter.voice = voice; utter.lang = voice.lang; }
+      try { const voice = getPreferredVoice(lang); if (voice) { utter.voice = voice; utter.lang = voice.lang; } } catch(_) {}
       utter.rate = ttsSpeedRef.current;
       utter.onend = () => { if (startIdx + 1 < texts.length) ttsSpeak(texts, startIdx + 1); else ttsStop(); };
-      utter.onerror = (ev) => { if (ev.error !== 'canceled' && ev.error !== 'interrupted') ttsStop(); };
+      utter.onerror = (ev) => {
+        if (ev.error !== 'canceled' && ev.error !== 'interrupted') {
+          // voice 지정 실패 시 lang만으로 재시도 (삼성 인터넷 등)
+          if (utter.voice) {
+            const retry = new SpeechSynthesisUtterance(texts[startIdx]);
+            retry.lang = lang;
+            retry.rate = ttsSpeedRef.current;
+            retry.onend = () => { if (startIdx + 1 < texts.length) ttsSpeak(texts, startIdx + 1); else ttsStop(); };
+            retry.onerror = (e2) => { if (e2.error !== 'canceled' && e2.error !== 'interrupted') ttsStop(); };
+            synth.speak(retry);
+          } else { ttsStop(); }
+        }
+      };
       // Clear any stale state before speaking (no resume() - causes silent failure on Android Chrome)
       synth.cancel();
       synth.speak(utter);
