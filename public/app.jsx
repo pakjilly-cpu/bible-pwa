@@ -2062,6 +2062,26 @@ window.BibleApp = function BibleApp() {
             </div>);
           })()}
 
+          {/* Bible text */}
+          {familyData.texts && familyData.texts.length > 0 && (
+            <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "16px", marginBottom: 10 }}>
+              <div onClick={() => setFamilyCollapsed(p => ({ ...p, bible: !p.bible }))} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: t.accent }}>본문 말씀</div>
+                <span style={{ fontSize: 12, color: t.sub, flexShrink: 0, padding: "4px 8px" }}>{familyCollapsed.bible ? "펼치기 ▼" : "접기 ▲"}</span>
+              </div>
+              {!familyCollapsed.bible && (
+                <div style={{ marginTop: 10 }}>
+                  {familyData.texts[0].text.map((text, i) => (
+                    <div key={i} style={{ display: "flex", gap: 0, marginBottom: 2, padding: "6px 4px" }}>
+                      <span style={{ fontSize: 10, fontWeight: 700, color: t.verseNum, minWidth: 24, paddingTop: 3, opacity: 0.7, flexShrink: 0 }}>{familyData.texts[0].verse[i]}</span>
+                      <p style={{ fontSize: 14, lineHeight: 1.85, margin: 0, wordBreak: "keep-all", color: t.text }}>{text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Devotional body */}
           {bodyText && (
             <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "16px", marginBottom: 10 }}>
@@ -2085,26 +2105,6 @@ window.BibleApp = function BibleApp() {
             <div style={{ background: darkMode ? "linear-gradient(135deg, #2a2215, #251f12)" : "linear-gradient(135deg, #fdf6e9, #faf0dc)", border: `1px solid ${darkMode ? '#3a3220' : '#e8dcc0'}`, borderRadius: 10, padding: "12px", marginBottom: 16 }}>
               <div style={{ fontSize: 10, color: "#e67e22", fontWeight: 700, marginBottom: 6 }}>기도</div>
               <p style={{ fontSize: 14, lineHeight: 1.8, color: t.text, margin: 0, wordBreak: "keep-all" }}>{prayerText}</p>
-            </div>
-          )}
-
-          {/* Bible text */}
-          {familyData.texts && familyData.texts.length > 0 && (
-            <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "16px" }}>
-              <div onClick={() => setFamilyCollapsed(p => ({ ...p, bible: !p.bible }))} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: t.accent }}>본문 말씀</div>
-                <span style={{ fontSize: 12, color: t.sub, flexShrink: 0, padding: "4px 8px" }}>{familyCollapsed.bible ? "펼치기 ▼" : "접기 ▲"}</span>
-              </div>
-              {!familyCollapsed.bible && (
-                <div style={{ marginTop: 10 }}>
-                  {familyData.texts[0].text.map((text, i) => (
-                    <div key={i} style={{ display: "flex", gap: 0, marginBottom: 2, padding: "6px 4px" }}>
-                      <span style={{ fontSize: 10, fontWeight: 700, color: t.verseNum, minWidth: 24, paddingTop: 3, opacity: 0.7, flexShrink: 0 }}>{familyData.texts[0].verse[i]}</span>
-                      <p style={{ fontSize: 14, lineHeight: 1.85, margin: 0, wordBreak: "keep-all", color: t.text }}>{text}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           )}
         </div>
