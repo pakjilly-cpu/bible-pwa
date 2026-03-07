@@ -1393,7 +1393,7 @@ window.BibleApp = function BibleApp() {
     const lyrics = hymnLyrics?.lyrics || "";
     const lyricsLines = lyrics.split("\n");
     const [sheetError, setSheetError] = useState(false);
-    const sheetUrl = isRegularHymn ? (NEW2OLD[selectedHymn.n] ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${NEW2OLD[selectedHymn.n]}.png` : `/data/hymns/sheets/${String(selectedHymn.n).padStart(3, '0')}.jpg`)
+    const sheetUrl = isRegularHymn ? `/data/hymns/sheets/${String(selectedHymn.n).padStart(3, '0')}.jpg`
       : hymnCategory === "ghymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/images/${selectedHymn.f}.png`
       : hymnCategory === "khymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/images/${selectedHymn.f}.png` : null;
     const sheetUrl2 = (!isRegularHymn && selectedHymn.s === 1 && selectedHymn.f)
@@ -1404,7 +1404,7 @@ window.BibleApp = function BibleApp() {
     const catColor = hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent;
     const oldNum = isRegularHymn ? NEW2OLD[selectedHymn.n] : null;
     const displayNum = oldNum || selectedHymn.n;
-    const subLabel = isRegularHymn ? (oldNum ? `통일찬송가 ${oldNum}장 (새찬송가 ${selectedHymn.n}장)` : `새찬송가 ${selectedHymn.n}장`) : `${catLabel} ${selectedHymn.n}장`;
+    const subLabel = isRegularHymn ? (oldNum ? `새찬송가 ${selectedHymn.n}장 (통일찬송가 ${oldNum}장)` : `새찬송가 ${selectedHymn.n}장`) : `${catLabel} ${selectedHymn.n}장`;
     // Audio URL: choir.gntc.net uses 구찬송가 numbers for regular hymns
     const oldHymnNum = isRegularHymn ? NEW2OLD[selectedHymn.n] : null;
     const audioUrl = isRegularHymn && oldHymnNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oldHymnNum}.mp3`
@@ -1490,7 +1490,7 @@ window.BibleApp = function BibleApp() {
           </div>
         ) : isRegularHymn && hymnViewMode === 'sheet' && sheetUrl ? (
           /* Sheet music view (regular hymns - via button) */
-          <div style={{ padding: "16px", textAlign: "center" }}>
+          <div style={{ padding: "0 16px 16px", textAlign: "center" }}>
             {!sheetError ? (
               <img
                 src={sheetUrl}
@@ -2038,8 +2038,9 @@ window.BibleApp = function BibleApp() {
           {familyData.hymnNo && familyData.hymnNo !== "0" && (() => {
             const oNum = parseInt(familyData.hymnNo);
             const nNum = OLD2NEW[oNum] || (familyData.newHymnNo ? parseInt(familyData.newHymnNo) : null) || ((hymnsIndex.find(h => h.t === familyData.hymnTitle)) || {}).n || null;
-            const hymnSheetUrl = oNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${oNum}.png` : (nNum ? `/data/hymns/sheets/${String(nNum).padStart(3, '0')}.jpg` : null);
-            const hymnAudioUrl = oNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oNum}.mp3` : null;
+            const fileNo = familyData.hymnFileNo ? parseInt(familyData.hymnFileNo) : null;
+            const hymnSheetUrl = fileNo ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${fileNo}.png` : (nNum ? `/data/hymns/sheets/${String(nNum).padStart(3, '0')}.jpg` : null);
+            const hymnAudioUrl = fileNo ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${fileNo}.mp3` : null;
             const collapsed = familyCollapsed.hymn;
             return (
             <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px", marginBottom: 10 }}>
