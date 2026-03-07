@@ -1169,21 +1169,21 @@ window.BibleApp = function BibleApp() {
               const isMenuOpen = activeVerseMenu === bKey;
 
               return (
-                <div key={i} style={{ display: "flex", gap: 0, marginBottom: 2, padding: "8px 8px", borderRadius: 8, background: hlColor ? highlightBgMap[hlColor] : (isReading ? `${t.accent}18` : "transparent"), transition: "background 0.3s", borderLeft: isReading ? `3px solid ${t.accent}` : "3px solid transparent" }}>
+                <div key={i} style={{ display: "flex", gap: 0, marginBottom: 2, padding: "8px 8px", borderRadius: 8, background: isReading ? `${t.accent}18` : "transparent", transition: "background 0.3s", borderLeft: isReading ? `3px solid ${t.accent}` : "3px solid transparent" }}>
                   <span style={{ fontSize: 11, fontWeight: 700, color: t.verseNum, minWidth: 28, paddingTop: 5, opacity: 0.7, flexShrink: 0 }}>{vNum}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     {/* Korean text */}
                     {verseObj.ko && (
                       <p onClick={() => { if (!ttsPlaying) setActiveVerseMenu(isMenuOpen ? null : bKey); else { const vm = ttsVerseMapRef.current; let idx = i; if (vm) { idx = vm.indexOf(i); if (idx === -1) idx = i; } ttsSpeak(ttsTextsRef.current, idx); } }}
                         style={{ fontSize, lineHeight: 1.85, margin: 0, wordBreak: "keep-all", color: t.text, cursor: "pointer" }}>
-                        {verseObj.ko}
+                        {hlColor ? <span style={{ background: highlightBgMap[hlColor], borderRadius: 3, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone", padding: "2px 0" }}>{verseObj.ko}</span> : verseObj.ko}
                       </p>
                     )}
                     {/* English text */}
                     {verseObj.en && (
                       <p onClick={() => { if (!ttsPlaying) setActiveVerseMenu(isMenuOpen ? null : bKey); else { const vm = ttsVerseMapRef.current; let idx = i; if (vm) { idx = vm.indexOf(i); if (idx === -1) idx = i; } ttsSpeak(ttsTextsRef.current, idx); } }}
                         style={{ fontSize: bibleLang === 'both' ? fontSize - 1 : fontSize, lineHeight: 1.75, margin: bibleLang === 'both' ? "4px 0 0" : 0, wordBreak: "break-word", color: bibleLang === 'both' ? t.sub : t.text, fontStyle: bibleLang === 'both' ? "italic" : "normal", cursor: "pointer" }}>
-                        {verseObj.en}
+                        {hlColor ? <span style={{ background: highlightBgMap[hlColor], borderRadius: 3, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone", padding: "2px 0" }}>{verseObj.en}</span> : verseObj.en}
                       </p>
                     )}
                     {/* Action buttons */}
@@ -1393,7 +1393,7 @@ window.BibleApp = function BibleApp() {
     const lyrics = hymnLyrics?.lyrics || "";
     const lyricsLines = lyrics.split("\n");
     const [sheetError, setSheetError] = useState(false);
-    const sheetUrl = isRegularHymn ? `/data/hymns/sheets/${String(selectedHymn.n).padStart(3, '0')}.jpg`
+    const sheetUrl = isRegularHymn ? (NEW2OLD[selectedHymn.n] ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${NEW2OLD[selectedHymn.n]}.png` : `/data/hymns/sheets/${String(selectedHymn.n).padStart(3, '0')}.jpg`)
       : hymnCategory === "ghymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/images/${selectedHymn.f}.png`
       : hymnCategory === "khymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/images/${selectedHymn.f}.png` : null;
     const sheetUrl2 = (!isRegularHymn && selectedHymn.s === 1 && selectedHymn.f)
@@ -2038,7 +2038,7 @@ window.BibleApp = function BibleApp() {
           {familyData.hymnNo && familyData.hymnNo !== "0" && (() => {
             const oNum = parseInt(familyData.hymnNo);
             const nNum = OLD2NEW[oNum] || (familyData.newHymnNo ? parseInt(familyData.newHymnNo) : null) || ((hymnsIndex.find(h => h.t === familyData.hymnTitle)) || {}).n || null;
-            const hymnSheetUrl = nNum ? `/data/hymns/sheets/${String(nNum).padStart(3, '0')}.jpg` : null;
+            const hymnSheetUrl = oNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${oNum}.png` : (nNum ? `/data/hymns/sheets/${String(nNum).padStart(3, '0')}.jpg` : null);
             const hymnAudioUrl = oNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oNum}.mp3` : null;
             const collapsed = familyCollapsed.hymn;
             return (
