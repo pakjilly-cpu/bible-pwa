@@ -128,8 +128,9 @@ const NEW2OLD = {1:1,2:6,3:2,4:4,5:3,6:8,8:9,9:53,10:34,12:22,14:30,15:55,19:44,
 // 구찬송가→새찬송가 (역방향)
 const OLD2NEW = {};
 Object.entries(NEW2OLD).forEach(([n,o]) => { if (!OLD2NEW[o]) OLD2NEW[o] = parseInt(n); });
-// 통일찬송가 번호→choir.gntc.net 이미지 파일번호 (일부 곡이 2페이지라 번호≠파일번호)
-const OLD2FILE = {53:55,54:56,55:57,56:58,57:59,58:60,59:61,60:62,61:63,62:64,63:65,64:66,65:67,66:68,67:69,68:70,69:71,70:72,71:73,72:74,73:75,74:76,75:77,76:78,77:79,78:80,79:81,80:82,81:83,82:84,83:85,84:86,85:88,86:89,87:90,88:91,89:92,90:93,91:94,92:95,93:96,94:97,95:98,96:99,97:100,98:101,99:102,100:103,101:104,102:105,103:106,104:107,105:108,106:109,107:110,108:111,109:112,110:113,111:114,112:115,113:116,114:117,115:118,116:119,117:120,118:121,119:122,120:123,121:124,122:125,123:126,124:127,125:128,126:129,127:130,128:131,129:132,130:133,131:134,132:135,133:136,134:137,135:139,136:140,137:141,138:142,139:143,140:144,141:145,142:146,143:147,144:148,145:149,146:150,147:151,148:152,149:153,150:154,151:155,152:156,153:157,154:158,155:159,156:160,157:161,158:162,159:163,160:164,161:165,162:167,163:168,164:169,165:170,166:171,167:172,168:173,169:174,170:175,171:176,172:177,173:178,174:179,175:180,176:181,177:182,178:183,179:184,180:185,181:186,182:188,183:189,184:190,185:191,186:192,187:193,188:195,189:196,190:197,191:198,192:199,193:200,194:201,195:202,196:203,197:205,198:206,199:207,200:208,201:209,202:210,203:211,204:212,205:213,206:214,207:215,208:216,209:217,210:218,211:219,212:221,213:222,214:223,215:224,216:225,217:226,218:227,219:228,220:229,221:230,222:231,223:232,224:233,225:234,226:235,227:236,228:237,229:238,230:239,231:240,232:241,233:245,234:246,235:247,236:248,237:249,238:250,239:251,240:252,241:254,242:255,243:256,244:257,245:258,246:259,247:260,248:261,249:262,250:263,251:264,252:266,253:267,254:268,255:269,256:271,257:272,258:273,259:274,260:275,261:276,262:277,263:278,264:279,265:280,266:281,267:282,268:283,269:284,270:285,271:286,272:287,273:288,274:290,275:291,276:293,277:294,278:295,279:296,280:297,281:298,282:299,283:300,284:301,285:302,286:303,287:304,288:305,289:306,290:307,291:308,292:309,293:310,294:311,295:312,296:313,297:314,298:315,299:316,300:317,301:318,302:320,303:321,304:322,305:324,306:325,307:326,308:327,309:328,310:329,311:330,312:331,313:333,314:334,315:335,316:336,317:337,318:338,319:339,320:340,321:342,322:343,323:344,324:345,325:346,326:347,327:348,328:349,329:350,330:351,331:352,332:353,333:354,334:355,335:356,336:357,337:358,338:359,339:360,340:361,341:362,342:363,343:364,344:365,345:366,346:367,347:368,348:369,349:370,350:371,351:372,352:373,353:374,354:375,355:376,356:377,357:378,358:379,359:380,360:381,361:382,362:383,363:384,364:385,365:386,366:387,367:388,368:389,369:390,370:391,371:392,372:393,373:395,374:396,375:398,376:400,377:401,378:402,379:403,380:404,381:405,382:407,383:408,384:409,385:410,386:411,387:413,388:415,389:416,390:417,391:418,392:419,393:420,394:421,395:423,396:424,397:425,398:426,399:427,400:428,401:429,402:430,403:431,404:432,405:434,406:435,407:436,408:438,409:439,410:440,411:441,412:442,413:443,414:444,415:446,416:447,417:448,418:449,419:450,420:451,421:455,422:456,423:457,424:458,425:459,426:460,427:461,428:462,429:463,430:464,431:465,432:466,433:467,434:468,435:469,436:470,437:471,438:472,439:473,440:474,441:475,442:477,443:478,444:479,445:480,446:481,447:482,448:483,449:484,450:485,451:486,452:487,453:488,454:489,455:490,456:491,457:492,458:493,459:494,460:495,461:496,462:497,463:498,464:499,465:500,466:501,467:502,468:503,469:504,470:505,471:506,472:507,473:508,474:509,475:510,476:511,477:512,478:515,479:516,480:517,481:519,482:520,483:521,484:522,485:523,486:524,487:525,488:526,489:527,490:528,491:529,492:530,493:531,494:532,495:533,496:534,497:535,498:536,499:537,500:538,501:539,502:540,503:541,504:542,505:543,506:544,507:545,508:546,509:547,510:548,511:549,512:550,513:551,514:552,515:553,516:554,517:555,518:556,519:557,520:558,521:559,522:560,523:561,524:562,525:563,526:564,527:565,528:566,529:567,530:568,531:569,532:570,533:571,534:572,535:573,536:574,537:575,538:576,539:579,540:580,541:581,542:582,543:583,544:584,545:585,546:586,547:587,548:588,549:589,550:590,551:591,552:592,553:593,554:594,555:595,556:596,557:597,558:598};
+// 통일찬송가 번호→choir.gntc.net 이미지 파일번호 (40곡이 2페이지라 번호≠파일번호, API 236개 검증완료)
+const OLD_2PAGE = new Set([46,51,84,133,152,179,187,195,211,224,226,228,236,249,253,268,274,281,302,311,319,371,373,375,379,385,387,394,404,406,414,417,419,420,434,473,476,480,519,530]);
+const OLD2FILE = {47:48,48:49,49:50,50:51,51:52,52:54,53:55,54:56,55:57,56:58,57:59,58:60,59:61,60:62,61:63,62:64,63:65,64:66,65:67,66:68,67:69,68:70,69:71,70:72,71:73,72:74,73:75,74:76,75:77,76:78,77:79,78:80,79:81,80:82,81:83,82:84,83:85,84:86,85:88,86:89,87:90,88:91,89:92,90:93,91:94,92:95,93:96,94:97,95:98,96:99,97:100,98:101,99:102,100:103,101:104,102:105,103:106,104:107,105:108,106:109,107:110,108:111,109:112,110:113,111:114,112:115,113:116,114:117,115:118,116:119,117:120,118:121,119:122,120:123,121:124,122:125,123:126,124:127,125:128,126:129,127:130,128:131,129:132,130:133,131:134,132:135,133:136,134:138,135:139,136:140,137:141,138:142,139:143,140:144,141:145,142:146,143:147,144:148,145:149,146:150,147:151,148:152,149:153,150:154,151:155,152:156,153:158,154:159,155:160,156:161,157:162,158:163,159:164,160:165,161:166,162:167,163:168,164:169,165:170,166:171,167:172,168:173,169:174,170:175,171:176,172:177,173:178,174:179,175:180,176:181,177:182,178:183,179:184,180:186,181:187,182:188,183:189,184:190,185:191,186:192,187:193,188:195,189:196,190:197,191:198,192:199,193:200,194:201,195:202,196:204,197:205,198:206,199:207,200:208,201:209,202:210,203:211,204:212,205:213,206:214,207:215,208:216,209:217,210:218,211:219,212:221,213:222,214:223,215:224,216:225,217:226,218:227,219:228,220:229,221:230,222:231,223:232,224:233,225:235,226:236,227:238,228:239,229:241,230:242,231:243,232:244,233:245,234:246,235:247,236:248,237:250,238:251,239:252,240:253,241:254,242:255,243:256,244:257,245:258,246:259,247:260,248:261,249:262,250:264,251:265,252:266,253:267,254:269,255:270,256:271,257:272,258:273,259:274,260:275,261:276,262:277,263:278,264:279,265:280,266:281,267:282,268:283,269:285,270:286,271:287,272:288,273:289,274:290,275:292,276:293,277:294,278:295,279:296,280:297,281:298,282:300,283:301,284:302,285:303,286:304,287:305,288:306,289:307,290:308,291:309,292:310,293:311,294:312,295:313,296:314,297:315,298:316,299:317,300:318,301:319,302:320,303:322,304:323,305:324,306:325,307:326,308:327,309:328,310:329,311:330,312:332,313:333,314:334,315:335,316:336,317:337,318:338,319:339,320:341,321:342,322:343,323:344,324:345,325:346,326:347,327:348,328:349,329:350,330:351,331:352,332:353,333:354,334:355,335:356,336:357,337:358,338:359,339:360,340:361,341:362,342:363,343:364,344:365,345:366,346:367,347:368,348:369,349:370,350:371,351:372,352:373,353:374,354:375,355:376,356:377,357:378,358:379,359:380,360:381,361:382,362:383,363:384,364:385,365:386,366:387,367:388,368:389,369:390,370:391,371:392,372:394,373:395,374:397,375:398,376:400,377:401,378:402,379:403,380:405,381:406,382:407,383:408,384:409,385:410,386:412,387:413,388:415,389:416,390:417,391:418,392:419,393:420,394:421,395:423,396:424,397:425,398:426,399:427,400:428,401:429,402:430,403:431,404:432,405:434,406:435,407:437,408:438,409:439,410:440,411:441,412:442,413:443,414:444,415:446,416:447,417:448,418:450,419:451,420:453,421:455,422:456,423:457,424:458,425:459,426:460,427:461,428:462,429:463,430:464,431:465,432:466,433:467,434:468,435:470,436:471,437:472,438:473,439:474,440:475,441:476,442:477,443:478,444:479,445:480,446:481,447:482,448:483,449:484,450:485,451:486,452:487,453:488,454:489,455:490,456:491,457:492,458:493,459:494,460:495,461:496,462:497,463:498,464:499,465:500,466:501,467:502,468:503,469:504,470:505,471:506,472:507,473:508,474:510,475:511,476:512,477:514,478:515,479:516,480:517,481:519,482:520,483:521,484:522,485:523,486:524,487:525,488:526,489:527,490:528,491:529,492:530,493:531,494:532,495:533,496:534,497:535,498:536,499:537,500:538,501:539,502:540,503:541,504:542,505:543,506:544,507:545,508:546,509:547,510:548,511:549,512:550,513:551,514:552,515:553,516:554,517:555,518:556,519:557,520:559,521:560,522:561,523:562,524:563,525:564,526:565,527:566,528:567,529:568,530:569,531:571,532:572,533:573,534:574,535:575,536:576,537:577,538:578,539:579,540:580,541:581,542:582,543:583,544:584,545:585,546:586,547:587,548:588,549:589,550:590,551:591,552:592,553:593,554:594,555:595,556:596,557:597,558:598};
 
 // ══════════════════════════════════════
 // PERSISTENCE (localStorage)
@@ -165,6 +166,7 @@ window.BibleApp = function BibleApp() {
   const [selectedHymn, setSelectedHymn] = useState(null);
   const [hymnLyrics, setHymnLyrics] = useState(null);
   const [hymnViewMode, setHymnViewMode] = useState('lyrics');
+  const [sheetError, setSheetError] = useState(false);
   const hymnSearchInputRef = useRef(null);
   const hymnSearchTimeout = useRef(null);
   // Hymn category state
@@ -835,7 +837,7 @@ window.BibleApp = function BibleApp() {
           hymnHistory.slice(0, 3).map((h) => {
             const oldN = NEW2OLD[h.n];
             return (
-            <button key={h.n} onClick={() => { setSelectedHymn(h); setMainTab("hymn"); setScreen("hymnDetail"); }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 6, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
+            <button key={h.n} onClick={() => { setSelectedHymn(h); setMainTab("hymn"); setScreen("hymnDetail"); setSheetError(false); }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 6, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
               <div style={{ width: 36, height: 36, borderRadius: 8, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: oldN ? 10 : 13, fontWeight: 700, color: t.accent, flexShrink: 0, flexDirection: "column", lineHeight: 1.3 }}>{oldN ? <><span>{oldN}</span><span style={{ fontSize: 8, opacity: 0.6 }}>({h.n})</span></> : h.n}</div>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 500, color: t.text }}>{h.t}</div>
@@ -1081,7 +1083,7 @@ window.BibleApp = function BibleApp() {
   const ReadingScreen = () => {
     if (!selectedBook || !selectedChapter) return null;
     const bookName = selectedBook.name;
-    const langLabel = bibleLang === 'ko' ? '개역한글' : bibleLang === 'en' ? 'NIV' : '한영대조';
+    const langLabel = bibleLang === 'ko' ? '개역한글' : bibleLang === 'en' ? 'NIV' : '개역한글/NIV';
 
     // Get TTS data based on language (texts + verse mapping + language mapping)
     const getTtsData = () => {
@@ -1366,7 +1368,7 @@ window.BibleApp = function BibleApp() {
             const oldNum = hymnCategory === "hymn" ? NEW2OLD[h.n] : null;
             return (
             <button key={h.n} onClick={() => {
-              setSelectedHymn(h); setScreen("hymnDetail"); setHymnViewMode(hymnCategory === "ghymn" || hymnCategory === "khymn" ? "sheet" : "lyrics");
+              setSelectedHymn(h); setScreen("hymnDetail"); setSheetError(false); setHymnViewMode(hymnCategory === "ghymn" || hymnCategory === "khymn" ? "sheet" : "lyrics");
             }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "11px 14px", marginBottom: 5, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
               <div style={{ minWidth: 38, height: 38, borderRadius: 8, background: hymnCategory === "ghymn" ? "rgba(123,31,162,0.1)" : hymnCategory === "khymn" ? "rgba(230,126,34,0.1)" : t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: oldNum ? 11 : 13, fontWeight: 700, color: hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent, flexShrink: 0, padding: "0 4px", flexDirection: "column", lineHeight: 1.3 }}>
                 {oldNum ? <><span>{oldNum}</span><span style={{ fontSize: 9, opacity: 0.6 }}>({h.n})</span></> : h.n}
@@ -1394,8 +1396,9 @@ window.BibleApp = function BibleApp() {
     const isRegularHymn = (hymnCategory === "hymn" || !hymnCategory);
     const lyrics = hymnLyrics?.lyrics || "";
     const lyricsLines = lyrics.split("\n");
-    const [sheetError, setSheetError] = useState(false);
-    const oldFileNum = isRegularHymn && NEW2OLD[selectedHymn.n] ? (OLD2FILE[NEW2OLD[selectedHymn.n]] || NEW2OLD[selectedHymn.n]) : null;
+    const oldNum2 = isRegularHymn ? NEW2OLD[selectedHymn.n] : null;
+    const oldFileNum = oldNum2 ? (OLD2FILE[oldNum2] || oldNum2) : null;
+    const oldIs2Page = oldNum2 && OLD_2PAGE.has(oldNum2);
     const sheetUrl = isRegularHymn ? (oldFileNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${oldFileNum}.png` : `/data/hymns/sheets/${String(selectedHymn.n).padStart(3, '0')}.jpg`)
       : hymnCategory === "ghymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/images/${selectedHymn.f}.png`
       : hymnCategory === "khymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/images/${selectedHymn.f}.png` : null;
@@ -1408,8 +1411,8 @@ window.BibleApp = function BibleApp() {
     const oldNum = isRegularHymn ? NEW2OLD[selectedHymn.n] : null;
     const displayNum = oldNum || selectedHymn.n;
     const subLabel = isRegularHymn ? (oldNum ? `통일찬송가 ${oldNum}장 (새찬송가 ${selectedHymn.n}장)` : `새찬송가 ${selectedHymn.n}장`) : `${catLabel} ${selectedHymn.n}장`;
-    // Audio URL: choir.gntc.net uses file numbers
-    const audioUrl = isRegularHymn && oldFileNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oldFileNum}.mp3`
+    // Audio URL: choir.gntc.net audio files are 1:1 with hymn numbers (1-558.mp3), no offset
+    const audioUrl = isRegularHymn && oldNum2 ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oldNum2}.mp3`
       : hymnCategory === "ghymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/ar/${selectedHymn.n}.mp3`
       : hymnCategory === "khymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/ar/${selectedHymn.f}.mp3` : null;
 
@@ -1442,24 +1445,6 @@ window.BibleApp = function BibleApp() {
             </audio>
           )}
         </div>
-
-        {/* TTS for Hymn */}
-        {lyrics && hymnViewMode === 'lyrics' && (
-          <div style={{ padding: "10px 16px", borderBottom: `1px solid ${t.border}`, background: t.accentBg, display: "flex", alignItems: "center", gap: 8 }}>
-            {!ttsPlaying ? (
-              <button onClick={() => triggerTts(() => ({ texts: lyricsLines.filter(l => l.trim()), verseMap: null, langMap: null }))} onTouchEnd={() => triggerTts(() => ({ texts: lyricsLines.filter(l => l.trim()), verseMap: null, langMap: null }))} style={{ display: "flex", alignItems: "center", gap: 4, padding: "7px 16px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
-                ▶ 가사 읽기
-              </button>
-            ) : (
-              <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={ttsTogglePause} onTouchEnd={ttsTogglePause} style={{ padding: "7px 14px", borderRadius: 20, border: "none", background: t.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
-                  {ttsPaused ? "▶ 계속" : "⏸"}
-                </button>
-                <button onClick={ttsStop} onTouchEnd={ttsStop} style={{ padding: "7px 14px", borderRadius: 20, border: `1px solid ${t.accent}`, background: "transparent", color: t.accent, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>■</button>
-              </div>
-            )}
-          </div>
-        )}
 
         {/* Content area */}
         {!isRegularHymn && sheetUrl ? (
@@ -1494,13 +1479,23 @@ window.BibleApp = function BibleApp() {
           /* Sheet music view (regular hymns - via button) */
           <div style={{ padding: "0 16px 16px", textAlign: "center" }}>
             {!sheetError ? (
-              <img
-                src={sheetUrl}
-                alt={`${selectedHymn.t} 악보`}
-                onError={() => setSheetError(true)}
-                style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}` }}
-                loading="lazy"
-              />
+              <>
+                <img
+                  src={sheetUrl}
+                  alt={`${selectedHymn.t} 악보`}
+                  onError={() => setSheetError(true)}
+                  style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}` }}
+                  loading="lazy"
+                />
+                {oldIs2Page && oldFileNum && (
+                  <img
+                    src={`https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${oldFileNum + 1}.png`}
+                    alt={`${selectedHymn.t} 악보 2`}
+                    style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}`, marginTop: 8 }}
+                    loading="lazy"
+                  />
+                )}
+              </>
             ) : (
               <div style={{ padding: "40px 0", textAlign: "center" }}>
                 <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.15 }}>🎵</div>
@@ -1570,7 +1565,7 @@ window.BibleApp = function BibleApp() {
                     <button onClick={() => {
                       if (b.type === "hymn") {
                         const h = hymnsIndex.find(x => x.n === b.number);
-                        if (h) { setSelectedHymn(h); setMainTab("hymn"); setScreen("hymnDetail"); }
+                        if (h) { setSelectedHymn(h); setMainTab("hymn"); setScreen("hymnDetail"); setSheetError(false); }
                       } else {
                         const book = booksIndex.find(bk => bk.id === b.bookId);
                         if (book) { setSelectedBook(book); setSelectedChapter(b.chapter); setMainTab("bible"); setScreen("reading"); }
@@ -1951,7 +1946,7 @@ window.BibleApp = function BibleApp() {
   const [familyData, setFamilyData] = useState(null);
   const [familyLoading, setFamilyLoading] = useState(false);
   const [familyError, setFamilyError] = useState(null);
-  const [familyCollapsed, setFamilyCollapsed] = useState({ hymn: false, body: false, bible: true });
+  const [familyCollapsed, setFamilyCollapsed] = useState({ hymn: true, body: true, bible: true });
   const [familyDate, setFamilyDate] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -1994,7 +1989,7 @@ window.BibleApp = function BibleApp() {
     d.setDate(d.getDate() + offset);
     const str = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     setFamilyDate(str);
-    setFamilyCollapsed({ hymn: false, body: false, bible: true });
+    setFamilyCollapsed({ hymn: true, body: true, bible: true });
   };
 
   const FamilyWorshipScreen = () => {
@@ -2042,7 +2037,7 @@ window.BibleApp = function BibleApp() {
             const nNum = OLD2NEW[oNum] || (familyData.newHymnNo ? parseInt(familyData.newHymnNo) : null) || ((hymnsIndex.find(h => h.t === familyData.hymnTitle)) || {}).n || null;
             const fileNo = familyData.hymnFileNo ? parseInt(familyData.hymnFileNo) : null;
             const hymnSheetUrl = fileNo ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${fileNo}.png` : (nNum ? `/data/hymns/sheets/${String(nNum).padStart(3, '0')}.jpg` : null);
-            const hymnAudioUrl = fileNo ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${fileNo}.mp3` : null;
+            const hymnAudioUrl = oNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oNum}.mp3` : null;
             const collapsed = familyCollapsed.hymn;
             return (
             <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px", marginBottom: 10 }}>
@@ -2069,7 +2064,7 @@ window.BibleApp = function BibleApp() {
           {familyData.texts && familyData.texts.length > 0 && (
             <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 12, padding: "16px", marginBottom: 10 }}>
               <div onClick={() => setFamilyCollapsed(p => ({ ...p, bible: !p.bible }))} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: t.accent }}>본문 말씀</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: t.accent }}>본문말씀</div>
                 <span style={{ fontSize: 12, color: t.sub, flexShrink: 0, padding: "4px 8px" }}>{familyCollapsed.bible ? "펼치기 ▼" : "접기 ▲"}</span>
               </div>
               {!familyCollapsed.bible && (
@@ -2311,7 +2306,7 @@ window.BibleApp = function BibleApp() {
         {screen === "reading" && <ReadingScreen />}
         {screen === "hymnCategory" && <HymnCategoryScreen />}
         {screen === "hymnList" && <HymnListScreen />}
-        {screen === "hymnDetail" && <HymnDetailScreen />}
+        {screen === "hymnDetail" && HymnDetailScreen()}
         {screen === "choirScreen" && <div style={{ position: "fixed", top: 48, left: 0, right: 0, bottom: 56, zIndex: 10, background: t.bg }}><iframe src="https://choir.gntc.net/mobile_ChoirCenter/index_mobile.php#ChoirPage1a" style={{ width: "100%", height: "100%", border: "none" }} title="성가대찬양" /></div>}
         {screen === "worship" && <WorshipScreen />}
         {screen === "sermon" && <SermonScreen />}
