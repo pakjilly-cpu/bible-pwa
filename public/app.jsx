@@ -35,7 +35,7 @@ async function loadEnglishBookData(bookId) {
 
 async function loadHymnsIndex() {
   if (dataCache.hymnsIndex) return dataCache.hymnsIndex;
-  const res = await fetch('/data/hymns/index.json');
+  const res = await fetch('/data/hymns/index.json?v=3');
   dataCache.hymnsIndex = await res.json();
   return dataCache.hymnsIndex;
 }
@@ -776,7 +776,7 @@ window.BibleApp = function BibleApp() {
                   {r.type === "hymn" ? "찬송" : "성경"}
                 </span>
                 <span style={{ fontSize: 12, fontWeight: 600, color: t.accent }}>
-                  {r.type === "hymn" ? `${r.number}장(새${r.newN || 0}) ${r.title}` : `${r.bookName} ${r.chapter}:${r.verse}`}
+                  {r.type === "hymn" ? `${r.number}장(새 ${r.newN || 0}) ${r.title}` : `${r.bookName} ${r.chapter}:${r.verse}`}
                 </span>
               </div>
               {r.text && <p style={{ fontSize: 13, color: t.text, lineHeight: 1.5, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.text}</p>}
@@ -838,7 +838,7 @@ window.BibleApp = function BibleApp() {
           hymnHistory.slice(0, 3).map((h) => {
             return (
             <button key={`${h.cat||'hymn'}-${h.n}`} onClick={() => { setSelectedHymn(h); setHymnCategory(h.cat || 'hymn'); setMainTab("hymn"); setScreen("hymnDetail"); setSheetError(false); }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 6, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: t.accent, flexShrink: 0, flexDirection: "column", lineHeight: 1.3 }}><span>{h.n}</span><span style={{ fontSize: 8, opacity: 0.6 }}>(새{h.newN || 0})</span></div>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: t.accent, flexShrink: 0 }}>{h.n}</div>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 500, color: t.text }}>{h.t}</div>
                 <div style={{ fontSize: 11, color: t.sub, marginTop: 2 }}>{h.date}</div>
@@ -1370,11 +1370,11 @@ window.BibleApp = function BibleApp() {
             <button key={h.n} onClick={() => {
               setSelectedHymn(h); setScreen("hymnDetail"); setSheetError(false); setHymnViewMode(hymnCategory === "ghymn" || hymnCategory === "khymn" ? "sheet" : "lyrics");
             }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "11px 14px", marginBottom: 5, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
-              <div style={{ minWidth: 38, height: 38, borderRadius: 8, background: hymnCategory === "ghymn" ? "rgba(123,31,162,0.1)" : hymnCategory === "khymn" ? "rgba(230,126,34,0.1)" : t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: isHymn ? 11 : 13, fontWeight: 700, color: hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent, flexShrink: 0, padding: "0 4px", flexDirection: "column", lineHeight: 1.3 }}>
-                {isHymn ? <><span>{h.n}</span><span style={{ fontSize: 9, opacity: 0.6 }}>(새{h.newN || 0})</span></> : h.n}
+              <div style={{ minWidth: 44, height: 38, borderRadius: 8, background: hymnCategory === "ghymn" ? "rgba(123,31,162,0.1)" : hymnCategory === "khymn" ? "rgba(230,126,34,0.1)" : t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent, flexShrink: 0, padding: "0 6px" }}>
+                {h.n}
               </div>
               <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: t.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.t}</div>
+                <div style={{ fontSize: 14, fontWeight: 500, color: t.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{isHymn ? <><span style={{ color: t.sub, fontSize: 12 }}>(새 {h.newN || 0})</span> {h.t}</> : h.t}</div>
               </div>
             </button>);
           })}
@@ -1410,7 +1410,7 @@ window.BibleApp = function BibleApp() {
     const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "찬송가";
     const catColor = hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent;
     const newN = isRegularHymn ? (selectedHymn.newN || 0) : null;
-    const subLabel = isRegularHymn ? (newN ? `${selectedHymn.n}장 (새${newN})` : `${selectedHymn.n}장`) : `${catLabel} ${selectedHymn.n}장`;
+    const subLabel = isRegularHymn ? `${selectedHymn.n}장(새 ${newN})` : `${catLabel} ${selectedHymn.n}장`;
     // Audio URL: 찬송가 번호 직접 사용
     const audioUrl = isRegularHymn ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${selectedHymn.n}.mp3`
       : hymnCategory === "ghymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/ar/${selectedHymn.n}.mp3`
@@ -1422,7 +1422,7 @@ window.BibleApp = function BibleApp() {
         <div style={{ padding: "20px 16px 14px", borderBottom: `1px solid ${t.border}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
             <div style={{ width: 48, height: 48, borderRadius: 12, background: `${catColor}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: isRegularHymn ? 14 : 18, fontWeight: 700, color: catColor, flexDirection: "column", lineHeight: 1.3 }}>
-              {isRegularHymn ? <><span>{selectedHymn.n}</span><span style={{ fontSize: 10, opacity: 0.6 }}>(새{newN || 0})</span></> : selectedHymn.n}
+              {selectedHymn.n}
             </div>
             <div style={{ flex: 1 }}>
               <h2 style={{ fontSize: 20, fontWeight: 700, color: t.text, margin: 0 }}>{selectedHymn.t}</h2>
