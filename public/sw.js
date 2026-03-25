@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bible-pwa-v42';
+const CACHE_NAME = 'bible-pwa-v43';
 const CORE_ASSETS = [
   '/',
   '/index.html',

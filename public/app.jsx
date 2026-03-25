@@ -124,8 +124,8 @@ const readRoundColors = [
   { bg: 'rgba(233,30,99,0.14)', border: '#F06292', label: '4독' },
 ];
 
-// (통일찬송가 기준으로 전환 완료 - NEW2OLD/OLD2NEW 제거됨)
-// 통일찬송가 번호→choir.gntc.net 이미지 파일번호 (40곡이 2페이지라 번호≠파일번호, API 236개 검증완료)
+// (찬송가 기준으로 전환 완료 - NEW2OLD/OLD2NEW 제거됨)
+// 찬송가 번호→choir.gntc.net 이미지 파일번호 (40곡이 2페이지라 번호≠파일번호, API 236개 검증완료)
 const OLD_2PAGE = new Set([46,51,84,133,152,179,187,195,211,224,226,228,236,249,253,268,274,281,302,311,319,371,373,375,379,385,387,394,404,406,414,417,419,420,434,473,476,480,519,530]);
 const OLD2FILE = {47:48,48:49,49:50,50:51,51:52,52:54,53:55,54:56,55:57,56:58,57:59,58:60,59:61,60:62,61:63,62:64,63:65,64:66,65:67,66:68,67:69,68:70,69:71,70:72,71:73,72:74,73:75,74:76,75:77,76:78,77:79,78:80,79:81,80:82,81:83,82:84,83:85,84:86,85:88,86:89,87:90,88:91,89:92,90:93,91:94,92:95,93:96,94:97,95:98,96:99,97:100,98:101,99:102,100:103,101:104,102:105,103:106,104:107,105:108,106:109,107:110,108:111,109:112,110:113,111:114,112:115,113:116,114:117,115:118,116:119,117:120,118:121,119:122,120:123,121:124,122:125,123:126,124:127,125:128,126:129,127:130,128:131,129:132,130:133,131:134,132:135,133:136,134:138,135:139,136:140,137:141,138:142,139:143,140:144,141:145,142:146,143:147,144:148,145:149,146:150,147:151,148:152,149:153,150:154,151:155,152:156,153:158,154:159,155:160,156:161,157:162,158:163,159:164,160:165,161:166,162:167,163:168,164:169,165:170,166:171,167:172,168:173,169:174,170:175,171:176,172:177,173:178,174:179,175:180,176:181,177:182,178:183,179:184,180:186,181:187,182:188,183:189,184:190,185:191,186:192,187:193,188:195,189:196,190:197,191:198,192:199,193:200,194:201,195:202,196:204,197:205,198:206,199:207,200:208,201:209,202:210,203:211,204:212,205:213,206:214,207:215,208:216,209:217,210:218,211:219,212:221,213:222,214:223,215:224,216:225,217:226,218:227,219:228,220:229,221:230,222:231,223:232,224:233,225:235,226:236,227:238,228:239,229:241,230:242,231:243,232:244,233:245,234:246,235:247,236:248,237:250,238:251,239:252,240:253,241:254,242:255,243:256,244:257,245:258,246:259,247:260,248:261,249:262,250:264,251:265,252:266,253:267,254:269,255:270,256:271,257:272,258:273,259:274,260:275,261:276,262:277,263:278,264:279,265:280,266:281,267:282,268:283,269:285,270:286,271:287,272:288,273:289,274:290,275:292,276:293,277:294,278:295,279:296,280:297,281:298,282:300,283:301,284:302,285:303,286:304,287:305,288:306,289:307,290:308,291:309,292:310,293:311,294:312,295:313,296:314,297:315,298:316,299:317,300:318,301:319,302:320,303:322,304:323,305:324,306:325,307:326,308:327,309:328,310:329,311:330,312:332,313:333,314:334,315:335,316:336,317:337,318:338,319:339,320:341,321:342,322:343,323:344,324:345,325:346,326:347,327:348,328:349,329:350,330:351,331:352,332:353,333:354,334:355,335:356,336:357,337:358,338:359,339:360,340:361,341:362,342:363,343:364,344:365,345:366,346:367,347:368,348:369,349:370,350:371,351:372,352:373,353:374,354:375,355:376,356:377,357:378,358:379,359:380,360:381,361:382,362:383,363:384,364:385,365:386,366:387,367:388,368:389,369:390,370:391,371:392,372:394,373:395,374:397,375:398,376:400,377:401,378:402,379:403,380:405,381:406,382:407,383:408,384:409,385:410,386:412,387:413,388:415,389:416,390:417,391:418,392:419,393:420,394:421,395:423,396:424,397:425,398:426,399:427,400:428,401:429,402:430,403:431,404:432,405:434,406:435,407:437,408:438,409:439,410:440,411:441,412:442,413:443,414:444,415:446,416:447,417:448,418:450,419:451,420:453,421:455,422:456,423:457,424:458,425:459,426:460,427:461,428:462,429:463,430:464,431:465,432:466,433:467,434:468,435:470,436:471,437:472,438:473,439:474,440:475,441:476,442:477,443:478,444:479,445:480,446:481,447:482,448:483,449:484,450:485,451:486,452:487,453:488,454:489,455:490,456:491,457:492,458:493,459:494,460:495,461:496,462:497,463:498,464:499,465:500,466:501,467:502,468:503,469:504,470:505,471:506,472:507,473:508,474:510,475:511,476:512,477:514,478:515,479:516,480:517,481:519,482:520,483:521,484:522,485:523,486:524,487:525,488:526,489:527,490:528,491:529,492:530,493:531,494:532,495:533,496:534,497:535,498:536,499:537,500:538,501:539,502:540,503:541,504:542,505:543,506:544,507:545,508:546,509:547,510:548,511:549,512:550,513:551,514:552,515:553,516:554,517:555,518:556,519:557,520:559,521:560,522:561,523:562,524:563,525:564,526:565,527:566,528:567,529:568,530:569,531:571,532:572,533:573,534:574,535:575,536:576,537:577,538:578,539:579,540:580,541:581,542:582,543:583,544:584,545:585,546:586,547:587,548:588,549:589,550:590,551:591,552:592,553:593,554:594,555:595,556:596,557:597,558:598};
 
@@ -314,7 +314,7 @@ window.BibleApp = function BibleApp() {
     setHymnLyrics(null);
     setHymnViewMode('lyrics');
     if (hymnCategory === "hymn" || !hymnCategory) {
-      // 통일찬송가: newN(새찬송가 번호)으로 가사 조회
+      // 찬송가: newN(새찬송가 번호)으로 가사 조회
       const newN = selectedHymn.newN || 0;
       if (newN > 0) {
         getHymnLyrics(newN).then(data => {
@@ -334,7 +334,7 @@ window.BibleApp = function BibleApp() {
       const filtered = prev.filter(h => !(h.n === entry.n && (h.cat || 'hymn') === entry.cat));
       return [entry, ...filtered].slice(0, 20);
     });
-  }, [selectedHymn]);
+  }, [selectedHymn, hymnCategory]);
 
   // Stop TTS on navigation
   useEffect(() => {
@@ -652,7 +652,7 @@ window.BibleApp = function BibleApp() {
     const q = query.trim().toLowerCase();
     const results = [];
 
-    // Search hymns first (fast - from index, 통일찬송가 기준)
+    // Search hymns first (fast - from index, 찬송가 기준)
     const hIndex = dataCache.hymnsIndex || [];
     hIndex.forEach(h => {
       if (h.t.toLowerCase().includes(q) || h.n.toString() === q || (h.newN && h.newN.toString() === q)) {
@@ -694,7 +694,7 @@ window.BibleApp = function BibleApp() {
     setSearching(false);
   }, [bibleLang]);
 
-  // Filtered hymns (통일찬송가 번호 또는 새찬송가 번호 또는 제목으로 검색)
+  // Filtered hymns (찬송가 번호 또는 새찬송가 번호 또는 제목으로 검색)
   const filteredHymns = useMemo(() => {
     if (!hymnSearch.trim()) return hymnsIndex;
     const q = hymnSearch.trim().toLowerCase();
@@ -1264,7 +1264,7 @@ window.BibleApp = function BibleApp() {
       <div style={{ position: "relative", marginBottom: 8 }}>
         <input
           ref={hymnSearchInputRef}
-          type="text" placeholder={`${hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "통일찬송가"} 검색 (번호 또는 제목)`} defaultValue={hymnSearch}
+          type="text" placeholder={`${hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "찬송가"} 검색 (번호 또는 제목)`} defaultValue={hymnSearch}
           autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" data-form-type="other"
           onChange={e => {
             const val = e.target.value;
@@ -1295,7 +1295,7 @@ window.BibleApp = function BibleApp() {
   // ── HYMN CATEGORY SCREEN ──
   const HymnCategoryScreen = () => {
     const categories = [
-      { id: "hymn", icon: "🎵", label: "통일찬송가", color: t.accent },
+      { id: "hymn", icon: "🎵", label: "찬송가", color: t.accent },
       { id: "ghymn", icon: "🙏", label: "은혜와진리찬양", color: "#7b1fa2" },
       { id: "khymn", icon: "🧒", label: "어린이 찬송가", color: "#e67e22" },
       { id: "choir", icon: "🎶", label: "성가대찬양", color: "#1976d2" },
@@ -1359,7 +1359,7 @@ window.BibleApp = function BibleApp() {
 
   const HymnListScreen = () => {
     const list = hymnCategory === "hymn" ? rangeFilteredHymns : rangeFilteredCurrentHymns;
-    const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "통일찬송가";
+    const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "찬송가";
     return (
       <div style={{ paddingBottom: 90 }}>
         <div style={{ padding: "8px 16px" }}>
@@ -1395,7 +1395,7 @@ window.BibleApp = function BibleApp() {
     const isRegularHymn = (hymnCategory === "hymn" || !hymnCategory);
     const lyrics = hymnLyrics?.lyrics || "";
     const lyricsLines = lyrics.split("\n");
-    // 통일찬송가: 악보 URL은 통일번호 기준, OLD2FILE로 파일번호 매핑
+    // 찬송가: 악보 URL은 통일번호 기준, OLD2FILE로 파일번호 매핑
     const fileNum = isRegularHymn ? (OLD2FILE[selectedHymn.n] || selectedHymn.n) : null;
     const is2Page = isRegularHymn && OLD_2PAGE.has(selectedHymn.n);
     const sheetUrl = isRegularHymn ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${fileNum}.png`
@@ -1407,11 +1407,11 @@ window.BibleApp = function BibleApp() {
         ? (hymnCategory === "ghymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/images/${selectedHymn.f + 1}.png`
           : hymnCategory === "khymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/images/${selectedHymn.f + 1}.png` : null)
         : null;
-    const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "통일찬송가";
+    const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "찬송가";
     const catColor = hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent;
     const newN = isRegularHymn ? (selectedHymn.newN || 0) : null;
-    const subLabel = isRegularHymn ? (newN ? `통일찬송가 ${selectedHymn.n}장 (새찬송가 ${newN}장)` : `통일찬송가 ${selectedHymn.n}장 (새찬송가 없음)`) : `${catLabel} ${selectedHymn.n}장`;
-    // Audio URL: 통일찬송가 번호 직접 사용
+    const subLabel = isRegularHymn ? (newN ? `${selectedHymn.n}장 (새${newN})` : `${selectedHymn.n}장`) : `${catLabel} ${selectedHymn.n}장`;
+    // Audio URL: 찬송가 번호 직접 사용
     const audioUrl = isRegularHymn ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${selectedHymn.n}.mp3`
       : hymnCategory === "ghymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/ar/${selectedHymn.n}.mp3`
       : hymnCategory === "khymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/ar/${selectedHymn.f}.mp3` : null;
@@ -2034,7 +2034,7 @@ window.BibleApp = function BibleApp() {
           {/* Hymn */}
           {familyData.hymnNo && familyData.hymnNo !== "0" && (() => {
             const oNum = parseInt(familyData.hymnNo);
-            // 가정예배 API의 hymnNo는 통일찬송가 번호
+            // 가정예배 API의 hymnNo는 찬송가 번호
             const fileNo = OLD2FILE[oNum] || oNum;
             const hymnSheetUrl = `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${fileNo}.png`;
             const hymnSheetUrl2 = OLD_2PAGE.has(oNum) ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${fileNo + 1}.png` : null;
@@ -2277,7 +2277,7 @@ window.BibleApp = function BibleApp() {
   );
 
   // ── HEADER CONFIG ──
-  const hymnCategoryLabels = { hymn: "통일찬송가", ghymn: "은혜와진리찬양", khymn: "어린이 찬송가" };
+  const hymnCategoryLabels = { hymn: "찬송가", ghymn: "은혜와진리찬양", khymn: "어린이 찬송가" };
   const headerConfig = {
     home: { title: "Grace and Truth Church", showBack: false },
     books: { title: "성경", showBack: false },
@@ -2287,7 +2287,7 @@ window.BibleApp = function BibleApp() {
       showBack: true, backTarget: fromTongdok ? "tongdok" : "chapters"
     },
     hymnCategory: { title: "찬송가", showBack: false },
-    hymnList: { title: hymnCategoryLabels[hymnCategory] || "통일찬송가", showBack: true, backTarget: "hymnCategoryBack" },
+    hymnList: { title: hymnCategoryLabels[hymnCategory] || "찬송가", showBack: true, backTarget: "hymnCategoryBack" },
     hymnDetail: { title: selectedHymn?.t || "", showBack: true, backTarget: "hymnListBack" },
     choirScreen: { title: "성가대찬양", showBack: true, backTarget: "hymnCategoryBack" },
     worship: { title: "예배", showBack: false },
