@@ -1410,7 +1410,7 @@ window.BibleApp = function BibleApp() {
     const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "찬송가";
     const catColor = hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent;
     const newN = isRegularHymn ? (selectedHymn.newN || 0) : null;
-    const subLabel = isRegularHymn ? `${selectedHymn.n}장(새 ${newN})` : `${catLabel} ${selectedHymn.n}장`;
+    const subLabel = isRegularHymn ? `(새${newN})` : `${catLabel} ${selectedHymn.n}장`;
     // Audio URL: 찬송가 번호 직접 사용
     const audioUrl = isRegularHymn ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${selectedHymn.n}.mp3`
       : hymnCategory === "ghymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/ar/${selectedHymn.n}.mp3`
