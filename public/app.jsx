@@ -49,9 +49,11 @@ async function loadHymnChunk(hymnNumber) {
   return data;
 }
 
-async function getHymnLyrics(hymnNumber) {
-  const chunk = await loadHymnChunk(hymnNumber);
-  return chunk.find(h => h.number === hymnNumber);
+async function getHymnLyrics(newHymnNumber) {
+  // chunk 데이터는 새찬송가 번호 기준 (1~645)
+  if (!newHymnNumber || newHymnNumber === 0) return null;
+  const chunk = await loadHymnChunk(newHymnNumber);
+  return chunk.find(h => h.number === newHymnNumber);
 }
 
 async function loadGHymnIndex() {
@@ -122,12 +124,7 @@ const readRoundColors = [
   { bg: 'rgba(233,30,99,0.14)', border: '#F06292', label: '4독' },
 ];
 
-// 새찬송가→구찬송가 매핑 (통일찬송가 번호)
-// 새찬송가→구찬송가 매핑 (성가대찬양 사이트 기준, 오디오 파일 번호로 사용)
-const NEW2OLD = {1:1,2:6,3:2,4:4,5:3,6:8,8:9,9:53,10:34,12:22,14:30,15:55,19:44,20:41,21:21,22:26,23:23,25:25,26:14,27:27,28:28,29:29,31:46,32:48,33:12,34:45,35:50,36:36,37:37,39:39,40:43,42:11,43:57,44:56,46:58,49:72,50:71,53:59,54:61,55:62,56:60,58:66,59:68,60:67,64:13,65:19,66:20,67:31,68:32,69:33,70:79,71:438,73:73,74:74,75:47,78:75,79:40,80:101,81:452,82:90,83:83,84:96,85:85,86:86,87:87,88:88,89:89,90:98,91:91,92:97,93:93,94:102,95:82,96:94,101:106,102:107,104:104,105:105,108:113,109:109,111:111,112:112,114:114,115:115,116:116,117:117,118:118,119:119,120:120,121:121,122:122,123:123,125:125,126:126,130:42,131:24,132:38,134:84,135:133,138:52,139:128,140:130,141:132,143:141,144:144,145:145,146:146,147:136,148:142,149:147,150:135,151:138,154:139,159:149,160:150,161:159,162:151,163:160,164:154,165:155,166:156,167:157,168:158,170:16,172:152,174:161,175:162,176:163,177:164,179:167,180:168,182:169,183:172,184:173,185:179,186:176,187:171,188:180,189:181,190:177,191:427,195:175,196:174,197:178,198:284,199:234,200:235,201:240,202:241,204:379,205:236,207:243,208:246,209:247,210:245,211:346,212:347,213:348,214:349,215:354,216:356,217:362,218:369,219:279,220:278,221:525,222:524,225:298,227:283,228:285,229:281,232:282,234:220,235:222,236:223,237:226,239:230,240:231,241:232,242:233,243:224,245:228,246:221,249:249,250:182,251:137,252:184,254:186,255:187,257:189,258:190,259:193,260:194,261:195,262:196,263:197,264:198,265:199,266:200,267:201,268:202,269:211,270:214,272:330,273:331,274:332,275:333,276:334,277:335,278:336,279:337,280:338,282:339,283:183,284:206,285:209,286:218,287:205,288:204,289:208,290:412,291:413,292:415,293:414,294:416,295:417,297:191,298:35,299:418,300:406,301:460,302:408,303:403,304:404,305:405,309:409,310:410,311:185,312:341,313:352,314:511,315:512,317:353,320:350,321:351,322:357,323:355,324:360,325:359,326:368,327:361,328:374,329:267,330:370,331:375,333:381,336:383,337:363,338:364,339:365,340:366,341:367,342:395,345:461,346:398,347:382,348:388,349:387,350:393,351:389,352:390,353:391,354:394,355:386,356:396,357:397,358:400,359:401,360:402,361:480,362:481,363:479,364:482,365:484,366:485,368:486,369:487,370:455,371:419,372:420,373:503,374:423,375:421,376:422,377:451,378:430,379:429,380:424,381:425,382:432,383:433,384:434,385:435,386:439,387:440,388:441,390:444,391:446,393:447,394:449,395:450,397:454,400:463,401:457,404:477,405:458,406:464,407:465,408:466,410:468,411:473,412:469,413:470,414:475,415:471,417:476,419:478,420:212,421:210,423:213,424:216,425:217,426:215,427:516,428:488,429:489,430:456,432:462,433:490,434:491,435:492,436:493,438:495,439:496,440:497,441:498,442:499,445:502,446:500,447:448,449:377,450:376,451:504,452:505,453:506,454:508,455:507,456:509,457:510,458:513,459:514,460:515,461:519,462:517,463:518,465:523,471:528,472:530,475:272,478:78,479:290,480:293,481:531,482:49,483:532,484:533,485:534,486:474,487:535,488:539,489:541,490:542,491:543,492:544,493:545,494:188,495:271,496:260,497:274,498:275,499:277,500:258,501:255,502:259,503:373,504:266,505:268,507:273,508:270,509:314,510:276,511:263,512:328,515:256,516:265,518:252,519:251,520:257,521:253,522:269,523:262,524:313,525:315,526:316,527:317,528:319,529:320,530:321,531:323,532:323,534:324,535:325,536:326,537:329,538:327,539:483,540:219,542:340,543:342,544:343,545:344,546:399,549:431,550:248,551:296,552:358,554:297,559:305,563:411,564:299,565:300,566:301,567:436,569:442,570:453,574:303,575:302,579:304,580:371,582:261,585:384,586:521,587:306,588:307,589:308,590:309,591:310,592:311,593:312,595:372,597:378,598:244,600:242,602:286,604:288,605:287,606:291,607:292,608:295,610:289,631:547,632:549,635:548,638:70,639:550,640:554,641:552,643:554,644:557,645:556};
-// 구찬송가→새찬송가 (역방향)
-const OLD2NEW = {};
-Object.entries(NEW2OLD).forEach(([n,o]) => { if (!OLD2NEW[o]) OLD2NEW[o] = parseInt(n); });
+// (통일찬송가 기준으로 전환 완료 - NEW2OLD/OLD2NEW 제거됨)
 // 통일찬송가 번호→choir.gntc.net 이미지 파일번호 (40곡이 2페이지라 번호≠파일번호, API 236개 검증완료)
 const OLD_2PAGE = new Set([46,51,84,133,152,179,187,195,211,224,226,228,236,249,253,268,274,281,302,311,319,371,373,375,379,385,387,394,404,406,414,417,419,420,434,473,476,480,519,530]);
 const OLD2FILE = {47:48,48:49,49:50,50:51,51:52,52:54,53:55,54:56,55:57,56:58,57:59,58:60,59:61,60:62,61:63,62:64,63:65,64:66,65:67,66:68,67:69,68:70,69:71,70:72,71:73,72:74,73:75,74:76,75:77,76:78,77:79,78:80,79:81,80:82,81:83,82:84,83:85,84:86,85:88,86:89,87:90,88:91,89:92,90:93,91:94,92:95,93:96,94:97,95:98,96:99,97:100,98:101,99:102,100:103,101:104,102:105,103:106,104:107,105:108,106:109,107:110,108:111,109:112,110:113,111:114,112:115,113:116,114:117,115:118,116:119,117:120,118:121,119:122,120:123,121:124,122:125,123:126,124:127,125:128,126:129,127:130,128:131,129:132,130:133,131:134,132:135,133:136,134:138,135:139,136:140,137:141,138:142,139:143,140:144,141:145,142:146,143:147,144:148,145:149,146:150,147:151,148:152,149:153,150:154,151:155,152:156,153:158,154:159,155:160,156:161,157:162,158:163,159:164,160:165,161:166,162:167,163:168,164:169,165:170,166:171,167:172,168:173,169:174,170:175,171:176,172:177,173:178,174:179,175:180,176:181,177:182,178:183,179:184,180:186,181:187,182:188,183:189,184:190,185:191,186:192,187:193,188:195,189:196,190:197,191:198,192:199,193:200,194:201,195:202,196:204,197:205,198:206,199:207,200:208,201:209,202:210,203:211,204:212,205:213,206:214,207:215,208:216,209:217,210:218,211:219,212:221,213:222,214:223,215:224,216:225,217:226,218:227,219:228,220:229,221:230,222:231,223:232,224:233,225:235,226:236,227:238,228:239,229:241,230:242,231:243,232:244,233:245,234:246,235:247,236:248,237:250,238:251,239:252,240:253,241:254,242:255,243:256,244:257,245:258,246:259,247:260,248:261,249:262,250:264,251:265,252:266,253:267,254:269,255:270,256:271,257:272,258:273,259:274,260:275,261:276,262:277,263:278,264:279,265:280,266:281,267:282,268:283,269:285,270:286,271:287,272:288,273:289,274:290,275:292,276:293,277:294,278:295,279:296,280:297,281:298,282:300,283:301,284:302,285:303,286:304,287:305,288:306,289:307,290:308,291:309,292:310,293:311,294:312,295:313,296:314,297:315,298:316,299:317,300:318,301:319,302:320,303:322,304:323,305:324,306:325,307:326,308:327,309:328,310:329,311:330,312:332,313:333,314:334,315:335,316:336,317:337,318:338,319:339,320:341,321:342,322:343,323:344,324:345,325:346,326:347,327:348,328:349,329:350,330:351,331:352,332:353,333:354,334:355,335:356,336:357,337:358,338:359,339:360,340:361,341:362,342:363,343:364,344:365,345:366,346:367,347:368,348:369,349:370,350:371,351:372,352:373,353:374,354:375,355:376,356:377,357:378,358:379,359:380,360:381,361:382,362:383,363:384,364:385,365:386,366:387,367:388,368:389,369:390,370:391,371:392,372:394,373:395,374:397,375:398,376:400,377:401,378:402,379:403,380:405,381:406,382:407,383:408,384:409,385:410,386:412,387:413,388:415,389:416,390:417,391:418,392:419,393:420,394:421,395:423,396:424,397:425,398:426,399:427,400:428,401:429,402:430,403:431,404:432,405:434,406:435,407:437,408:438,409:439,410:440,411:441,412:442,413:443,414:444,415:446,416:447,417:448,418:450,419:451,420:453,421:455,422:456,423:457,424:458,425:459,426:460,427:461,428:462,429:463,430:464,431:465,432:466,433:467,434:468,435:470,436:471,437:472,438:473,439:474,440:475,441:476,442:477,443:478,444:479,445:480,446:481,447:482,448:483,449:484,450:485,451:486,452:487,453:488,454:489,455:490,456:491,457:492,458:493,459:494,460:495,461:496,462:497,463:498,464:499,465:500,466:501,467:502,468:503,469:504,470:505,471:506,472:507,473:508,474:510,475:511,476:512,477:514,478:515,479:516,480:517,481:519,482:520,483:521,484:522,485:523,486:524,487:525,488:526,489:527,490:528,491:529,492:530,493:531,494:532,495:533,496:534,497:535,498:536,499:537,500:538,501:539,502:540,503:541,504:542,505:543,506:544,507:545,508:546,509:547,510:548,511:549,512:550,513:551,514:552,515:553,516:554,517:555,518:556,519:557,520:559,521:560,522:561,523:562,524:563,525:564,526:565,527:566,528:567,529:568,530:569,531:571,532:572,533:573,534:574,535:575,536:576,537:577,538:578,539:579,540:580,541:581,542:582,543:583,544:584,545:585,546:586,547:587,548:588,549:589,550:590,551:591,552:592,553:593,554:594,555:595,556:596,557:597,558:598};
@@ -317,17 +314,24 @@ window.BibleApp = function BibleApp() {
     setHymnLyrics(null);
     setHymnViewMode('lyrics');
     if (hymnCategory === "hymn" || !hymnCategory) {
-      getHymnLyrics(selectedHymn.n).then(data => {
-        setHymnLyrics(data);
-      });
+      // 통일찬송가: newN(새찬송가 번호)으로 가사 조회
+      const newN = selectedHymn.newN || 0;
+      if (newN > 0) {
+        getHymnLyrics(newN).then(data => {
+          setHymnLyrics(data);
+        });
+      } else {
+        // 새찬송가 매핑 없는 곡은 가사 없음
+        setHymnLyrics({ number: selectedHymn.n, title: selectedHymn.t, lyrics: "" });
+      }
     } else {
       // gHymn/kHymn: no lyrics data, just show title
       setHymnLyrics({ number: selectedHymn.n, title: selectedHymn.t, lyrics: "" });
     }
     // Save to hymn history
     setHymnHistory(prev => {
-      const entry = { n: selectedHymn.n, t: selectedHymn.t, v: selectedHymn.v, date: new Date().toLocaleDateString('ko-KR') };
-      const filtered = prev.filter(h => h.n !== entry.n);
+      const entry = { n: selectedHymn.n, t: selectedHymn.t, newN: selectedHymn.newN, cat: hymnCategory || 'hymn', date: new Date().toLocaleDateString('ko-KR') };
+      const filtered = prev.filter(h => !(h.n === entry.n && (h.cat || 'hymn') === entry.cat));
       return [entry, ...filtered].slice(0, 20);
     });
   }, [selectedHymn]);
@@ -648,12 +652,11 @@ window.BibleApp = function BibleApp() {
     const q = query.trim().toLowerCase();
     const results = [];
 
-    // Search hymns first (fast - from index)
+    // Search hymns first (fast - from index, 통일찬송가 기준)
     const hIndex = dataCache.hymnsIndex || [];
     hIndex.forEach(h => {
-      const oldN = NEW2OLD[h.n];
-      if (h.t.toLowerCase().includes(q) || h.n.toString() === q || (oldN && oldN.toString() === q)) {
-        results.push({ type: "hymn", number: h.n, oldNumber: oldN, title: h.t, vid: h.v });
+      if (h.t.toLowerCase().includes(q) || h.n.toString() === q || (h.newN && h.newN.toString() === q)) {
+        results.push({ type: "hymn", number: h.n, newN: h.newN, title: h.t });
       }
     });
 
@@ -691,14 +694,14 @@ window.BibleApp = function BibleApp() {
     setSearching(false);
   }, [bibleLang]);
 
-  // Filtered hymns
+  // Filtered hymns (통일찬송가 번호 또는 새찬송가 번호 또는 제목으로 검색)
   const filteredHymns = useMemo(() => {
     if (!hymnSearch.trim()) return hymnsIndex;
     const q = hymnSearch.trim().toLowerCase();
     const qNum = parseInt(q);
     return hymnsIndex.filter(h => {
       if (h.t.toLowerCase().includes(q) || h.n.toString().includes(q)) return true;
-      if (!isNaN(qNum)) { const old = NEW2OLD[h.n]; if (old && old.toString().includes(q)) return true; }
+      if (!isNaN(qNum) && h.newN && h.newN.toString().includes(q)) return true;
       return false;
     });
   }, [hymnsIndex, hymnSearch]);
@@ -761,7 +764,7 @@ window.BibleApp = function BibleApp() {
           {searchResults.map((r, i) => (
             <button key={i} onClick={() => {
               if (r.type === "hymn") {
-                setSelectedHymn({ n: r.number, t: r.title, v: r.vid });
+                setSelectedHymn({ n: r.number, t: r.title, newN: r.newN });
                 setMainTab("hymn"); setScreen("hymnDetail");
               } else {
                 const book = booksIndex.find(b => b.id === r.bookId);
@@ -773,7 +776,7 @@ window.BibleApp = function BibleApp() {
                   {r.type === "hymn" ? "찬송" : "성경"}
                 </span>
                 <span style={{ fontSize: 12, fontWeight: 600, color: t.accent }}>
-                  {r.type === "hymn" ? `${r.oldNumber ? r.oldNumber : r.number}장${r.oldNumber ? ` (새${r.number})` : ''} ${r.title}` : `${r.bookName} ${r.chapter}:${r.verse}`}
+                  {r.type === "hymn" ? `${r.number}장(새${r.newN || 0}) ${r.title}` : `${r.bookName} ${r.chapter}:${r.verse}`}
                 </span>
               </div>
               {r.text && <p style={{ fontSize: 13, color: t.text, lineHeight: 1.5, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.text}</p>}
@@ -833,10 +836,9 @@ window.BibleApp = function BibleApp() {
         <h3 style={{ fontSize: 13, fontWeight: 700, color: t.sub, marginBottom: 10 }}>최근 찬송가</h3>
         {hymnHistory.length > 0 ? (
           hymnHistory.slice(0, 3).map((h) => {
-            const oldN = NEW2OLD[h.n];
             return (
-            <button key={h.n} onClick={() => { setSelectedHymn(h); setMainTab("hymn"); setScreen("hymnDetail"); setSheetError(false); }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 6, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: oldN ? 10 : 13, fontWeight: 700, color: t.accent, flexShrink: 0, flexDirection: "column", lineHeight: 1.3 }}>{oldN ? <><span>{oldN}</span><span style={{ fontSize: 8, opacity: 0.6 }}>({h.n})</span></> : h.n}</div>
+            <button key={`${h.cat||'hymn'}-${h.n}`} onClick={() => { setSelectedHymn(h); setHymnCategory(h.cat || 'hymn'); setMainTab("hymn"); setScreen("hymnDetail"); setSheetError(false); }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 6, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: t.accent, flexShrink: 0, flexDirection: "column", lineHeight: 1.3 }}><span>{h.n}</span><span style={{ fontSize: 8, opacity: 0.6 }}>(새{h.newN || 0})</span></div>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 500, color: t.text }}>{h.t}</div>
                 <div style={{ fontSize: 11, color: t.sub, marginTop: 2 }}>{h.date}</div>
@@ -1249,10 +1251,10 @@ window.BibleApp = function BibleApp() {
   useEffect(() => { setHymnShowCount(50); }, [hymnSearch, hymnRange]);
 
   const rangeFilteredHymns = useMemo(() => {
-    let list = [...filteredHymns].sort((a, b) => { const oa = NEW2OLD[a.n] || 9999; const ob = NEW2OLD[b.n] || 9999; return oa === ob ? a.n - b.n : oa - ob; });
+    let list = [...filteredHymns].sort((a, b) => a.n - b.n);
     if (hymnRange !== "all" && !hymnSearch.trim()) {
       const [start, end] = hymnRange.split("-").map(Number);
-      list = list.filter(h => { const d = NEW2OLD[h.n] || h.n; return d >= start && d <= end; });
+      list = list.filter(h => h.n >= start && h.n <= end);
     }
     return list;
   }, [filteredHymns, hymnRange, hymnSearch]);
@@ -1262,7 +1264,7 @@ window.BibleApp = function BibleApp() {
       <div style={{ position: "relative", marginBottom: 8 }}>
         <input
           ref={hymnSearchInputRef}
-          type="text" placeholder={`${hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "찬송가"} 검색 (번호 또는 제목)`} defaultValue={hymnSearch}
+          type="text" placeholder={`${hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "통일찬송가"} 검색 (번호 또는 제목)`} defaultValue={hymnSearch}
           autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" data-form-type="other"
           onChange={e => {
             const val = e.target.value;
@@ -1293,7 +1295,7 @@ window.BibleApp = function BibleApp() {
   // ── HYMN CATEGORY SCREEN ──
   const HymnCategoryScreen = () => {
     const categories = [
-      { id: "hymn", icon: "🎵", label: "찬송가", color: t.accent },
+      { id: "hymn", icon: "🎵", label: "통일찬송가", color: t.accent },
       { id: "ghymn", icon: "🙏", label: "은혜와진리찬양", color: "#7b1fa2" },
       { id: "khymn", icon: "🧒", label: "어린이 찬송가", color: "#e67e22" },
       { id: "choir", icon: "🎶", label: "성가대찬양", color: "#1976d2" },
@@ -1341,7 +1343,7 @@ window.BibleApp = function BibleApp() {
     const qNum = parseInt(q);
     return currentHymnList.filter(h => {
       if (h.t.toLowerCase().includes(q) || h.n.toString().includes(q)) return true;
-      if (hymnCategory === "hymn" && !isNaN(qNum)) { const old = NEW2OLD[h.n]; if (old && old.toString().includes(q)) return true; }
+      if (hymnCategory === "hymn" && !isNaN(qNum) && h.newN && h.newN.toString().includes(q)) return true;
       return false;
     });
   }, [currentHymnList, hymnSearch, hymnCategory]);
@@ -1357,24 +1359,23 @@ window.BibleApp = function BibleApp() {
 
   const HymnListScreen = () => {
     const list = hymnCategory === "hymn" ? rangeFilteredHymns : rangeFilteredCurrentHymns;
-    const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "찬송가";
+    const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "통일찬송가";
     return (
       <div style={{ paddingBottom: 90 }}>
         <div style={{ padding: "8px 16px" }}>
           <p style={{ fontSize: 11, color: t.sub, marginBottom: 8 }}>{catLabel} ({list.length}곡)</p>
           {list.slice(0, hymnShowCount).map((h) => {
-            const oldNum = hymnCategory === "hymn" ? NEW2OLD[h.n] : null;
+            const isHymn = hymnCategory === "hymn";
             return (
             <button key={h.n} onClick={() => {
               setSelectedHymn(h); setScreen("hymnDetail"); setSheetError(false); setHymnViewMode(hymnCategory === "ghymn" || hymnCategory === "khymn" ? "sheet" : "lyrics");
             }} style={{ width: "100%", background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "11px 14px", marginBottom: 5, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" }}>
-              <div style={{ minWidth: 38, height: 38, borderRadius: 8, background: hymnCategory === "ghymn" ? "rgba(123,31,162,0.1)" : hymnCategory === "khymn" ? "rgba(230,126,34,0.1)" : t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: oldNum ? 11 : 13, fontWeight: 700, color: hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent, flexShrink: 0, padding: "0 4px", flexDirection: "column", lineHeight: 1.3 }}>
-                {oldNum ? <><span>{oldNum}</span><span style={{ fontSize: 9, opacity: 0.6 }}>({h.n})</span></> : h.n}
+              <div style={{ minWidth: 38, height: 38, borderRadius: 8, background: hymnCategory === "ghymn" ? "rgba(123,31,162,0.1)" : hymnCategory === "khymn" ? "rgba(230,126,34,0.1)" : t.accentBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: isHymn ? 11 : 13, fontWeight: 700, color: hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent, flexShrink: 0, padding: "0 4px", flexDirection: "column", lineHeight: 1.3 }}>
+                {isHymn ? <><span>{h.n}</span><span style={{ fontSize: 9, opacity: 0.6 }}>(새{h.newN || 0})</span></> : h.n}
               </div>
               <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
                 <div style={{ fontSize: 14, fontWeight: 500, color: t.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.t}</div>
               </div>
-              {h.v && <span style={{ fontSize: 14, color: t.sub, flexShrink: 0 }}>▶</span>}
             </button>);
           })}
           {hymnShowCount < list.length && (
@@ -1394,23 +1395,24 @@ window.BibleApp = function BibleApp() {
     const isRegularHymn = (hymnCategory === "hymn" || !hymnCategory);
     const lyrics = hymnLyrics?.lyrics || "";
     const lyricsLines = lyrics.split("\n");
-    const oldNum2 = isRegularHymn ? NEW2OLD[selectedHymn.n] : null;
-    const oldFileNum = oldNum2 ? (OLD2FILE[oldNum2] || oldNum2) : null;
-    const oldIs2Page = oldNum2 && OLD_2PAGE.has(oldNum2);
-    const sheetUrl = isRegularHymn ? (oldFileNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${oldFileNum}.png` : `/data/hymns/sheets/${String(selectedHymn.n).padStart(3, '0')}.jpg`)
+    // 통일찬송가: 악보 URL은 통일번호 기준, OLD2FILE로 파일번호 매핑
+    const fileNum = isRegularHymn ? (OLD2FILE[selectedHymn.n] || selectedHymn.n) : null;
+    const is2Page = isRegularHymn && OLD_2PAGE.has(selectedHymn.n);
+    const sheetUrl = isRegularHymn ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${fileNum}.png`
       : hymnCategory === "ghymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/images/${selectedHymn.f}.png`
       : hymnCategory === "khymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/images/${selectedHymn.f}.png` : null;
-    const sheetUrl2 = (!isRegularHymn && selectedHymn.s === 1 && selectedHymn.f)
-      ? (hymnCategory === "ghymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/images/${selectedHymn.f + 1}.png`
-        : hymnCategory === "khymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/images/${selectedHymn.f + 1}.png` : null)
-      : null;
-    const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "찬송가";
+    const sheetUrl2 = (isRegularHymn && is2Page)
+      ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${fileNum + 1}.png`
+      : (!isRegularHymn && selectedHymn.s === 1 && selectedHymn.f)
+        ? (hymnCategory === "ghymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/images/${selectedHymn.f + 1}.png`
+          : hymnCategory === "khymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/images/${selectedHymn.f + 1}.png` : null)
+        : null;
+    const catLabel = hymnCategory === "ghymn" ? "은혜와진리찬양" : hymnCategory === "khymn" ? "어린이 찬송가" : "통일찬송가";
     const catColor = hymnCategory === "ghymn" ? "#7b1fa2" : hymnCategory === "khymn" ? "#e67e22" : t.accent;
-    const oldNum = isRegularHymn ? NEW2OLD[selectedHymn.n] : null;
-    const displayNum = oldNum || selectedHymn.n;
-    const subLabel = isRegularHymn ? (oldNum ? `통일찬송가 ${oldNum}장 (새찬송가 ${selectedHymn.n}장)` : `새찬송가 ${selectedHymn.n}장`) : `${catLabel} ${selectedHymn.n}장`;
-    // Audio URL: choir.gntc.net audio files are 1:1 with hymn numbers (1-558.mp3), no offset
-    const audioUrl = isRegularHymn && oldNum2 ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oldNum2}.mp3`
+    const newN = isRegularHymn ? (selectedHymn.newN || 0) : null;
+    const subLabel = isRegularHymn ? (newN ? `통일찬송가 ${selectedHymn.n}장 (새찬송가 ${newN}장)` : `통일찬송가 ${selectedHymn.n}장 (새찬송가 없음)`) : `${catLabel} ${selectedHymn.n}장`;
+    // Audio URL: 통일찬송가 번호 직접 사용
+    const audioUrl = isRegularHymn ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${selectedHymn.n}.mp3`
       : hymnCategory === "ghymn" ? `https://choir.gntc.net/SNAS_MCIC/DATA/gHymn/ar/${selectedHymn.n}.mp3`
       : hymnCategory === "khymn" && selectedHymn.f ? `https://choir.gntc.net/SNAS_MCIC/DATA/kHymn/ar/${selectedHymn.f}.mp3` : null;
 
@@ -1419,8 +1421,8 @@ window.BibleApp = function BibleApp() {
         {/* Header info */}
         <div style={{ padding: "20px 16px 14px", borderBottom: `1px solid ${t.border}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: `${catColor}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: oldNum ? 14 : 18, fontWeight: 700, color: catColor, flexDirection: "column", lineHeight: 1.3 }}>
-              {oldNum ? <><span>{oldNum}</span><span style={{ fontSize: 10, opacity: 0.6 }}>({selectedHymn.n})</span></> : selectedHymn.n}
+            <div style={{ width: 48, height: 48, borderRadius: 12, background: `${catColor}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: isRegularHymn ? 14 : 18, fontWeight: 700, color: catColor, flexDirection: "column", lineHeight: 1.3 }}>
+              {isRegularHymn ? <><span>{selectedHymn.n}</span><span style={{ fontSize: 10, opacity: 0.6 }}>(새{newN || 0})</span></> : selectedHymn.n}
             </div>
             <div style={{ flex: 1 }}>
               <h2 style={{ fontSize: 20, fontWeight: 700, color: t.text, margin: 0 }}>{selectedHymn.t}</h2>
@@ -1441,10 +1443,6 @@ window.BibleApp = function BibleApp() {
             <audio controls preload="none" style={{ width: "100%", height: 36, marginTop: 8 }}>
               <source src={audioUrl} type="audio/mpeg" />
             </audio>
-          ) : selectedHymn.v ? (
-            <button onClick={() => window.open(`https://www.youtube.com/watch?v=${selectedHymn.v}`, '_blank')} style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8, padding: "8px 14px", borderRadius: 8, border: `1px solid ${t.border}`, background: t.card, cursor: "pointer", color: t.text, fontSize: 13, fontWeight: 500, fontFamily: "inherit" }}>
-              ▶ YouTube에서 듣기
-            </button>
           ) : null}
         </div>
 
@@ -1486,12 +1484,12 @@ window.BibleApp = function BibleApp() {
                   src={sheetUrl}
                   alt={`${selectedHymn.t} 악보`}
                   onError={() => setSheetError(true)}
-                  style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}`, imageRendering: "-webkit-optimize-contrast", filter: oldFileNum ? "none" : "contrast(1.3) brightness(1.05)" }}
+                  style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}`, imageRendering: "-webkit-optimize-contrast" }}
                   loading="lazy"
                 />
-                {oldIs2Page && oldFileNum && (
+                {sheetUrl2 && (
                   <img
-                    src={`https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${oldFileNum + 1}.png`}
+                    src={sheetUrl2}
                     alt={`${selectedHymn.t} 악보 2`}
                     style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}`, marginTop: 8, imageRendering: "-webkit-optimize-contrast" }}
                     loading="lazy"
@@ -1557,7 +1555,7 @@ window.BibleApp = function BibleApp() {
                         {b.type === "hymn" ? "찬송" : "성경"}
                       </span>
                       <span style={{ fontSize: 13, fontWeight: 600, color: t.accent }}>
-                        {b.type === "hymn" ? `${NEW2OLD[b.number] || b.number}장${NEW2OLD[b.number] ? ` (새${b.number})` : ''} ${b.title}` : `${b.bookName} ${b.chapter}:${b.verse}`}
+                        {b.type === "hymn" ? `${b.number}장 ${b.title}` : `${b.bookName} ${b.chapter}:${b.verse}`}
                       </span>
                     </div>
                     <span style={{ fontSize: 10, color: t.sub }}>{b.date}</span>
@@ -2036,27 +2034,31 @@ window.BibleApp = function BibleApp() {
           {/* Hymn */}
           {familyData.hymnNo && familyData.hymnNo !== "0" && (() => {
             const oNum = parseInt(familyData.hymnNo);
-            const nNum = OLD2NEW[oNum] || (familyData.newHymnNo ? parseInt(familyData.newHymnNo) : null) || ((hymnsIndex.find(h => h.t === familyData.hymnTitle)) || {}).n || null;
-            const fileNo = familyData.hymnFileNo ? parseInt(familyData.hymnFileNo) : null;
-            const hymnSheetUrl = fileNo ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${fileNo}.png` : (nNum ? `/data/hymns/sheets/${String(nNum).padStart(3, '0')}.jpg` : null);
-            const hymnAudioUrl = oNum ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oNum}.mp3` : null;
+            // 가정예배 API의 hymnNo는 통일찬송가 번호
+            const fileNo = OLD2FILE[oNum] || oNum;
+            const hymnSheetUrl = `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${fileNo}.png`;
+            const hymnSheetUrl2 = OLD_2PAGE.has(oNum) ? `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/images/${fileNo + 1}.png` : null;
+            const hymnAudioUrl = `https://choir.gntc.net/SNAS_MCIC/DATA/hymn/ar/${oNum}.mp3`;
+            const matchedHymn = hymnsIndex.find(h => h.n === oNum);
+            const newN = matchedHymn ? matchedHymn.newN : 0;
             const collapsed = familyCollapsed.hymn;
             return (
             <div style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 10, padding: "12px", marginBottom: 10 }}>
               <div onClick={() => setFamilyCollapsed(p => ({ ...p, hymn: !p.hymn }))} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
                 <div>
                   <div style={{ fontSize: 10, color: t.sub, fontWeight: 600, marginBottom: 4 }}>찬송가</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: t.text }}>{oNum}장{nNum ? <span style={{ fontSize: 11, color: t.sub, fontWeight: 400 }}> (새찬송가 {nNum}장)</span> : null}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: t.text }}>{oNum}장<span style={{ fontSize: 11, color: t.sub, fontWeight: 400 }}> (새{newN})</span></div>
                   <div style={{ fontSize: 12, color: t.sub, marginTop: 2 }}>{familyData.hymnTitle}</div>
                 </div>
                 <span style={{ fontSize: 12, color: t.sub, flexShrink: 0, padding: "4px 8px" }}>{collapsed ? "펼치기 ▼" : "접기 ▲"}</span>
               </div>
               {!collapsed && (
                 <div style={{ marginTop: 10, borderTop: `1px solid ${t.border}`, paddingTop: 10 }}>
-                  {hymnAudioUrl && <audio controls preload="none" style={{ width: "100%", height: 36, marginBottom: 10 }}>
+                  <audio controls preload="none" style={{ width: "100%", height: 36, marginBottom: 10 }}>
                     <source src={hymnAudioUrl} type="audio/mpeg" />
-                  </audio>}
-                  {hymnSheetUrl && <img src={hymnSheetUrl} alt={`${familyData.hymnTitle} 악보`} style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}` }} loading="lazy" />}
+                  </audio>
+                  <img src={hymnSheetUrl} alt={`${familyData.hymnTitle} 악보`} style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}` }} loading="lazy" />
+                  {hymnSheetUrl2 && <img src={hymnSheetUrl2} alt={`${familyData.hymnTitle} 악보 2`} style={{ maxWidth: "100%", borderRadius: 8, boxShadow: `0 2px 8px ${t.shadow}`, marginTop: 8 }} loading="lazy" />}
                 </div>
               )}
             </div>);
@@ -2275,7 +2277,7 @@ window.BibleApp = function BibleApp() {
   );
 
   // ── HEADER CONFIG ──
-  const hymnCategoryLabels = { hymn: "찬송가", ghymn: "은혜와진리찬양", khymn: "어린이 찬송가" };
+  const hymnCategoryLabels = { hymn: "통일찬송가", ghymn: "은혜와진리찬양", khymn: "어린이 찬송가" };
   const headerConfig = {
     home: { title: "Grace and Truth Church", showBack: false },
     books: { title: "성경", showBack: false },
@@ -2285,7 +2287,7 @@ window.BibleApp = function BibleApp() {
       showBack: true, backTarget: fromTongdok ? "tongdok" : "chapters"
     },
     hymnCategory: { title: "찬송가", showBack: false },
-    hymnList: { title: hymnCategoryLabels[hymnCategory] || "찬송가", showBack: true, backTarget: "hymnCategoryBack" },
+    hymnList: { title: hymnCategoryLabels[hymnCategory] || "통일찬송가", showBack: true, backTarget: "hymnCategoryBack" },
     hymnDetail: { title: selectedHymn?.t || "", showBack: true, backTarget: "hymnListBack" },
     choirScreen: { title: "성가대찬양", showBack: true, backTarget: "hymnCategoryBack" },
     worship: { title: "예배", showBack: false },
