@@ -314,16 +314,11 @@ window.BibleApp = function BibleApp() {
     setHymnLyrics(null);
     setHymnViewMode('lyrics');
     if (hymnCategory === "hymn" || !hymnCategory) {
-      // 찬송가: newN(새찬송가 번호)으로 가사 조회
-      const newN = selectedHymn.newN || 0;
-      if (newN > 0) {
-        getHymnLyrics(newN).then(data => {
-          setHymnLyrics(data);
-        });
-      } else {
-        // 새찬송가 매핑 없는 곡은 가사 없음
-        setHymnLyrics({ number: selectedHymn.n, title: selectedHymn.t, lyrics: "" });
-      }
+      // 찬송가: newN(새찬송가 번호)으로 가사 조회, newN==0이면 700+통일번호로 조회
+      const lyricsKey = (selectedHymn.newN && selectedHymn.newN > 0) ? selectedHymn.newN : (700 + selectedHymn.n);
+      getHymnLyrics(lyricsKey).then(data => {
+        setHymnLyrics(data || { number: selectedHymn.n, title: selectedHymn.t, lyrics: "" });
+      });
     } else {
       // gHymn/kHymn: no lyrics data, just show title
       setHymnLyrics({ number: selectedHymn.n, title: selectedHymn.t, lyrics: "" });
